@@ -18,8 +18,11 @@ namespace ClientTest.Models
         [DataMember(Name="Id")]
         public String Id { get; set; }
 
-        [DataMember(Name="Email")]
+        [DataMember(Name="UserName")]
         public String UserName { get; set; }
+
+        [DataMember(Name = "Email")]
+        public String Email { get; set; }
 
         public async Task Fetch()
         {
@@ -38,6 +41,7 @@ namespace ClientTest.Models
                 {
                     this.Id = tempThis.Id;
                     this.UserName = tempThis.UserName;
+                    this.Email = tempThis.Email;
                 }
 
                 //var ser = new DataContractJsonSerializer(typeof(UserInfo));

@@ -54,15 +54,18 @@ namespace OneServer.Controllers
         // GET api/Account/UserInfo
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("UserInfo")]
-        public UserInfoViewModel GetUserInfo()
+        public async Task<UserInfoViewModel> GetUserInfo()
         {
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
+            
+            var curUser = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            
 
             return new UserInfoViewModel
             {
                 Id = User.Identity.GetUserId(),
-                //UserName = User.Identity.GetUserName(),
-                Email = User.Identity.GetUserName(),
+                UserName = User.Identity.GetUserName(),
+                Email = curUser.Email,
                 HasRegistered = externalLogin == null,
                 LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
             };

@@ -45,8 +45,8 @@
         </Grid>
         <StackPanel Grid.Row="1" Margin="10" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
-                <TextBlock Text="メールアドレス" Margin="0 0 10 0"/>
-                <TextBox Width="275" Text="{Binding DisplayUserName}" />
+                <TextBlock Text="ユーザー名" Margin="0 0 10 0"/>
+                <TextBox Width="300" Text="{Binding DisplayUserName}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <TextBlock Text="パスワード" Margin="0 0 10 0"/>
