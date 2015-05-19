@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using System.Data.Entity;
 
 namespace OneServer.Models
 {
@@ -30,6 +31,6 @@ namespace OneServer.Models
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<OneServer.Models.Memo> Memos { get; set; }
+        public DbSet<Memo> Memos { get; set; }
     }
 }
