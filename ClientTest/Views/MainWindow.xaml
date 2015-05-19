@@ -39,6 +39,9 @@
             <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
 
+        <!--ユーザー名表示-->
+        <Label Grid.Row="0" HorizontalAlignment="Right" Content="{Binding MyName}" />
+        
         <StackPanel Grid.Row="1" Margin="10" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <TextBlock Text="メールアドレス" Margin="0 0 10 0"/>
@@ -54,7 +57,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <Button Width="70" Height="30" Margin="0 0 10 0" Content="新規登録" Command="{Binding RegisterCommand}" />
-                <Button Width="80" Height="35" Margin="10 0 10 0" Content="ログイン" />
+                <Button Width="80" Height="35" Margin="10 0 10 0" Content="ログイン" Command="{Binding LoginCommand}" />
                 <Button Width="70" Height="30" Margin="10 0 0 0" Content="ログアウト" />
             </StackPanel>
         </StackPanel>

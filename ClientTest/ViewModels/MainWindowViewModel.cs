@@ -13,6 +13,7 @@ using Livet.Messaging.Windows;
 
 using ClientTest.Models;
 using System.Security;
+using System.Windows;
 
 namespace ClientTest.ViewModels
 {
@@ -61,6 +62,7 @@ namespace ClientTest.ViewModels
          */
 
         private Authorizer _authorizer;
+        private TokenReceiver _token;
 
 
         #region DisplayUserName変更通知プロパティ
@@ -99,6 +101,25 @@ namespace ClientTest.ViewModels
         #endregion
 
 
+        #region MyName変更通知プロパティ
+        private string _MyName;
+
+        public string MyName
+        {
+            get
+            { return _MyName; }
+            set
+            { 
+                if (_MyName == value)
+                    return;
+                _MyName = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+
+
         #region RegisterCommand
         private ViewModelCommand _RegisterCommand;
 
@@ -135,6 +156,41 @@ namespace ClientTest.ViewModels
             }
         }
         #endregion
+
+
+        #region LoginCommand
+        private ViewModelCommand _LoginCommand;
+
+        public ViewModelCommand LoginCommand
+        {
+            get
+            {
+                if (_LoginCommand == null)
+                {
+                    _LoginCommand = new ViewModelCommand(Login, CanLogin);
+                }
+                return _LoginCommand;
+            }
+        }
+
+        public bool CanLogin()
+        {
+            return true;
+        }
+
+        public async void Login()
+        {
+            _token = await _authorizer.Login(DisplayUserName,DisplayPassword);
+
+            var userinfo = new UserInfo();
+            await userinfo.Fetch(_token);
+
+            MyName = String.Format("ログイン中：{0}",userinfo.Username.ToString());
+            DisplayUserName = "";
+            DisplayPassword = "";
+        }
+        #endregion
+
 
 
         public void Initialize()
