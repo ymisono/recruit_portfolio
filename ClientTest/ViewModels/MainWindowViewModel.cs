@@ -14,6 +14,7 @@ using Livet.Messaging.Windows;
 using ClientTest.Models;
 using System.Security;
 using System.Windows;
+using System.Net.Http;
 
 namespace ClientTest.ViewModels
 {
@@ -180,12 +181,18 @@ namespace ClientTest.ViewModels
 
         public async void Login()
         {
-            _token = await _authorizer.Login(DisplayUserName,DisplayPassword);
-
             var userinfo = new UserInfo();
-            await userinfo.Fetch(_token);
-
-            MyName = String.Format("ログイン中：{0}",userinfo.Username.ToString());
+            try
+            {
+                await _authorizer.Login(DisplayUserName, DisplayPassword);
+                await userinfo.Fetch();
+            }
+            catch(HttpRequestException e)
+            {
+                MessageBox.Show("ログインできません。","ログイン",MessageBoxButton.OK,MessageBoxImage.Exclamation);
+            }
+            if( !String.IsNullOrEmpty(userinfo.UserName ))
+                MyName = String.Format("ログイン中：{0}",userinfo.UserName);
             DisplayUserName = "";
             DisplayPassword = "";
         }

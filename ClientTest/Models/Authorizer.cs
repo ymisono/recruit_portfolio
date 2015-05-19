@@ -33,17 +33,6 @@ namespace ClientTest.Models
 
         public String Token { get; set; }
 
-        public class ModelState
-        {
-            public List<string> Password { get; set; }
-        }
-
-        public class Response
-        {
-            public string Message { get; set; }
-            public ModelState ModelState { get; set; }
-        }
-
         public async void Register()
         {
             using (var client = new HttpClient())
@@ -51,7 +40,7 @@ namespace ClientTest.Models
                 var sendContent = JsonConvert.SerializeObject(this);
 
                 var res = await client.PostAsync(
-                    new Uri( App.Current.FindResource("APIServerPath") + "api/Account/Register"),
+                    new Uri( App.Current.Properties["APIServerPath"] + "api/Account/Register"),
                     new StringContent(sendContent, Encoding.UTF8, "application/json"));
 
                 if (res.IsSuccessStatusCode == true)
@@ -65,7 +54,7 @@ namespace ClientTest.Models
             }
         }
         
-        public async Task<TokenReceiver> Login(String username,String password)
+        public async Task Login(String username,String password)
         {
             var content = new FormUrlEncodedContent(new Dictionary<string, string> 
                 { 
@@ -77,18 +66,13 @@ namespace ClientTest.Models
 
             using(var client = new HttpClient())
             {
-                var res = await client.PostAsync( App.Current.FindResource("APIServerPath") + "Token", content);
+                var res = await client.PostAsync( App.Current.Properties["APIServerPath"] + "Token", content);
 
                 res.EnsureSuccessStatusCode();
 
-                if (res.IsSuccessStatusCode)
-                {
-                    var ser = new DataContractJsonSerializer(typeof(TokenReceiver));
-                    var token = (TokenReceiver)ser.ReadObject(await res.Content.ReadAsStreamAsync());
-                    return token;
-                }
-                else throw new ApplicationException("ログインできまんせん");
+                App.Current.Properties["Token"] = (JsonConvert.DeserializeObject<TokenReceiver>(await res.Content.ReadAsStringAsync())).Token;
             }
         }
+
     }
 }

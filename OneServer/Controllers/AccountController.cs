@@ -58,10 +58,10 @@ namespace OneServer.Controllers
         {
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
 
-            var id = User.Identity.GetUserId();
-
             return new UserInfoViewModel
             {
+                Id = User.Identity.GetUserId(),
+                //UserName = User.Identity.GetUserName(),
                 Email = User.Identity.GetUserName(),
                 HasRegistered = externalLogin == null,
                 LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
