@@ -17,13 +17,14 @@ namespace ClientTest.Models
         [DataMember(Name="Email")]
         public String Username { get; set; }
 
-        public async Task Fetch(TokenReceiver token)
+        public async Task Fetch()
         {
             //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");
             using (var client = new HttpClient())
             {
+                var token = App.Current.Properties["Token"] as String;
                 client.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.Token);
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", App.Current.Properties["Token"] as String);
 
                 var res = await client.GetAsync("http://oneserversite.azurewebsites.net/api/Account/UserInfo");
 

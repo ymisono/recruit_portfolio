@@ -180,10 +180,10 @@ namespace ClientTest.ViewModels
 
         public async void Login()
         {
-            _token = await _authorizer.Login(DisplayUserName,DisplayPassword);
+            await _authorizer.Login(DisplayUserName,DisplayPassword);
 
             var userinfo = new UserInfo();
-            await userinfo.Fetch(_token);
+            await userinfo.Fetch();
 
             MyName = String.Format("ログイン中：{0}",userinfo.Username.ToString());
             DisplayUserName = "";

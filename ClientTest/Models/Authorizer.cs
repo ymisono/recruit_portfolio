@@ -59,7 +59,7 @@ namespace ClientTest.Models
             }
         }
         
-        public async Task<TokenReceiver> Login(String username,String password)
+        public async Task Login(String username,String password)
         {
             var content = new FormUrlEncodedContent(new Dictionary<string, string> 
                 { 
@@ -79,9 +79,12 @@ namespace ClientTest.Models
                 {
                     var ser = new DataContractJsonSerializer(typeof(TokenReceiver));
                     var token = (TokenReceiver)ser.ReadObject(await res.Content.ReadAsStreamAsync());
-                    return token;
+                    App.Current.Properties["Token"] = token.Token;
                 }
-                else throw new ApplicationException("ログインできまんせん");
+                else
+                {
+                    MessageBox.Show("不正な認証です。\n恐らくユーザー名かパスワードが間違ってます。");
+                }
             }
         }
     }
