@@ -58,6 +58,8 @@ namespace OneServer.Controllers
         {
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
 
+            var id = User.Identity.GetUserId();
+
             return new UserInfoViewModel
             {
                 Email = User.Identity.GetUserName(),

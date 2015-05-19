@@ -51,7 +51,7 @@ namespace ClientTest.Models
                 var sendContent = JsonConvert.SerializeObject(this);
 
                 var res = await client.PostAsync(
-                    new Uri("http://oneserversite.azurewebsites.net/api/Account/Register"),
+                    new Uri( App.Current.FindResource("APIServerPath") + "api/Account/Register"),
                     new StringContent(sendContent, Encoding.UTF8, "application/json"));
 
                 if (res.IsSuccessStatusCode == true)
@@ -60,7 +60,7 @@ namespace ClientTest.Models
                 }
                 else
                 {
-                    throw new ApplicationException(String.Format("登録できませんでした(コード：{0})。", res.StatusCode)));
+                    throw new ApplicationException(String.Format("登録できませんでした(コード：{0})。", res.StatusCode));
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace ClientTest.Models
 
             using(var client = new HttpClient())
             {
-                var res = await client.PostAsync("http://oneserversite.azurewebsites.net/Token", content);
+                var res = await client.PostAsync( App.Current.FindResource("APIServerPath") + "Token", content);
 
                 res.EnsureSuccessStatusCode();
 
