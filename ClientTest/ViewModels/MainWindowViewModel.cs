@@ -138,10 +138,6 @@ namespace ClientTest.ViewModels
 
         public bool CanRegister()
         {
-            //if ( !String.IsNullOrWhiteSpace(DisplayUserName) 
-            //    && !String.IsNullOrWhiteSpace(DisplayPassword.ToString()) )
-            //    return true;
-            //else return false;
             return true;
         }
 
