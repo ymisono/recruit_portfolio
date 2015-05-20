@@ -75,16 +75,11 @@ namespace ClientTest.Models
 
                 res.EnsureSuccessStatusCode();
 
-                if (res.IsSuccessStatusCode)
-                {
-                    var ser = new DataContractJsonSerializer(typeof(TokenReceiver));
-                    var token = (TokenReceiver)ser.ReadObject(await res.Content.ReadAsStreamAsync());
-                    App.Current.Properties["Token"] = token.Token;
-                }
-                else
-                {
-                    MessageBox.Show("不正な認証です。\n恐らくユーザー名かパスワードが間違ってます。");
-                }
+                //ここは必ず成功しているはず
+                var ser = new DataContractJsonSerializer(typeof(TokenReceiver));
+                var token = (TokenReceiver)ser.ReadObject(await res.Content.ReadAsStreamAsync());
+                App.Current.Properties["Token"] = token.Token;
+                    
             }
         }
     }
