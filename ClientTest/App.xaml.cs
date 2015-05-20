@@ -18,6 +18,13 @@ namespace ClientTest
         {
             DispatcherHelper.UIDispatcher = Dispatcher;
             //AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+            //サーバーパスを振り分ける
+#if DEBUG
+            App.Current.Properties["APIServerPath"] = App.Current.FindResource("LocalAPIServerPath");
+#else
+            App.Current.Properties["APIServerPath"] = App.Current.FindResource("RemoteAPIServerPath");
+#endif //DEBUG
         }
 
         //集約エラーハンドラ

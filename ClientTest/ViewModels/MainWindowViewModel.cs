@@ -138,10 +138,6 @@ namespace ClientTest.ViewModels
 
         public bool CanRegister()
         {
-            //if ( !String.IsNullOrWhiteSpace(DisplayUserName) 
-            //    && !String.IsNullOrWhiteSpace(DisplayPassword.ToString()) )
-            //    return true;
-            //else return false;
             return true;
         }
 
@@ -182,18 +178,17 @@ namespace ClientTest.ViewModels
         public async void Login()
         {
             var userinfo = new UserInfo();
-
             try
             {
                 await _authorizer.Login(DisplayUserName, DisplayPassword);
                 await userinfo.Fetch();
             }
-            catch (HttpRequestException e)
+            catch(HttpRequestException e)
             {
-                MessageBox.Show("不正な認証です。\n恐らくユーザー名かパスワードが間違ってます。");
+                MessageBox.Show("ログインできません。","ログイン",MessageBoxButton.OK,MessageBoxImage.Exclamation);
             }
-
-            MyName = String.Format("ログイン中：{0}",userinfo.Username.ToString());
+            if( !String.IsNullOrEmpty(userinfo.UserName ))
+                MyName = String.Format("ログイン中：{0}",userinfo.UserName);
             DisplayUserName = "";
             DisplayPassword = "";
         }

@@ -34,18 +34,19 @@
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.2*" />
+            <RowDefinition Height="0.25*" />
             <RowDefinition Height="1.2*" />
             <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
 
         <!--ユーザー名表示-->
-        <Label Grid.Row="0" HorizontalAlignment="Right" Content="{Binding MyName}" />
-        
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch" Background="Black" >
+            <Label HorizontalAlignment="Right" VerticalAlignment="Center" Content="{Binding MyName}" Foreground="White" />
+        </Grid>
         <StackPanel Grid.Row="1" Margin="10" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
-                <TextBlock Text="メールアドレス" Margin="0 0 10 0"/>
-                <TextBox Width="275" Text="{Binding DisplayUserName}" />
+                <TextBlock Text="ユーザー名" Margin="0 0 10 0"/>
+                <TextBox Width="300" Text="{Binding DisplayUserName}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <TextBlock Text="パスワード" Margin="0 0 10 0"/>

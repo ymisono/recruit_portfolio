@@ -12,6 +12,7 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Windows;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ClientTest.Models
 {
@@ -36,25 +37,19 @@ namespace ClientTest.Models
         {
             using (var client = new HttpClient())
             {
+                var sendContent = JsonConvert.SerializeObject(this);
 
-                var serializer = new DataContractJsonSerializer(typeof(Authorizer));
-                using (var ms = new MemoryStream())
-                {
-                    serializer.WriteObject(ms, this);
-                    var tempJson = Encoding.UTF8.GetString(ms.ToArray());
-                    //var content = new StringContent(tempJson,Encoding.UTF8,"application/json");
+                var res = await client.PostAsync(
+                    new Uri( App.Current.Properties["APIServerPath"] + "api/Account/Register"),
+                    new StringContent(sendContent, Encoding.UTF8, "application/json"));
 
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); 
-                    var url = new Uri("http://oneserversite.azurewebsites.net/api/Account/Register");
-                    var res = await client.PostAsync(url, new StringContent(tempJson));
                     if (res.IsSuccessStatusCode == true)
                     {
                         MessageBox.Show(String.Format("登録しました！\nようこそ{0}さん",UserName));
                     }
                     else
                     {
-                        MessageBox.Show("登録できませんでした。");
-                    }
+                    throw new ApplicationException(String.Format("登録できませんでした(コード：{0})。", res.StatusCode));
                 }
             }
         }
@@ -71,16 +66,13 @@ namespace ClientTest.Models
 
             using(var client = new HttpClient())
             {
-                var res = await client.PostAsync("http://oneserversite.azurewebsites.net/Token", content);
+                var res = await client.PostAsync( App.Current.Properties["APIServerPath"] + "Token", content);
 
                 res.EnsureSuccessStatusCode();
 
-                //ここは必ず成功しているはず
-                var ser = new DataContractJsonSerializer(typeof(TokenReceiver));
-                var token = (TokenReceiver)ser.ReadObject(await res.Content.ReadAsStreamAsync());
-                App.Current.Properties["Token"] = token.Token;
-                    
+                App.Current.Properties["Token"] = (JsonConvert.DeserializeObject<TokenReceiver>(await res.Content.ReadAsStringAsync())).Token;
             }
         }
+
     }
 }
