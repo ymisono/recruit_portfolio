@@ -9,7 +9,7 @@ namespace OneServer.Models
     {
         public int Id { get; set; }
 
-        public virtual ApplicationUser ApplicationUserId { get; set; }
+        public String OwnerId { get; set; }
 
         public String Content { get; set; }
     }

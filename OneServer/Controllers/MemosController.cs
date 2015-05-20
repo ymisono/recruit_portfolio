@@ -23,6 +23,14 @@ namespace OneServer.Controllers
             return db.Memos;
         }
 
+        // GET: api/Memos/?ownerid=1234-4134-1244-1234
+        public Memo GetMemo([FromUri] string ownerid)
+        {
+            Memo memo = db.Memos.Single(m => m.OwnerId == ownerid);
+
+            return memo;
+        }
+
         // GET: api/Memos/5
         [ResponseType(typeof(Memo))]
         public async Task<IHttpActionResult> GetMemo(int id)

@@ -213,6 +213,10 @@
     <Compile Include="Migrations\201505191928258_MemosController.Designer.cs">
       <DependentUpon>201505191928258_MemosController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201505201822541_Memo.cs" />
+    <Compile Include="Migrations\201505201822541_Memo.Designer.cs">
+      <DependentUpon>201505201822541_Memo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -307,6 +311,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201505191928258_MemosController.resx">
       <DependentUpon>201505191928258_MemosController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505201822541_Memo.resx">
+      <DependentUpon>201505201822541_Memo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

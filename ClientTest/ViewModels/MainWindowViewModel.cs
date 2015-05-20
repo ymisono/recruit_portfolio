@@ -204,8 +204,10 @@ namespace ClientTest.ViewModels
                 await _authorizer.Login(DisplayUserName, DisplayPassword);
                 await userinfo.Fetch();
 
+                //Memo
                 _memo = new Memo();
                 await _memo.Fetch(userinfo);
+                memoText = _memo.Content;
             }
             catch(HttpRequestException)
             {
@@ -223,54 +225,25 @@ namespace ClientTest.ViewModels
         #endregion
 
         #region SaveCommand
-        private ListenerCommand<Memo> _SaveCommand;
+        private ViewModelCommand _SaveCommand;
 
-        public ListenerCommand<Memo> SaveCommand
+        public ViewModelCommand SaveCommand
         {
             get
             {
                 if (_SaveCommand == null)
                 {
-                    _SaveCommand = new ListenerCommand<Memo>(Save);
+                    _SaveCommand = new ViewModelCommand(Save);
                 }
                 return _SaveCommand;
             }
         }
 
-        public async void Save(Memo memo)
+        public async void Save()
         {
-            //初めてのときは
-            if (memo == null)
-            {
-                memo = new Memo() { Id = -1, Content = memoText }; //Id=-1は後ろで使う
-            }
+            await _memo.Store(memoText);
 
-            memo.Content = memoText;
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", App.Current.Properties["Token"] as String);
-
-                //最初の時はPOST（追記）。idがある場合はそのままPUT（更新）
-                if (memo.Id == -1)
-                {
-                    //ここにJSON
-                    var sendContent = Newtonsoft.Json.JsonConvert.SerializeObject(memo);
-
-                    var res = await client.PostAsync(
-                        new Uri(App.Current.Properties["APIServerPath"] + "api/Memos"),
-                        new StringContent(sendContent, Encoding.UTF8, "application/json"));
-
-                    string str = await res.Content.ReadAsStringAsync();
-                }
-                else
-                {
-                    //PUT
-                }
-
-            }
-	        		
+            MessageBox.Show("保存しました。");
         }
         #endregion
 
