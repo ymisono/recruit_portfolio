@@ -62,7 +62,16 @@
                 <Button Width="70" Height="30" Margin="10 0 0 0" Content="ログアウト" />
             </StackPanel>
         </StackPanel>
-
+    
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <TextBox Grid.Row="0" Text="{Binding memoText}" Margin="15 15 15 0" />
+            <Button Grid.Row="1" Margin="8 8 30 8" Width="70" HorizontalAlignment="Right" Content="保存"
+                    Command="{Binding SaveCommand}"/>
+        </Grid>
 
     </Grid>
 </Window>

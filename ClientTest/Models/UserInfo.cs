@@ -26,7 +26,6 @@ namespace ClientTest.Models
 
         public async Task Fetch()
         {
-            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "Your Oauth token");
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization =

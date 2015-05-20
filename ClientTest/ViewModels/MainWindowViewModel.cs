@@ -63,8 +63,8 @@ namespace ClientTest.ViewModels
          */
 
         private Authorizer _authorizer;
-        private TokenReceiver _token;
-
+        private Memo _memo;
+        
 
         #region DisplayUserName変更通知プロパティ
         private string _DisplayUserName;
@@ -118,6 +118,25 @@ namespace ClientTest.ViewModels
             }
         }
         #endregion
+
+
+        #region memoText変更通知プロパティ
+        private string _memoText;
+
+        public string memoText
+        {
+            get
+            { return _memoText; }
+            set
+            { 
+                if (_memoText == value)
+                    return;
+                _memoText = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
 
 
 
@@ -177,13 +196,18 @@ namespace ClientTest.ViewModels
 
         public async void Login()
         {
+            //ユーザー情報は毎回最新の物を取る
             var userinfo = new UserInfo();
             try
             {
+                //ロード
                 await _authorizer.Login(DisplayUserName, DisplayPassword);
                 await userinfo.Fetch();
+
+                _memo = new Memo();
+                await _memo.Fetch(userinfo);
             }
-            catch(HttpRequestException e)
+            catch(HttpRequestException)
             {
                 MessageBox.Show("ログインできません。","ログイン",MessageBoxButton.OK,MessageBoxImage.Exclamation);
             }
@@ -191,10 +215,67 @@ namespace ClientTest.ViewModels
                 MyName = String.Format("ログイン中：{0}",userinfo.UserName);
             DisplayUserName = "";
             DisplayPassword = "";
+
+
+
+
+        }
+        #endregion
+
+        #region SaveCommand
+        private ListenerCommand<Memo> _SaveCommand;
+
+        public ListenerCommand<Memo> SaveCommand
+        {
+            get
+            {
+                if (_SaveCommand == null)
+                {
+                    _SaveCommand = new ListenerCommand<Memo>(Save);
+                }
+                return _SaveCommand;
+            }
+        }
+
+        public async void Save(Memo memo)
+        {
+            //初めてのときは
+            if (memo == null)
+            {
+                memo = new Memo() { Id = -1, Content = memoText }; //Id=-1は後ろで使う
+            }
+
+            memo.Content = memoText;
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", App.Current.Properties["Token"] as String);
+
+                //最初の時はPOST（追記）。idがある場合はそのままPUT（更新）
+                if (memo.Id == -1)
+                {
+                    //ここにJSON
+                    var sendContent = Newtonsoft.Json.JsonConvert.SerializeObject(memo);
+
+                    var res = await client.PostAsync(
+                        new Uri(App.Current.Properties["APIServerPath"] + "api/Memos"),
+                        new StringContent(sendContent, Encoding.UTF8, "application/json"));
+
+                    string str = await res.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    //PUT
+                }
+
+            }
+	        		
         }
         #endregion
 
 
+       
 
         public void Initialize()
         {
