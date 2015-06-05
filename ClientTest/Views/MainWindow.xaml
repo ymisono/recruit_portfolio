@@ -7,17 +7,17 @@
         xmlns:v="clr-namespace:ClientTest.Views"
         xmlns:vm="clr-namespace:ClientTest.ViewModels"
         Title="MainWindow" Height="500" Width="620">
-    
+
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    
+
     <i:Interaction.Triggers>
-    
-    	<!--Viewに特別な要件が存在しない限りは、トリガーやアクションの自作にこだわらず積極的にコードビハインドを使いましょう -->
-    	<!--Viewのコードビハインドは、基本的にView内で完結するロジックとViewModelからのイベントの受信(専用リスナを使用する)に限るとトラブルが少なくなります -->
-    	<!--Livet1.1からはコードビハインドでViewModelのイベントを受信するためのWeakEventLisnterサポートが追加されています --> 
-        
+
+        <!--Viewに特別な要件が存在しない限りは、トリガーやアクションの自作にこだわらず積極的にコードビハインドを使いましょう -->
+        <!--Viewのコードビハインドは、基本的にView内で完結するロジックとViewModelからのイベントの受信(専用リスナを使用する)に限るとトラブルが少なくなります -->
+        <!--Livet1.1からはコードビハインドでViewModelのイベントを受信するためのWeakEventLisnterサポートが追加されています -->
+
         <!--WindowのContentRenderedイベントのタイミングでViewModelのInitializeメソッドが呼ばれます-->
         <i:EventTrigger EventName="ContentRendered">
             <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize"/>
@@ -31,7 +31,7 @@
         <!--WindowのCloseキャンセル処理に対応する場合は、WindowCloseCancelBehaviorの使用を検討してください-->
 
     </i:Interaction.Triggers>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.25*" />
@@ -59,18 +59,24 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <Button Width="70" Height="30" Margin="0 0 10 0" Content="新規登録" Command="{Binding RegisterCommand}" />
                 <Button Width="80" Height="35" Margin="10 0 10 0" Content="ログイン" Command="{Binding LoginCommand}" />
-                <Button Width="70" Height="30" Margin="10 0 0 0" Content="ログアウト" />
+                <Button Width="70" Height="30" Margin="10 0 0 0" Content="ログアウト" Visibility="Collapsed"/>
             </StackPanel>
         </StackPanel>
-    
+
         <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="358*"/>
+                <ColumnDefinition Width="257*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
                 <RowDefinition Height="6*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <TextBox Grid.Row="0" Text="{Binding memoText}" Margin="15 15 15 0" />
-            <Button Grid.Row="1" Margin="8 8 30 8" Width="70" HorizontalAlignment="Right" Content="保存"
-                    Command="{Binding SaveCommand}"/>
+            <Label Content="クラウドメモ帳（書いた事が保存されるよ！）" FontSize="19" />
+            <TextBox Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding memoText}" Margin="15 15 15 0" Grid.ColumnSpan="2" />
+            <Button Grid.Row="2" Margin="0,8,30,8" Width="70" HorizontalAlignment="Right" Content="保存"
+                    Command="{Binding SaveCommand}" Grid.Column="1"/>
         </Grid>
 
     </Grid>

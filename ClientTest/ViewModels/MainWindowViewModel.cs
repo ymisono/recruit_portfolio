@@ -160,15 +160,28 @@ namespace ClientTest.ViewModels
             return true;
         }
 
-        public void Register()
+        public async void Register()
         {
-            if ( !String.IsNullOrWhiteSpace(DisplayUserName)
-                && !String.IsNullOrWhiteSpace(DisplayPassword) )
+            if ( String.IsNullOrWhiteSpace(DisplayUserName)
+                 || String.IsNullOrWhiteSpace(DisplayPassword) )
             {
-                _authorizer.UserName = DisplayUserName;
-                _authorizer.Password = DisplayPassword.ToString();
-                _authorizer.ConfirmPassword = DisplayPassword.ToString();
-                _authorizer.Register();
+                MessageBox.Show("空欄があります。");
+                return;
+            }
+
+            _authorizer.UserName = DisplayUserName;
+            _authorizer.Password = DisplayPassword.ToString();
+            _authorizer.ConfirmPassword = DisplayPassword.ToString();
+
+            try
+            {
+                await _authorizer.Register();
+                //成功したらログインも
+                Login();
+            }
+            catch(ApplicationException e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
         #endregion
@@ -219,8 +232,6 @@ namespace ClientTest.ViewModels
             DisplayPassword = "";
 
 
-
-
         }
         #endregion
 
@@ -241,7 +252,9 @@ namespace ClientTest.ViewModels
 
         public async void Save()
         {
-            await _memo.Store(memoText);
+            var userinfo = new UserInfo();
+            await userinfo.Fetch();
+            await _memo.Store(userinfo,memoText);
 
             MessageBox.Show("保存しました。");
         }

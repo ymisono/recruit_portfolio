@@ -13,6 +13,8 @@ using OneServer.Models;
 
 namespace OneServer.Controllers
 {
+    [Authorize]
+    [RoutePrefix("api/Memos")]
     public class MemosController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

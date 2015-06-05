@@ -47,9 +47,10 @@ namespace ClientTest.Models
             }
         }
 
-        public async Task Store(String text)
+        public async Task Store(UserInfo user,String text)
         {
             this.Content = text;
+            this.OwnerId = user.Id;
 
             using (var client = new HttpClient())
             {

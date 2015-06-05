@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.Windows;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Web.ModelBinding;
 
 namespace ClientTest.Models
 {
@@ -33,7 +34,7 @@ namespace ClientTest.Models
 
         public String Token { get; set; }
 
-        public async void Register()
+        public async Task Register()
         {
             using (var client = new HttpClient())
             {
@@ -43,13 +44,16 @@ namespace ClientTest.Models
                     new Uri( App.Current.Properties["APIServerPath"] + "api/Account/Register"),
                     new StringContent(sendContent, Encoding.UTF8, "application/json"));
 
-                    if (res.IsSuccessStatusCode == true)
-                    {
-                        MessageBox.Show(String.Format("登録しました！\nようこそ{0}さん",UserName));
-                    }
-                    else
-                    {
-                    throw new ApplicationException(String.Format("登録できませんでした(コード：{0})。", res.StatusCode));
+                if (res.IsSuccessStatusCode == true)
+                {
+                    MessageBox.Show(String.Format("登録しました！\nようこそ{0}さん",UserName));
+                }
+                else
+                {
+                    var body = await res.Content.ReadAsStringAsync();
+                    var state = JsonConvert.DeserializeObject<Receiver>(body);
+
+                    throw new ApplicationException(String.Format("登録できませんでした(コード：{0})。\n理由：{1}", res.StatusCode,body));
                 }
             }
         }
@@ -76,3 +80,11 @@ namespace ClientTest.Models
 
     }
 }
+
+public class Receiver
+{
+    public String Message;
+    [JsonProperty(PropertyName = "ModelState")]
+    public ModelState modelstate;
+}
+
