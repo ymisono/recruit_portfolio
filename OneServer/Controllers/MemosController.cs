@@ -26,6 +26,7 @@ namespace OneServer.Controllers
         }
 
         // GET: api/Memos/?ownerid=1234-4134-1244-1234
+        [Route("{ownerid:guid}")]
         public Memo GetMemo([FromUri] string ownerid)
         {
             Memo memo = db.Memos.Single(m => m.OwnerId == ownerid);

@@ -52,6 +52,7 @@ namespace ClientTest.Models
                 {
                     var body = await res.Content.ReadAsStringAsync();
                     var state = JsonConvert.DeserializeObject<Receiver>(body);
+                    //state.modelstate.
 
                     throw new ApplicationException(String.Format("登録できませんでした(コード：{0})。\n理由：{1}", res.StatusCode,body));
                 }
