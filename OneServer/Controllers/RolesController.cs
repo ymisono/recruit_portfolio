@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 using OneServer.Models;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -11,22 +13,26 @@ using System.Web.Http.ModelBinding;
 namespace OneServer.Controllers
 {
     [RoutePrefix("api/Roles")]
-    public class RolesControllers : ApiController
+    public class RolesController : ApiController
     {
-        private ApplicationRoleManager _AppRoleManager = null;
+        private ApplicationRoleManager _roleManager = null;
 
-        protected ApplicationRoleManager AppRoleManager
+        protected ApplicationRoleManager RoleManager
         {
             get
             {
-                return _AppRoleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+                return _roleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+            private set
+            {
+                _roleManager = value;
             }
         }
 
-        [Route("{id:guid}", Name = "GetRoleById")]
+        [Route("{id:guid}",Name = "GetBookById")]
         public async Task<IHttpActionResult> GetRole(string Id)
         {
-            var role = await this.AppRoleManager.FindByIdAsync(Id);
+            var role = await this.RoleManager.FindByIdAsync(Id);
 
             if (role != null)
             {
@@ -38,32 +44,40 @@ namespace OneServer.Controllers
 
         }
 
-        [Route("", Name = "GetAllRoles")]
+        [Route("")]
         public IHttpActionResult GetAllRoles()
         {
-            var roles = this.AppRoleManager.Roles;
+            ApplicationDbContext db = new ApplicationDbContext();
+            IdentityRole rs = db.Roles.First<IdentityRole>();
+            IdentityRole rmRoles = this.RoleManager.Roles.First<IdentityRole>();
+            var id = rmRoles.Id;
 
-            return Ok(roles);
+            var roles = this.RoleManager.Roles;
+
+            var misono = db.Users.Single(m => m.UserName == "misono");
+            var misonoRole = misono.Roles;
+
+            return Ok(id);
         }
 
-        [Route("create")]
+        [Route("Create")]
         public async Task<IHttpActionResult> Create(CreateRoleBindingModel model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || model == null)
             {
                 return BadRequest(ModelState);
             }
 
             var role = new IdentityRole { Name = model.Name };
 
-            var result = await this.AppRoleManager.CreateAsync(role);
+            var result = await this.RoleManager.CreateAsync(role);
 
             if (!result.Succeeded)
             {
                 return GetErrorResult(result);
             }
 
-            Uri locationHeader = new Uri(Url.Link("GetRoleById", new { id = role.Id }));
+            Uri locationHeader = new Uri(Url.Link("GetBookById", new { id = role.Id }));
 
             var factory = new ModelFactory();
             return Created(locationHeader, factory.Create(role));
@@ -73,12 +87,11 @@ namespace OneServer.Controllers
         [Route("{id:guid}")]
         public async Task<IHttpActionResult> DeleteRole(string Id)
         {
-
-            var role = await this.AppRoleManager.FindByIdAsync(Id);
+            var role = await this.RoleManager.FindByIdAsync(Id);
 
             if (role != null)
             {
-                IdentityResult result = await this.AppRoleManager.DeleteAsync(role);
+                IdentityResult result = await this.RoleManager.DeleteAsync(role);
 
                 if (!result.Succeeded)
                 {
@@ -93,11 +106,12 @@ namespace OneServer.Controllers
         }
 
         [Route("ManageUsersInRole")]
+        [HttpPost]
         public async Task<IHttpActionResult> ManageUsersInRole(UsersInRoleModel model)
         {
-            var userManager = (new AccountController()).UserManager;
+            var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            var role = await this.AppRoleManager.FindByIdAsync(model.Id);
+            var role = await this.RoleManager.FindByIdAsync(model.Id);
 
             if (role == null)
             {
@@ -153,6 +167,7 @@ namespace OneServer.Controllers
             return Ok();
         }
 
+        #region ヘルパー
 
         private IHttpActionResult GetErrorResult(IdentityResult result)
         {
@@ -182,6 +197,8 @@ namespace OneServer.Controllers
 
             return null;
         }
+
+        #endregion
 
     }
 }

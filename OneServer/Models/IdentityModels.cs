@@ -31,8 +31,7 @@ namespace OneServer.Models
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<OneServer.Models.Memo> Memos { get; set; }
+        public DbSet<OneServer.Models.Memo> Memos { get; set; }
 
-        //public DbSet<Memo> Memos { get; set; }
     }
 }
