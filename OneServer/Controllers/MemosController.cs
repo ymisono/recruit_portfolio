@@ -16,6 +16,7 @@ namespace OneServer.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Memos
+        [Route("")]
         public IQueryable<Memo> GetMemos()
         {
             return db.Memos;
@@ -23,25 +24,25 @@ namespace OneServer.Controllers
 
         // GET: api/Memos/?ownerid=1234-4134-1244-1234
         [Route("{ownerid:guid}")]
-        public Memo GetMemo([FromUri] string ownerid)
+        public IHttpActionResult GetMemo([FromUri] string ownerid)
         {
             Memo memo = db.Memos.Single(m => m.OwnerId == ownerid);
 
-            return memo;
-        }
-
-        // GET: api/Memos/5
-        [ResponseType(typeof(Memo))]
-        public async Task<IHttpActionResult> GetMemo(int id)
-        {
-            Memo memo = await db.Memos.FindAsync(id);
-            if (memo == null)
-            {
-                return NotFound();
-            }
-
             return Ok(memo);
         }
+
+        //// GET: api/Memos/5
+        //[ResponseType(typeof(Memo))]
+        //public async Task<IHttpActionResult> GetMemo(int id)
+        //{
+        //    Memo memo = await db.Memos.FindAsync(id);
+        //    if (memo == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(memo);
+        //}
 
         // PUT: api/Memos/5
         [ResponseType(typeof(void))]

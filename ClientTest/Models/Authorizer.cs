@@ -1,19 +1,14 @@
-﻿using System;
+﻿using Livet;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Livet;
-using System.Security;
 using System.Net.Http;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.IO;
-using System.Net.Http.Headers;
-using System.Windows;
+using System.Security;
+using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Web.ModelBinding;
+using System.Windows;
 
 namespace ClientTest.Models
 {
@@ -23,19 +18,24 @@ namespace ClientTest.Models
     [DataContract]
     public class Authorizer : NotificationObject
     {
+        [DataMember(Name = "UserName")]
+        public String UserName { get; private set; }
+
         [DataMember(Name = "Email")]
-        public String UserName { get; set; }
+        public String Email { get; private set; }
 
         [DataMember(Name = "Password")]
-        public String Password { get; set; }
+        public String Password { get; private set; }
 
-        [DataMember(Name = "ConfirmPassword")]
-        public String ConfirmPassword { get; set; }
+        public String Token { get; private set; }
 
-        public String Token { get; set; }
-
-        public async Task Register()
+        public async Task Register(String userName, String password, String email = "")
         {
+            UserName = userName;
+            Password = password.ToString();
+            //メールアドレスは任意
+            Email = email;
+
             using (var client = new HttpClient())
             {
                 var sendContent = JsonConvert.SerializeObject(this);

@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ComponentModel;
-
+﻿using ClientTest.Models;
 using Livet;
 using Livet.Commands;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.EventListeners;
-using Livet.Messaging.Windows;
-
-using ClientTest.Models;
+using System;
+using System.Net.Http;
 using System.Security;
 using System.Windows;
-using System.Net.Http;
 
 namespace ClientTest.ViewModels
 {
@@ -167,13 +157,9 @@ namespace ClientTest.ViewModels
                 return;
             }
 
-            _authorizer.UserName = DisplayUserName;
-            _authorizer.Password = DisplayPassword.ToString();
-            _authorizer.ConfirmPassword = DisplayPassword.ToString();
-
             try
             {
-                await _authorizer.Register();
+                await _authorizer.Register(DisplayUserName,DisplayPassword);
                 //成功したらログインも
                 Login();
             }
