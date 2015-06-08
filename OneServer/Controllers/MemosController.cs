@@ -33,19 +33,6 @@ namespace OneServer.Controllers
             return Ok(memo);
         }
 
-        //// GET: api/Memos/5
-        //[ResponseType(typeof(Memo))]
-        //public async Task<IHttpActionResult> GetMemo(int id)
-        //{
-        //    Memo memo = await db.Memos.FindAsync(id);
-        //    if (memo == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return Ok(memo);
-        //}
-
         // PUT: api/Memos/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutMemo(int id, Memo memo)
