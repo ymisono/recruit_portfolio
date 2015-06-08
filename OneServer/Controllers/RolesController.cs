@@ -13,22 +13,8 @@ using System.Web.Http.ModelBinding;
 namespace OneServer.Controllers
 {
     [RoutePrefix("api/Roles")]
-    public class RolesController : ApiController
+    public class RolesController : BaseApiController
     {
-        private ApplicationRoleManager _roleManager = null;
-
-        protected ApplicationRoleManager RoleManager
-        {
-            get
-            {
-                return _roleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
-            }
-            private set
-            {
-                _roleManager = value;
-            }
-        }
-
         [Route("{id:guid}",Name = "GetBookById")]
         public async Task<IHttpActionResult> GetRole(string Id)
         {
@@ -166,39 +152,5 @@ namespace OneServer.Controllers
 
             return Ok();
         }
-
-        #region ヘルパー
-
-        private IHttpActionResult GetErrorResult(IdentityResult result)
-        {
-            if (result == null)
-            {
-                return InternalServerError();
-            }
-
-            if (!result.Succeeded)
-            {
-                if (result.Errors != null)
-                {
-                    foreach (string error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error);
-                    }
-                }
-
-                if (ModelState.IsValid)
-                {
-                    // 送信できる ModelState エラーが存在しないため、空の BadRequest だけを返します。
-                    return BadRequest();
-                }
-
-                return BadRequest(ModelState);
-            }
-
-            return null;
-        }
-
-        #endregion
-
     }
 }
