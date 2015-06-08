@@ -138,8 +138,6 @@ namespace ClientTest.ViewModels
         #endregion
 
 
-
-
         #region RegisterCommand
         private ViewModelCommand _RegisterCommand;
 
