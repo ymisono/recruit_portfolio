@@ -25,20 +25,13 @@ namespace ClientTest.Models
         {
             var temp = new Memo();
 
-            var test = String.Format(
-                        "{0}api/Memos/?ownerid={1}",
-                        App.Current.Properties["APIServerPath"],
-                        user.Id
-                    );
-
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", App.Current.Properties["Token"] as String);
 
                 var res = await client.GetAsync( String.Format(
-                        "{0}api/Memos/{1}",
-                        //"{0}api/Memos/?ownerid={1}",
+                        "{0}api/Memos?ownerid={1}",
                         App.Current.Properties["APIServerPath"],
                         user.Id
                     ));

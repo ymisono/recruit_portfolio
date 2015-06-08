@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using OneServer.Models;
+using System;
 
 namespace OneServer.Controllers
 {
@@ -22,11 +23,12 @@ namespace OneServer.Controllers
             return db.Memos;
         }
 
-        // GET: api/Memos/?ownerid=1234-4134-1244-1234
-        [Route("{ownerid:guid}")]
-        public IHttpActionResult GetMemo([FromUri] string ownerid)
+        // GET: api/Memos?ownerid=1234-4134-1244-1234
+        //[Route("{ownerid:guid}")] 
+        [Route("")] //この形じゃないと「?ownerid」がつかない
+        public IHttpActionResult GetMemo([FromUri] Guid ownerid)
         {
-            Memo memo = db.Memos.Single(m => m.OwnerId == ownerid);
+            Memo memo = db.Memos.Single(m => m.OwnerId == ownerid.ToString());
 
             return Ok(memo);
         }

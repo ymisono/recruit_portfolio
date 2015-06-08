@@ -157,13 +157,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="InfrastructureAssemblies\Design\Livet.Design.dll" />
-    <Content Include="InfrastructureAssemblies\Livet.dll" />
-    <Content Include="InfrastructureAssemblies\Livet.XML" />
-    <Content Include="InfrastructureAssemblies\Microsoft.Expression.Interactions.dll" />
-    <Content Include="InfrastructureAssemblies\System.Windows.Interactivity.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
