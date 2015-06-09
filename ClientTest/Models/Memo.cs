@@ -36,13 +36,19 @@ namespace ClientTest.Models
                         user.Id
                     ));
 
+                res.EnsureSuccessStatusCode();
+
                 var content = await res.Content.ReadAsStringAsync();
 
-                var tempMe = Newtonsoft.Json.JsonConvert.DeserializeObject<Memo>(content);
+                //メモがなかったらそのまま終わる
+                if (!String.IsNullOrEmpty(content) && content != "null")
+                {
+                    var tempMe = Newtonsoft.Json.JsonConvert.DeserializeObject<Memo>(content);
 
-                this.Id = tempMe.Id;
-                this.OwnerId = tempMe.OwnerId;
-                this.Content = tempMe.Content;
+                    this.Id = tempMe.Id;
+                    this.OwnerId = tempMe.OwnerId;
+                    this.Content = tempMe.Content;
+                }
             }
         }
 
@@ -53,6 +59,8 @@ namespace ClientTest.Models
 
             using (var client = new HttpClient())
             {
+                HttpResponseMessage res = null;
+
                 client.DefaultRequestHeaders.Authorization =
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", App.Current.Properties["Token"] as String);
 
@@ -63,7 +71,7 @@ namespace ClientTest.Models
                 if (this.Id == -1)
                 {
                     //POST
-                    var res = await client.PostAsync(
+                    res = await client.PostAsync(
                             new Uri(App.Current.Properties["APIServerPath"] + "api/Memos"),
                             new StringContent(sendContent, Encoding.UTF8, "application/json")
                         );
@@ -71,12 +79,13 @@ namespace ClientTest.Models
                 else
                 {
                     //PUT
-                    var res = await client.PutAsync(
+                    res = await client.PutAsync(
                             String.Format("{0}api/Memos/{1}",App.Current.Properties["APIServerPath"], this.Id),
                             new StringContent(sendContent, Encoding.UTF8, "application/json")
                         );
                 }
 
+                res.EnsureSuccessStatusCode();
             }
         }
     }
