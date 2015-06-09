@@ -1,5 +1,8 @@
 namespace OneServer.Migrations
 {
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using OneServer.Models;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -9,23 +12,39 @@ namespace OneServer.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
+#if DEBUG
+            AutomaticMigrationDataLossAllowed = true;
+#endif
         }
 
         protected override void Seed(OneServer.Models.ApplicationDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(context));
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            context.Users.AddOrUpdate(
+                u => u.UserName,
+                new ApplicationUser() { UserName = "misono", Email = "misono@test.com", PasswordHash = new PasswordHasher().HashPassword("password") }
+            );
+
+            context.SaveChanges();
+
+            //Get the UserId only if the SecurityStamp is not set yet.
+            string userId = context.Users.Where(x => x.UserName == "misono" && string.IsNullOrEmpty(x.SecurityStamp)).Select(x => x.Id).FirstOrDefault();
+
+            //If the userId is not null, then the SecurityStamp needs updating.
+            if (!string.IsNullOrEmpty(userId)) userManager.UpdateSecurityStamp(userId);
+
+            //Memo
+            var myId = context.Users.Single(x => x.UserName == "misono").Id;
+            context.Memos.AddOrUpdate(
+                m=>m.OwnerId,
+                new OneServer.Models.Memo { OwnerId = myId, Content = "‚ ‚ ‚ ‚ ‚ \n‚Ä‚·‚Ä‚·" }
+            );
+
+            context.SaveChanges();
+
+            base.Seed(context);
         }
     }
 }

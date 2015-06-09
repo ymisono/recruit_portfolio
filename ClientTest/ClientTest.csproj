@@ -59,8 +59,7 @@
     <ManifestCertificateThumbprint>6278B26596F169C6D9E394F15B7EA5B4CFC28AE0</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>
-    </ManifestKeyFile>
+    <ManifestKeyFile>ClientTest_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
