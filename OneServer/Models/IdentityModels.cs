@@ -22,7 +22,7 @@ namespace OneServer.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("AzureConnection", throwIfV1Schema: false)
+            : base("DataBaseConnection", throwIfV1Schema: false)
         {
         }
         
@@ -31,7 +31,20 @@ namespace OneServer.Models
             return new ApplicationDbContext();
         }
 
-        public DbSet<OneServer.Models.Memo> Memos { get; set; }
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+
+        //    modelBuilder.Entity<ApplicationUser>().ToTable("AspNetUsers", "dbo");
+        //    modelBuilder.Entity<IdentityRole>().ToTable("AspNetRoles", "dbo");
+        //    modelBuilder.Entity<IdentityUserRole>().ToTable("AspNetUserRoles", "dbo");
+        //    modelBuilder.Entity<IdentityUserClaim>().ToTable("AspNetUserClaims", "dbo");
+        //    modelBuilder.Entity<IdentityUserLogin>().ToTable("AspNetUserLogins", "dbo");
+
+        //}
+
+        public DbSet<Memo> Memos { get; set; }
 
     }
+
 }

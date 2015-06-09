@@ -13,18 +13,15 @@ namespace OneServer.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Content = c.String(),
-                        ApplicationUserId_Id = c.String(maxLength: 128),
+                        OwnerId = c.String(),
                     })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId_Id)
-                .Index(t => t.ApplicationUserId_Id);
-            
+                .PrimaryKey(t => t.Id);
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.Memos", "ApplicationUserId_Id", "dbo.AspNetUsers");
-            DropIndex("dbo.Memos", new[] { "ApplicationUserId_Id" });
+            //DropForeignKey("dbo.Memos", "ApplicationUserId_Id", "dbo.AspNetUsers");
+            //DropIndex("dbo.Memos", new[] { "ApplicationUserId_Id" });
             DropTable("dbo.Memos");
         }
     }
