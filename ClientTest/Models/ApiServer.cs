@@ -62,12 +62,16 @@ namespace ClientTest.Models
         //            //辞書型の列挙に詰める
         //            var dics = JsonConvert.DeserializeObject<Dictionary<string, T>>(content);
 
+    //    foreach (KeyValuePair<string, string> kvp in dict) {
+    //  Console.WriteLine("{0} : {1}", kvp.Key, kvp.Value);
+    //}
         //            foreach(var dic in dics)
         //            {
-
+                            
         //            }
         //         }
         //    }
         //}
+        
     }
 }
