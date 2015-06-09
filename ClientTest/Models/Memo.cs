@@ -37,7 +37,6 @@ namespace ClientTest.Models
                         user.Id
                     ));
 
-
                 var content = await res.Content.ReadAsStringAsync();
 
                 //メモがなかったらそのまま終わる

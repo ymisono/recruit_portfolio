@@ -17,12 +17,12 @@ namespace ClientTest.Models
     /// </summary>
     public class Session : NotificationObject
     {
+        private String _accessToken;
         /// <summary>
         /// Web Apiのエンドポイントに渡すアクセストークン
         /// ログイン操作をすると貰える。
-        /// 共有
         /// </summary>
-        private static String _accessToken;
+        public String AccessToken { get; private set; }
 
         /// <summary>
         /// ログインしているか、否か。
@@ -57,7 +57,7 @@ namespace ClientTest.Models
                 CheckResponseStatus(res);
 
                 dynamic deserializedContent = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync());
-                _accessToken = deserializedContent.access_token;
+                AccessToken = deserializedContent.access_token;
                 //var deserializedContent = JsonConvert.DeserializeObject<Dictionary<string, object>>(await res.Content.ReadAsStringAsync());
                 //_accessToken = deserializedContent["access_token"] as string;
             }
@@ -69,7 +69,7 @@ namespace ClientTest.Models
         /// </summary>
         /// <param name="res">HttpClientから応答を受け取る</param>
         /// <exception cref="ApplicationException">500:サーバー内の状態が不正。</exception>
-        private void CheckResponseStatus(HttpResponseMessage res)
+        public void CheckResponseStatus(HttpResponseMessage res)
         {
             //応答ステータスチェック
             if(!res.IsSuccessStatusCode)

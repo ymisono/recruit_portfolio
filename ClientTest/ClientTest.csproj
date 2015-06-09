@@ -117,6 +117,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\ApiServer.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Authorizer.cs" />
     <Compile Include="Models\Memo.cs" />
