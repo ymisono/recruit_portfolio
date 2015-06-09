@@ -24,7 +24,7 @@ namespace OneServer.Controllers
         }
 
         // GET: api/Memos?ownerid=1234-4134-1244-1234
-        //[Route("{ownerid:guid}")] 
+        //[Route("{ownerid:guid}")]  //これだとMemos/1234-1343-31243-4314の形で取るようになる（引数よりRouteの方が優先？）
         [Route("")] //この形じゃないと「?ownerid」がつかない
         public IHttpActionResult GetMemo([FromUri] Guid ownerid)
         {
