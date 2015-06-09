@@ -195,27 +195,37 @@ namespace ClientTest.ViewModels
         {
             //ユーザー情報は毎回最新の物を取る
             var userinfo = new UserInfo();
+            //ログイン
             try
             {
-                //ロード
                 await _authorizer.Login(DisplayUserName, DisplayPassword);
                 await userinfo.Fetch();
-
-                //Memo
-                _memo = new Memo();
-                await _memo.Fetch(userinfo);
-                memoText = _memo.Content;
+                
+                DisplayUserName = "";
+                DisplayPassword = "";
             }
             catch(HttpRequestException)
             {
-                MessageBox.Show("ログインできません。","ログイン",MessageBoxButton.OK,MessageBoxImage.Exclamation);
+                MessageBox.Show("ログインできません。", "ログイン", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            if( !String.IsNullOrEmpty(userinfo.UserName ))
-                MyName = String.Format("ログイン中：{0}",userinfo.UserName);
-            DisplayUserName = "";
-            DisplayPassword = "";
 
+            //メモのロード
+            try
+            {
+                _memo = new Memo();
+                await _memo.Fetch(userinfo);
+                memoText = _memo.Content;
 
+                if (!String.IsNullOrEmpty(userinfo.UserName))
+                    MyName = String.Format("ログイン中：{0}", userinfo.UserName);
+            }
+            catch (ApplicationException e)
+            {
+                MessageBox.Show( 
+                    String.Format("メモ帳をロードできませんでした。\n({0})",e.Message),
+                    "ロード失敗", MessageBoxButton.OK, MessageBoxImage.Exclamation
+                );
+            }
         }
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -36,7 +37,15 @@ namespace ClientTest.Models
                         user.Id
                     ));
 
-                res.EnsureSuccessStatusCode();
+                //応答ステータスチェック
+                if(!res.IsSuccessStatusCode)
+                {
+                    switch(res.StatusCode)
+                    {
+                        case HttpStatusCode.InternalServerError:
+                            throw new ApplicationException("サーバー内で不正な処理が発生しました(500)。");
+                    }
+                }
 
                 var content = await res.Content.ReadAsStringAsync();
 

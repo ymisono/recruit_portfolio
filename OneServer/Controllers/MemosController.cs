@@ -35,10 +35,9 @@ namespace OneServer.Controllers
             {
                 memo = db.Memos.Single(m => m.OwnerId == ownerid.ToString());
             }
-            catch(InvalidOperationException ex) //1つ以上のメモがあったとき
+            catch(InvalidOperationException ex) //1つ以上のメモがあったとき or 該当メモが0の時
             {
-                BadRequest( String.Format("データベースのユーザーの状態が不正です。\n{0}",
-                    ex.Message));
+                return InternalServerError(ex);
             }
 
             return Ok(memo);
