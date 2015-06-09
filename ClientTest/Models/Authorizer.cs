@@ -3,8 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Runtime.Serialization;
-using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.ModelBinding;
@@ -15,16 +13,12 @@ namespace ClientTest.Models
     /// <summary>
     /// 認証に必要なモデル
     /// </summary>
-    [DataContract]
     public class Authorizer : NotificationObject
     {
-        [DataMember(Name = "UserName")]
         public String UserName { get; private set; }
 
-        [DataMember(Name = "Email")]
         public String Email { get; private set; }
 
-        [DataMember(Name = "Password")]
         public String Password { get; private set; }
 
         public String Token { get; private set; }
@@ -58,27 +52,6 @@ namespace ClientTest.Models
                 }
             }
         }
-        
-        public async Task Login(String username,String password)
-        {
-            var content = new FormUrlEncodedContent(new Dictionary<string, string> 
-                { 
-                    { "grant_type", "password"},
-                    { "username", username  },
-                    { "password", password}
-                }
-            );
-
-            using(var client = new HttpClient())
-            {
-                var res = await client.PostAsync( App.Current.Properties["APIServerPath"] + "Token", content);
-
-                res.EnsureSuccessStatusCode();
-
-                App.Current.Properties["Token"] = (JsonConvert.DeserializeObject<TokenReceiver>(await res.Content.ReadAsStringAsync())).Token;
-            }
-        }
-
     }
 }
 

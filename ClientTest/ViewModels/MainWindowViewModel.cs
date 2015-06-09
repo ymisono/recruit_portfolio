@@ -53,6 +53,7 @@ namespace ClientTest.ViewModels
          */
 
         private Authorizer _authorizer;
+        private Session _apiServer = new Session();
         private Memo _memo;
         
 
@@ -198,7 +199,8 @@ namespace ClientTest.ViewModels
             //ログイン
             try
             {
-                await _authorizer.Login(DisplayUserName, DisplayPassword);
+                //await _authorizer.Login(DisplayUserName, DisplayPassword);
+                await _apiServer.Login(DisplayUserName, DisplayPassword);
                 await userinfo.Fetch();
                 
                 DisplayUserName = "";

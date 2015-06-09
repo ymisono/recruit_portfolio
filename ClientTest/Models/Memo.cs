@@ -37,15 +37,6 @@ namespace ClientTest.Models
                         user.Id
                     ));
 
-                //応答ステータスチェック
-                if(!res.IsSuccessStatusCode)
-                {
-                    switch(res.StatusCode)
-                    {
-                        case HttpStatusCode.InternalServerError:
-                            throw new ApplicationException("サーバー内で不正な処理が発生しました(500)。");
-                    }
-                }
 
                 var content = await res.Content.ReadAsStringAsync();
 
