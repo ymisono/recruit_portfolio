@@ -26,9 +26,20 @@ namespace OneServer.Controllers
         // GET: api/Memos?ownerid=1234-4134-1244-1234
         //[Route("{ownerid:guid}")]  //これだとMemos/1234-1343-31243-4314の形で取るようになる（引数よりRouteの方が優先？）
         [Route("")] //この形じゃないと「?ownerid」がつかない
+        [HttpGet]
         public IHttpActionResult GetMemo([FromUri] Guid ownerid)
         {
-            Memo memo = db.Memos.Single(m => m.OwnerId == ownerid.ToString());
+            Memo memo = null;
+
+            try
+            {
+                memo = db.Memos.Single(m => m.OwnerId == ownerid.ToString());
+            }
+            catch(InvalidOperationException ex) //1つ以上のメモがあったとき
+            {
+                BadRequest( String.Format("データベースのユーザーの状態が不正です。\n{0}",
+                    ex.Message));
+            }
 
             return Ok(memo);
         }
@@ -69,6 +80,8 @@ namespace OneServer.Controllers
         }
 
         // POST: api/Memos
+        [Route("")]
+        [HttpPost]
         [ResponseType(typeof(Memo))]
         public async Task<IHttpActionResult> PostMemo(Memo memo)
         {
@@ -80,7 +93,9 @@ namespace OneServer.Controllers
             db.Memos.Add(memo);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = memo.Id }, memo);
+            return CreatedAtRoute("Default", new { OwnerId = memo.OwnerId }, memo);
+            //var loc = new Uri(Url.Link("DefaultApi", new { Id = memo.Id }));
+            //return Created(memo);
         }
 
         // DELETE: api/Memos/5
