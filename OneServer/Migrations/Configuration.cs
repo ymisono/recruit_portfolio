@@ -38,13 +38,13 @@ namespace OneServer.Migrations
             //Memo
             var myId = context.Users.Single(x => x.UserName == "misono").Id;
             context.Memos.AddOrUpdate(
-                m=>m.Id,
+                m=>m.OwnerId,
                 new OneServer.Models.Memo { OwnerId = myId, Content = "‚ ‚ ‚ ‚ ‚ \n‚Ä‚·‚Ä‚·" }
             );
 
             context.SaveChanges();
 
-            //base.Seed(context);
+            base.Seed(context);
         }
     }
 }
