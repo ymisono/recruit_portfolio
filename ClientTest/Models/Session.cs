@@ -34,6 +34,7 @@ namespace ClientTest.Models
             }
         }
 
+        #region コンストラクタ
         public Session()
         {
 #if DEBUG
@@ -42,6 +43,7 @@ namespace ClientTest.Models
             _serverPath = ConfigurationManager.AppSettings["RemoteAPIServerPath"];
 #endif //DEBUG
         }
+        #endregion
 
         /// <summary>
         /// Web Apiエンドポイントに対してログインを行う

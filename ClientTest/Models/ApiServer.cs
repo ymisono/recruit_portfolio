@@ -21,6 +21,7 @@ namespace ClientTest.Models
         //サーバーAPIのパス。APIを呼び出す基点になる。
         private String _apiPath;
 
+        #region コンストラクタ
         public ApiServer()
         {
             CurrentSession = new Session();
@@ -30,8 +31,8 @@ namespace ClientTest.Models
 #else
             _apiPath = String.Format("{0}api/", ConfigurationManager.AppSettings["RemoteAPIServerPath"]);
 #endif //DEBUG
-
         }
+        #endregion
 
         /// <summary>
         /// 汎用的な取得メソッド
