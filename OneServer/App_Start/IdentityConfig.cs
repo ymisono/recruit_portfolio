@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using OneServer.App_Start;
 using OneServer.Models;
 
 namespace OneServer
@@ -19,12 +20,8 @@ namespace OneServer
         {
             var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
             // ユーザー名の検証ロジックを設定します
-            manager.UserValidator = new UserValidator<ApplicationUser>(manager)
-            {
-                AllowOnlyAlphanumericUserNames = false,
-                //RequireUniqueEmail = true
-                RequireUniqueEmail = false
-            };
+            manager.UserValidator = new UserNameUsingUserValidator<ApplicationUser>(manager);
+
             // パスワードの検証ロジックを設定します
             manager.PasswordValidator = new PasswordValidator
             {

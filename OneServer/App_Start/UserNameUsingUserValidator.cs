@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using OneServer.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -20,17 +21,18 @@ namespace OneServer.App_Start
     /// 
     /// To use this validator, just set <see cref="UserManager.UserValidator"/> to a new instance of this class.
     /// </remarks>
-    public class CustomUserValidator<TUser> : IIdentityValidator<TUser>
+    public class UserNameUsingUserValidator<TUser> : IIdentityValidator<TUser>
         where TUser : class, Microsoft.AspNet.Identity.IUser
     {
         private static readonly Regex EmailRegex = new Regex(@"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex AlphaNumUnderscoreRegex = new Regex(@"^[a-zA-Z0-9_]+$", RegexOptions.Compiled);
         private readonly UserManager<TUser> _manager;
 
-        public CustomUserValidator()
+        public UserNameUsingUserValidator()
         {
         }
 
-        public CustomUserValidator(UserManager<TUser> manager)
+        public UserNameUsingUserValidator(UserManager<TUser> manager)
         {
             _manager = manager;
         }
@@ -39,18 +41,28 @@ namespace OneServer.App_Start
         {
             var errors = new List<string>();
 
-            
-            //if (item.UserName)
+            //ユーザー名が英数字のみかチェック
+            if (!AlphaNumUnderscoreRegex.IsMatch(item.UserName))
+            {
+                errors.Add("ユーザー名には半角英数字とアンダースコア(_)のみが使えます。");
+            }
 
-            //if (!EmailRegex.IsMatch(item.UserName))
-            //    errors.Add("Enter a valid email address.");
+            var appUser = item as ApplicationUser;
+            if (appUser != null)
+            {
+                if ( !String.IsNullOrEmpty(appUser.Email) && //空ではなく
+                    !EmailRegex.IsMatch(appUser.Email) ) //有効なアドレスではない時
+                {
+                    errors.Add("有効なメールアドレスの形式ではありません。");
+                }
+            }
 
-            //if (_manager != null)
-            //{
-            //    var otherAccount = await _manager.FindByNameAsync(item.UserName);
-            //    if (otherAccount != null && otherAccount.Id != item.Id)
-            //        errors.Add("Select a different email address. An account has already been created with this email address.");
-            //}
+            if (_manager != null)
+            {
+                var otherAccount = await _manager.FindByNameAsync(item.UserName);
+                if (otherAccount != null && otherAccount.Id != item.Id)
+                    errors.Add("既に存在するユーザー名です。");
+            }
 
             return errors.Any()
                 ? IdentityResult.Failed(errors.ToArray())
