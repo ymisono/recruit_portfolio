@@ -53,7 +53,7 @@ namespace ClientTest.Models
                         "{0}{1}", _apiPath, restResource)
                         );
 
-                await CurrentSession.CheckResponseStatus(res);
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
 
                 //中身を展開
                 var content = await res.Content.ReadAsStringAsync();
@@ -83,7 +83,7 @@ namespace ClientTest.Models
                         new StringContent(sendContent, Encoding.UTF8, "application/json")
                     );
 
-                await CurrentSession.CheckResponseStatus(res);
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
             }
         }
 
@@ -102,42 +102,24 @@ namespace ClientTest.Models
                         new StringContent(sendContent, Encoding.UTF8, "application/json")
                     );
 
-                await CurrentSession.CheckResponseStatus(res);
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
             }
         }
-    }
 
-    public class ErrorObject
-    {
-        public String Message;
-        [JsonProperty(PropertyName = "ModelState")]
-        public Dictionary<string, string[]> modelstate;
+        public async Task Register(String userName, String password, String email = "")
+        {
+            var sendObj = new { UserName = userName, Email = email, Password = password };
 
-        //public static void ErrorHandle()
-        //{
-        //    // Sometimes, there may be Model Errors:
-        //    if (deserializedErrorObject.ModelState != null)
-        //    {
-        //        var errors =
-        //            deserializedErrorObject.ModelState
-        //                                    .Select(kvp => string.Join(". ", kvp.Value));
-        //        for (int i = 0; i < errors.Count(); i++)
-        //        {
-        //            // Wrap the errors up into the base Exception.Data Dictionary:
-        //            ex.Data.Add(i, errors.ElementAt(i));
-        //        }
-        //    }
-        //    // Othertimes, there may not be Model Errors:
-        //    else
-        //    {
-        //        var error =
-        //            JsonConvert.DeserializeObject<Dictionary<string, string>>(httpErrorObject);
-        //        foreach (var kvp in error)
-        //        {
-        //            // Wrap the errors up into the base Exception.Data Dictionary:
-        //            ex.Data.Add(kvp.Key, kvp.Value);
-        //        }
-        //    }
-        //}
+            using (var client = new HttpClient())
+            {
+                var sendContent = JsonConvert.SerializeObject(sendObj);
+
+                var res = await client.PostAsync(
+                    new Uri( _apiPath + "Account/Register"),
+                    new StringContent(sendContent, Encoding.UTF8, "application/json"));
+
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
+            }
+        }
     }
 }

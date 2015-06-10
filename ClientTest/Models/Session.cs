@@ -53,43 +53,10 @@ namespace ClientTest.Models
             {
                 var res = await client.PostAsync(App.Current.Properties["APIServerPath"] + "Token", content);
 
-                await CheckResponseStatus(res);
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
 
                 dynamic deserializedContent = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync());
                 AccessToken = deserializedContent.access_token;
-                //var deserializedContent = JsonConvert.DeserializeObject<Dictionary<string, object>>(await res.Content.ReadAsStringAsync());
-                //_accessToken = deserializedContent["access_token"] as string;
-            }
-        }
-
-        /// <summary>
-        /// HTTP応答をチェックする。
-        /// 応答が正常でなければ、例外を投げる
-        /// </summary>
-        /// <param name="res">HttpClientから応答を受け取る</param>
-        /// <exception cref="ApplicationException">500:サーバー内の状態が不正。</exception>
-        public async Task CheckResponseStatus(HttpResponseMessage res)
-        {
-            //応答ステータスチェック
-            if(!res.IsSuccessStatusCode)
-            {
-                //中身をロード
-                var content = await res.Content.ReadAsStringAsync();
-
-                switch(res.StatusCode)
-                {
-                    case HttpStatusCode.BadRequest:
-                        throw new ApplicationException(String.Format("不正な入力です(401)。\n理由：{0}", content));
-                    case HttpStatusCode.Unauthorized:
-                        throw new ApplicationException(String.Format("認証に失敗しました(401)。\n再ログインしてください。\n理由：{0}", content));
-                    case HttpStatusCode.InternalServerError:
-                        throw new ApplicationException(String.Format("サーバー内で不正な処理が発生しました(500)。\n理由：{0}",content));
-                    case HttpStatusCode.ServiceUnavailable:
-                        throw new ApplicationException(String.Format("サーバーが一時的に利用できません(503)。\n理由：{0}",content));
-
-                    default:
-                        throw new ApplicationException("想定してないエラー");
-                }
             }
         }
     }
