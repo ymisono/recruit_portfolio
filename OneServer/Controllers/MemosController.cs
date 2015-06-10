@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using OneServer.Models;
 using System;
+using OneServer.CustomIHttpActionResult;
 
 namespace OneServer.Controllers
 {
@@ -35,9 +36,9 @@ namespace OneServer.Controllers
             {
                 memo = db.Memos.Single(m => m.OwnerId == ownerid.ToString());
             }
-            catch(InvalidOperationException ex) //1つ以上のメモがあったとき or 該当メモが0の時
+            catch(InvalidOperationException) //1つ以上のメモがあったとき or 該当メモが0の時
             {
-                return InternalServerError(ex);
+                return ApiControllerExtension.InternalServerError(this,"Memosの状態に矛盾があります。");
             }
 
             return Ok(memo);

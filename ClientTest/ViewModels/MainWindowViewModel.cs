@@ -224,7 +224,7 @@ namespace ClientTest.ViewModels
             catch (ApplicationException e)
             {
                 MessageBox.Show( 
-                    String.Format("メモ帳をロードできませんでした。\n({0})",e.Message),
+                    String.Format("メモ帳をロードできませんでした。\n{0}",e.Message),
                     "ロード失敗", MessageBoxButton.OK, MessageBoxImage.Exclamation
                 );
             }

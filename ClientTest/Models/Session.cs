@@ -54,7 +54,7 @@ namespace ClientTest.Models
             {
                 var res = await client.PostAsync(App.Current.Properties["APIServerPath"] + "Token", content);
 
-                CheckResponseStatus(res);
+                await CheckResponseStatus(res);
 
                 dynamic deserializedContent = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync());
                 AccessToken = deserializedContent.access_token;
@@ -69,17 +69,20 @@ namespace ClientTest.Models
         /// </summary>
         /// <param name="res">HttpClientから応答を受け取る</param>
         /// <exception cref="ApplicationException">500:サーバー内の状態が不正。</exception>
-        public void CheckResponseStatus(HttpResponseMessage res)
+        public async Task CheckResponseStatus(HttpResponseMessage res)
         {
             //応答ステータスチェック
             if(!res.IsSuccessStatusCode)
             {
+                //中身をロード
+                var content = await res.Content.ReadAsStringAsync();
+
                 switch(res.StatusCode)
                 {
                     case HttpStatusCode.InternalServerError:
-                        throw new ApplicationException("サーバー内で不正な処理が発生しました(500)。");
+                        throw new ApplicationException(String.Format("サーバー内で不正な処理が発生しました(500)。\n理由：{0}",content));
                     case HttpStatusCode.ServiceUnavailable:
-                        throw new ApplicationException("サーバーが一時的に利用できません(503)。");
+                        throw new ApplicationException(String.Format("サーバーが一時的に利用できません(503)。\n理由：{0}",content));
                 }
             }
         }
