@@ -208,6 +208,9 @@ namespace ClientTest.ViewModels
 
                 if (!String.IsNullOrEmpty(_apiServer.CurrentSession.UserInfo.UserName))
                     MyName = String.Format("ログイン中：{0}", _apiServer.CurrentSession.UserInfo.UserName);
+
+                //前回のログイン名を覚えておく
+                LocalSettings.AddUpdateAppSettings("RememberUserName", _apiServer.CurrentSession.UserInfo.UserName);
             }
             catch(ApplicationException ex)
             {
@@ -291,7 +294,14 @@ namespace ClientTest.ViewModels
 
         public void Initialize()
         {
-
+            try
+            {
+                DisplayUserName = LocalSettings.ReadSetting("RememberUserName");
+            }
+            catch(ApplicationException)
+            {
+                DisplayUserName = "";
+            }
         }
     }
 }
