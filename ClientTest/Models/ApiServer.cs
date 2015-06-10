@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Web.ModelBinding;
 
 namespace ClientTest.Models
 {
@@ -104,5 +105,39 @@ namespace ClientTest.Models
                 await CurrentSession.CheckResponseStatus(res);
             }
         }
+    }
+
+    public class ErrorObject
+    {
+        public String Message;
+        [JsonProperty(PropertyName = "ModelState")]
+        public Dictionary<string, string[]> modelstate;
+
+        //public static void ErrorHandle()
+        //{
+        //    // Sometimes, there may be Model Errors:
+        //    if (deserializedErrorObject.ModelState != null)
+        //    {
+        //        var errors =
+        //            deserializedErrorObject.ModelState
+        //                                    .Select(kvp => string.Join(". ", kvp.Value));
+        //        for (int i = 0; i < errors.Count(); i++)
+        //        {
+        //            // Wrap the errors up into the base Exception.Data Dictionary:
+        //            ex.Data.Add(i, errors.ElementAt(i));
+        //        }
+        //    }
+        //    // Othertimes, there may not be Model Errors:
+        //    else
+        //    {
+        //        var error =
+        //            JsonConvert.DeserializeObject<Dictionary<string, string>>(httpErrorObject);
+        //        foreach (var kvp in error)
+        //        {
+        //            // Wrap the errors up into the base Exception.Data Dictionary:
+        //            ex.Data.Add(kvp.Key, kvp.Value);
+        //        }
+        //    }
+        //}
     }
 }
