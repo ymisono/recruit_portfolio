@@ -34,7 +34,7 @@ namespace ClientTest.Models
         /// 汎用的な取得メソッド
         /// </summary>
         /// <returns>返り値はJSONで</returns>
-        public async Task<String> Fetch(String controller)
+        public async Task<String> Read(String restResource)
         {
             String result = null;
 
@@ -49,7 +49,7 @@ namespace ClientTest.Models
                     new AuthenticationHeaderValue("Bearer", CurrentSession.AccessToken);
 
                 var res = await client.GetAsync(String.Format(
-                        "{0}{1}", _apiPath, controller)
+                        "{0}{1}", _apiPath, restResource)
                         );
 
                 await CurrentSession.CheckResponseStatus(res);
@@ -66,6 +66,43 @@ namespace ClientTest.Models
                 return result;
             }
         }
-        
+
+        public async Task Create<T>(T newObj, String restResource)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", CurrentSession.AccessToken);
+
+                var sendContent = JsonConvert.SerializeObject(newObj);
+
+                //POST
+                var res = await client.PostAsync(
+                        new Uri(_apiPath + restResource),
+                        new StringContent(sendContent, Encoding.UTF8, "application/json")
+                    );
+
+                await CurrentSession.CheckResponseStatus(res);
+            }
+        }
+
+        public async Task Update<T>(T newObj, String restResource)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", CurrentSession.AccessToken);
+
+                var sendContent = JsonConvert.SerializeObject(newObj);
+
+                //PUT
+                var res = await client.PutAsync(
+                        new Uri(_apiPath + restResource),
+                        new StringContent(sendContent, Encoding.UTF8, "application/json")
+                    );
+
+                await CurrentSession.CheckResponseStatus(res);
+            }
+        }
     }
 }

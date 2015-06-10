@@ -4,6 +4,7 @@ using Livet.Commands;
 using System;
 using System.Net.Http;
 using System.Security;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ClientTest.ViewModels
@@ -149,6 +150,7 @@ namespace ClientTest.ViewModels
             return true;
         }
 
+        //イベントハンドラのみasyncでvoidで返す
         public async void Register()
         {
             if ( String.IsNullOrWhiteSpace(DisplayUserName)
@@ -201,27 +203,32 @@ namespace ClientTest.ViewModels
             {
                 //await _authorizer.Login(DisplayUserName, DisplayPassword);
                 await _apiServer.CurrentSession.Login(DisplayUserName, DisplayPassword);
-                userinfo = UserInfo.Deserialize(await _apiServer.Fetch("Account/UserInfo"));
+                userinfo = UserInfo.Deserialize(await _apiServer.Read("Account/UserInfo"));
                 
                 DisplayUserName = "";
                 DisplayPassword = "";
+
+                if (!String.IsNullOrEmpty(userinfo.UserName))
+                    MyName = String.Format("ログイン中：{0}", userinfo.UserName);
             }
             catch(ApplicationException ex)
             {
                 MessageBox.Show(String.Format("ログインできません。\n{0}",ex.Message),
                     "ログイン", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
             }
 
             //メモのロード
             try
             {
-                memoText = Memo.Deserialize(
-                    await _apiServer.Fetch("Memos?ownerid="+userinfo.Id))
-                    .Content;
-
-                if (!String.IsNullOrEmpty(userinfo.UserName))
-                    MyName = String.Format("ログイン中：{0}", userinfo.UserName);
+                var json = await _apiServer.Read("Memos?ownerid=" + userinfo.Id);
+                if (json!=null)
+                {
+                    _memo = Memo.Deserialize(json);
+                    memoText = _memo.Content;
+                }
             }
+
             catch (ApplicationException e)
             {
                 MessageBox.Show( 
@@ -251,7 +258,16 @@ namespace ClientTest.ViewModels
         {
             try
             {
-                //await _memo.Store(userinfo,memoText);
+                _memo.Content = memoText;
+                //まだ作られてない場合、作製
+                if (_memo.IsFirstTime)
+                {
+                    await _apiServer.Create<Memo>(_memo, "Memos");
+                }
+                else
+                {
+                    await _apiServer.Update<Memo>(_memo, String.Format("Memos/{0}", _memo.Id));
+                }
 
                 MessageBox.Show("保存しました。");
             }

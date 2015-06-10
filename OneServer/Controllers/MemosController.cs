@@ -34,9 +34,9 @@ namespace OneServer.Controllers
 
             try
             {
-                memo = db.Memos.Single(m => m.OwnerId == ownerid.ToString());
+                memo = db.Memos.SingleOrDefault(m => m.OwnerId == ownerid.ToString());
             }
-            catch(InvalidOperationException) //1つ以上のメモがあったとき or 該当メモが0の時
+            catch(InvalidOperationException) //1つ以上のメモがあったとき
             {
                 return ApiControllerExtension.InternalServerError(this,"Memosの状態に矛盾があります。");
             }

@@ -78,6 +78,10 @@ namespace ClientTest.Models
 
                 switch(res.StatusCode)
                 {
+                    case HttpStatusCode.BadRequest:
+                        throw new ApplicationException(String.Format("不正な入力です(401)。\n理由：{0}", content));
+                    case HttpStatusCode.Unauthorized:
+                        throw new ApplicationException(String.Format("認証に失敗しました(401)。\n再ログインしてください。\n理由：{0}", content));
                     case HttpStatusCode.InternalServerError:
                         throw new ApplicationException(String.Format("サーバー内で不正な処理が発生しました(500)。\n理由：{0}",content));
                     case HttpStatusCode.ServiceUnavailable:
