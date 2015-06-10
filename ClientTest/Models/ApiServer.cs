@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
 using System.Text;
-
-using Livet;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
-using System.Web.ModelBinding;
 
 namespace ClientTest.Models
 {
     /// <summary>
     /// APIサーバーへの接続を抽象化する。
     /// </summary>
-    public class ApiServer : NotificationObject
+    public class ApiServer
     {
         /// <summary>
         /// サーバーのセッション
@@ -28,7 +24,13 @@ namespace ClientTest.Models
         public ApiServer()
         {
             CurrentSession = new Session();
-            _apiPath = String.Format("{0}api/", App.Current.Properties["APIServerPath"]);
+
+#if DEBUG
+            _apiPath = String.Format("{0}api/", ConfigurationManager.AppSettings["LocalAPIServerPath"]);
+#else
+            _apiPath = String.Format("{0}api/", ConfigurationManager.AppSettings["RemoteAPIServerPath"]);
+#endif //DEBUG
+
         }
 
         /// <summary>

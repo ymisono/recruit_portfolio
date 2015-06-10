@@ -1,27 +1,27 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Livet;
-using System.Threading.Tasks;
+using System.Configuration;
 using System.Net.Http;
-using Newtonsoft.Json;
-using System.Net;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace ClientTest.Models
 {
     /// <summary>
     /// 接続を抽象化する。
     /// </summary>
-    public class Session : NotificationObject
+    public class Session
     {
         /// <summary>
         /// Web Apiのエンドポイントに渡すアクセストークン
         /// ログイン操作をすると貰える。
         /// </summary>
         public String AccessToken { get; private set; }
+
+        /// <summary>
+        /// 接続するサーバーのパス
+        /// </summary>
+        private String _serverPath;
 
         /// <summary>
         /// ログインしているか、否か。
@@ -32,6 +32,15 @@ namespace ClientTest.Models
             {
                 return !String.IsNullOrEmpty(AccessToken) ? true : false;
             }
+        }
+
+        public Session()
+        {
+#if DEBUG
+            _serverPath = ConfigurationManager.AppSettings["LocalAPIServerPath"];
+#else
+            _serverPath = ConfigurationManager.AppSettings["RemoteAPIServerPath"];
+#endif //DEBUG
         }
 
         /// <summary>
@@ -51,7 +60,7 @@ namespace ClientTest.Models
 
             using (var client = new HttpClient())
             {
-                var res = await client.PostAsync(App.Current.Properties["APIServerPath"] + "Token", content);
+                var res = await client.PostAsync( _serverPath + "Token", content);
 
                 await ApiServerResponseErrorHandler.CheckResponseStatus(res);
 
