@@ -13,17 +13,9 @@ namespace ClientTest.Models
 
         public String Email { get; set; }
 
-        public UserInfo Deserialize(String json)
+        public static UserInfo Deserialize(String json)
         {
-            var deserializedObj = JsonConvert.DeserializeObject<UserInfo>(json);
-            if (deserializedObj != null)
-            {
-                this.Id = deserializedObj.Id;
-                this.UserName = deserializedObj.UserName;
-                this.Email = deserializedObj.Email;
-            }
-
-            return this;
+            return JsonConvert.DeserializeObject<UserInfo>(json);
         }
     }
 }

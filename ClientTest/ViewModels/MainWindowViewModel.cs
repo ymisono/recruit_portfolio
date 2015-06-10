@@ -201,7 +201,7 @@ namespace ClientTest.ViewModels
             {
                 //await _authorizer.Login(DisplayUserName, DisplayPassword);
                 await _apiServer.CurrentSession.Login(DisplayUserName, DisplayPassword);
-                userinfo.Deserialize(await _apiServer.Fetch("Account/UserInfo"));
+                userinfo = UserInfo.Deserialize(await _apiServer.Fetch("Account/UserInfo"));
                 
                 DisplayUserName = "";
                 DisplayPassword = "";
@@ -215,8 +215,7 @@ namespace ClientTest.ViewModels
             //メモのロード
             try
             {
-                _memo = new Memo();
-                memoText = _memo.Deserialize(
+                memoText = Memo.Deserialize(
                     await _apiServer.Fetch("Memos?ownerid="+userinfo.Id))
                     .Content;
 

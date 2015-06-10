@@ -23,18 +23,9 @@ namespace ClientTest.Models
             Id = -1; //一回も保存されてない場合、-1
         }
 
-        public Memo Deserialize(String json)
+        public static Memo Deserialize(String json)
         {
-            var deserialized = JsonConvert.DeserializeObject<Memo>(json);
-
-            if (deserialized != null)
-            {
-                this.Id = deserialized.Id;
-                this.OwnerId = deserialized.OwnerId;
-                this.Content = deserialized.Content;
-            }
-
-            return this;
+            return JsonConvert.DeserializeObject<Memo>(json);
         }
 
         public async Task Store(UserInfo user,String text)
