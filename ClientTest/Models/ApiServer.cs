@@ -33,7 +33,7 @@ namespace ClientTest.Models
         /// <summary>
         /// 汎用的な取得メソッド
         /// </summary>
-        /// <typeparam name="T">データを詰めたいDTOを指定。</typeparam>
+        /// <returns>返り値はJSONで</returns>
         public async Task<String> Fetch(String controller)
         {
             String result = null;

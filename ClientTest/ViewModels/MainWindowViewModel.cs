@@ -249,11 +249,19 @@ namespace ClientTest.ViewModels
 
         public async void Save()
         {
-            var userinfo = new UserInfo();
-            //await userinfo.Fetch();
-            await _memo.Store(userinfo,memoText);
+            try
+            {
+                //await _memo.Store(userinfo,memoText);
 
-            MessageBox.Show("保存しました。");
+                MessageBox.Show("保存しました。");
+            }
+            catch (ApplicationException e)
+            {
+                MessageBox.Show(
+                    String.Format("メモ帳を保存できませんでした。\n{0}", e.Message),
+                    "保存失敗", MessageBoxButton.OK, MessageBoxImage.Exclamation
+                );
+            }
         }
         #endregion
 
