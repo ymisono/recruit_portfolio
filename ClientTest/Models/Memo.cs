@@ -26,10 +26,5 @@ namespace ClientTest.Models
         {
             Id = -1; //一回も保存されてない場合、-1
         }
-
-        public static Memo Deserialize(String json)
-        {
-            return JsonConvert.DeserializeObject<Memo>(json);
-        }
     }
 }

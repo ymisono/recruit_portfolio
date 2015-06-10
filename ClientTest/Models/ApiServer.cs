@@ -35,12 +35,12 @@ namespace ClientTest.Models
         #endregion
 
         /// <summary>
-        /// 汎用的な取得メソッド
+        /// 汎用的な取得メソッド。
         /// </summary>
         /// <returns>返り値はJSONで</returns>
-        public async Task<String> Read(String restResource)
+        public async Task<T> ReadAsync<T>(String restResource)
         {
-            String result = null;
+            T result = default(T);
 
             //ログインしているか確認
             if (!CurrentSession.IsLoggedIn) return result;
@@ -59,19 +59,19 @@ namespace ClientTest.Models
                 await ApiServerResponseErrorHandler.CheckResponseStatus(res);
 
                 //中身を展開
-                var content = await res.Content.ReadAsStringAsync();
+                var json = await res.Content.ReadAsStringAsync();
 
                 //中身をチェック
-                if (!String.IsNullOrEmpty(content) && content != "null")
+                if (!String.IsNullOrEmpty(json) && json != "null")
                 {
-                    result = content;
+                    result = JsonConvert.DeserializeObject<T>(json);
                 }
 
                 return result;
             }
         }
 
-        public async Task Create<T>(T newObj, String restResource)
+        public async Task CreateAsync<T>(T newObj, String restResource)
         {
             using (var client = new HttpClient())
             {
@@ -90,7 +90,7 @@ namespace ClientTest.Models
             }
         }
 
-        public async Task Update<T>(T newObj, String restResource)
+        public async Task UpdateAsync<T>(T newObj, String restResource)
         {
             using (var client = new HttpClient())
             {
@@ -109,7 +109,7 @@ namespace ClientTest.Models
             }
         }
 
-        public async Task Register(String userName, String password, String email = "")
+        public async Task RegisterAsync(String userName, String password, String email = "")
         {
             var sendObj = new { UserName = userName, Email = email, Password = password };
 

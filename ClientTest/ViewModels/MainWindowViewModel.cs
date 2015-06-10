@@ -155,13 +155,13 @@ namespace ClientTest.ViewModels
             if ( String.IsNullOrWhiteSpace(DisplayUserName)
                  || String.IsNullOrWhiteSpace(DisplayPassword) )
             {
-                MessageBox.Show("空欄があります。");
+                MessageBox.Show("空欄があります。","未入力", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
 
             try
             {
-                await _apiServer.Register(DisplayUserName,DisplayPassword);
+                await _apiServer.RegisterAsync(DisplayUserName,DisplayPassword);
                 MessageBox.Show(String.Format("登録しました！\nようこそ{0}さん", DisplayUserName));
 
                 //成功したらログインも
@@ -198,19 +198,16 @@ namespace ClientTest.ViewModels
 
         public async void Login()
         {
-            //ユーザー情報は毎回最新の物を取る
-            var userinfo = new UserInfo();
             //ログイン
             try
             {
-                await _apiServer.CurrentSession.Login(DisplayUserName, DisplayPassword);
-                userinfo = UserInfo.Deserialize(await _apiServer.Read("Account/UserInfo"));
+                await _apiServer.CurrentSession.LoginAsync(DisplayUserName, DisplayPassword);
                 
                 DisplayUserName = "";
                 DisplayPassword = "";
 
-                if (!String.IsNullOrEmpty(userinfo.UserName))
-                    MyName = String.Format("ログイン中：{0}", userinfo.UserName);
+                if (!String.IsNullOrEmpty(_apiServer.CurrentSession.UserInfo.UserName))
+                    MyName = String.Format("ログイン中：{0}", _apiServer.CurrentSession.UserInfo.UserName);
             }
             catch(ApplicationException ex)
             {
@@ -222,11 +219,16 @@ namespace ClientTest.ViewModels
             //メモのロード
             try
             {
-                var json = await _apiServer.Read("Memos?ownerid=" + userinfo.Id);
+                var json = await _apiServer.ReadAsync<Memo>("Memos?ownerid=" + _apiServer.CurrentSession.UserInfo.Id);
                 if (json!=null)
                 {
-                    _memo = Memo.Deserialize(json);
-                    memoText = _memo.Content;
+                     memoText = json.Content;
+                     _memo = json;
+                }
+                else //何も入ってない場合
+                {
+                    memoText = "";
+                    _memo.Id = -1;
                 }
             }
 
@@ -260,14 +262,16 @@ namespace ClientTest.ViewModels
             try
             {
                 _memo.Content = memoText;
+                _memo.OwnerId = _apiServer.CurrentSession.UserInfo.Id;
+
                 //まだ作られてない場合、作製
                 if (_memo.IsFirstTime)
                 {
-                    await _apiServer.Create<Memo>(_memo, "Memos");
+                    await _apiServer.CreateAsync<Memo>(_memo, "Memos");
                 }
                 else
                 {
-                    await _apiServer.Update<Memo>(_memo, String.Format("Memos/{0}", _memo.Id));
+                    await _apiServer.UpdateAsync<Memo>(_memo, String.Format("Memos/{0}", _memo.Id));
                 }
 
                 MessageBox.Show("保存しました。");

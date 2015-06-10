@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace ClientTest.Models
@@ -17,6 +18,11 @@ namespace ClientTest.Models
         /// ログイン操作をすると貰える。
         /// </summary>
         public String AccessToken { get; private set; }
+
+        /// <summary>
+        /// ユーザーの情報。外部からは読み取り専用。
+        /// </summary>
+        public UserInfo UserInfo { get; private set; }
 
         /// <summary>
         /// 接続するサーバーのパス
@@ -50,7 +56,7 @@ namespace ClientTest.Models
         /// </summary>
         /// <param name="username">ユーザー名</param>
         /// <param name="password">パスワード</param>
-        public async Task Login(String username, String password)
+        public async Task LoginAsync(String username, String password)
         {
             var content = new FormUrlEncodedContent(new Dictionary<string, string> 
                 { 
@@ -60,6 +66,7 @@ namespace ClientTest.Models
                 }
             );
 
+            //トークンの取得
             using (var client = new HttpClient())
             {
                 var res = await client.PostAsync( _serverPath + "Token", content);
@@ -68,6 +75,30 @@ namespace ClientTest.Models
 
                 dynamic deserializedContent = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync());
                 AccessToken = deserializedContent.access_token;
+
+                //エラーチェック
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
+            }
+
+            //ユーザー情報の読み取り
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", AccessToken);
+
+                var res = await client.GetAsync( _serverPath+"api/Account/UserInfo");
+
+                //エラーチェック
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
+
+                //中身を展開
+                var json = await res.Content.ReadAsStringAsync();
+
+                //中身をチェック
+                if (!String.IsNullOrEmpty(json) && json != "null")
+                {
+                    UserInfo = JsonConvert.DeserializeObject<UserInfo>(json);
+                }
             }
         }
     }
