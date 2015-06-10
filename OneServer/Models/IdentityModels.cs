@@ -31,18 +31,6 @@ namespace OneServer.Models
             return new ApplicationDbContext();
         }
 
-        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-
-        //    modelBuilder.Entity<ApplicationUser>().ToTable("AspNetUsers", "dbo");
-        //    modelBuilder.Entity<IdentityRole>().ToTable("AspNetRoles", "dbo");
-        //    modelBuilder.Entity<IdentityUserRole>().ToTable("AspNetUserRoles", "dbo");
-        //    modelBuilder.Entity<IdentityUserClaim>().ToTable("AspNetUserClaims", "dbo");
-        //    modelBuilder.Entity<IdentityUserLogin>().ToTable("AspNetUserLogins", "dbo");
-
-        //}
-
         public DbSet<Memo> Memos { get; set; }
 
     }
