@@ -53,7 +53,7 @@ namespace ClientTest.ViewModels
          */
 
         private Authorizer _authorizer;
-        private Session _apiServer = new Session();
+        private ApiServer _apiServer = new ApiServer();
         private Memo _memo;
         
 
@@ -200,23 +200,25 @@ namespace ClientTest.ViewModels
             try
             {
                 //await _authorizer.Login(DisplayUserName, DisplayPassword);
-                await _apiServer.Login(DisplayUserName, DisplayPassword);
-                await userinfo.Fetch();
+                await _apiServer.CurrentSession.Login(DisplayUserName, DisplayPassword);
+                userinfo.Deserialize(await _apiServer.Fetch("Account/UserInfo"));
                 
                 DisplayUserName = "";
                 DisplayPassword = "";
             }
-            catch(HttpRequestException)
+            catch(ApplicationException ex)
             {
-                MessageBox.Show("ログインできません。", "ログイン", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show(String.Format("ログインできません。\n{0}",ex.Message),
+                    "ログイン", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
             //メモのロード
             try
             {
                 _memo = new Memo();
-                await _memo.Fetch(userinfo);
-                memoText = _memo.Content;
+                memoText = _memo.Deserialize(
+                    await _apiServer.Fetch("Memos?ownerid="+userinfo.Id))
+                    .Content;
 
                 if (!String.IsNullOrEmpty(userinfo.UserName))
                     MyName = String.Format("ログイン中：{0}", userinfo.UserName);
@@ -249,7 +251,7 @@ namespace ClientTest.ViewModels
         public async void Save()
         {
             var userinfo = new UserInfo();
-            await userinfo.Fetch();
+            //await userinfo.Fetch();
             await _memo.Store(userinfo,memoText);
 
             MessageBox.Show("保存しました。");

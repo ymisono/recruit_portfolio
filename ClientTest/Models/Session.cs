@@ -17,7 +17,6 @@ namespace ClientTest.Models
     /// </summary>
     public class Session : NotificationObject
     {
-        private String _accessToken;
         /// <summary>
         /// Web Apiのエンドポイントに渡すアクセストークン
         /// ログイン操作をすると貰える。
@@ -31,7 +30,7 @@ namespace ClientTest.Models
         {
             get
             {
-                return !String.IsNullOrEmpty(_accessToken) ? true : false;
+                return !String.IsNullOrEmpty(AccessToken) ? true : false;
             }
         }
 
@@ -83,6 +82,9 @@ namespace ClientTest.Models
                         throw new ApplicationException(String.Format("サーバー内で不正な処理が発生しました(500)。\n理由：{0}",content));
                     case HttpStatusCode.ServiceUnavailable:
                         throw new ApplicationException(String.Format("サーバーが一時的に利用できません(503)。\n理由：{0}",content));
+
+                    default:
+                        throw new ApplicationException("想定してないエラー");
                 }
             }
         }

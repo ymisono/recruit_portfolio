@@ -1,52 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Livet;
-using System.Runtime.Serialization;
-using System.Net.Http;
-using System.Runtime.Serialization.Json;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace ClientTest.Models
 {
-    [DataContract]
     public class UserInfo : NotificationObject
     {
-        [DataMember(Name="Id")]
         public String Id { get; set; }
 
-        [DataMember(Name="UserName")]
         public String UserName { get; set; }
 
-        [DataMember(Name = "Email")]
         public String Email { get; set; }
 
-        public async Task Fetch()
+        public UserInfo Deserialize(String json)
         {
-            using (var client = new HttpClient())
+            var deserializedObj = JsonConvert.DeserializeObject<UserInfo>(json);
+            if (deserializedObj != null)
             {
-                client.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", App.Current.Properties["Token"] as String);
-
-                var res = await client.GetAsync( App.Current.Properties["APIServerPath"] + "api/Account/UserInfo");
-
-                var content = await res.Content.ReadAsStringAsync();
-
-                var tempThis = JsonConvert.DeserializeObject<UserInfo>(content);
-                if (tempThis != null)
-                {
-                    this.Id = tempThis.Id;
-                    this.UserName = tempThis.UserName;
-                    this.Email = tempThis.Email;
-                }
-
-                //var ser = new DataContractJsonSerializer(typeof(UserInfo));
-                //var newUserInfo = (UserInfo)ser.ReadObject(await res.Content.ReadAsStreamAsync());
-                //this.UserName = newUserInfo.UserName;
+                this.Id = deserializedObj.Id;
+                this.UserName = deserializedObj.UserName;
+                this.Email = deserializedObj.Email;
             }
+
+            return this;
         }
     }
 }

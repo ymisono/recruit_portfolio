@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -22,33 +23,18 @@ namespace ClientTest.Models
             Id = -1; //一回も保存されてない場合、-1
         }
 
-        public async Task Fetch(UserInfo user)
+        public Memo Deserialize(String json)
         {
-            var temp = new Memo();
+            var deserialized = JsonConvert.DeserializeObject<Memo>(json);
 
-            using (var client = new HttpClient())
+            if (deserialized != null)
             {
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", App.Current.Properties["Token"] as String);
-
-                var res = await client.GetAsync( String.Format(
-                        "{0}api/Memos?ownerid={1}",
-                        App.Current.Properties["APIServerPath"],
-                        user.Id
-                    ));
-
-                var content = await res.Content.ReadAsStringAsync();
-
-                //メモがなかったらそのまま終わる
-                if (!String.IsNullOrEmpty(content) && content != "null")
-                {
-                    var tempMe = Newtonsoft.Json.JsonConvert.DeserializeObject<Memo>(content);
-
-                    this.Id = tempMe.Id;
-                    this.OwnerId = tempMe.OwnerId;
-                    this.Content = tempMe.Content;
-                }
+                this.Id = deserialized.Id;
+                this.OwnerId = deserialized.OwnerId;
+                this.Content = deserialized.Content;
             }
+
+            return this;
         }
 
         public async Task Store(UserInfo user,String text)

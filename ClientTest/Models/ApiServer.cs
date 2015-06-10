@@ -16,18 +16,17 @@ namespace ClientTest.Models
     /// </summary>
     public class ApiServer : NotificationObject
     {
-        private Session _session;
         /// <summary>
         /// サーバーのセッション
         /// </summary>
-        public Session MySession { get; private set; }
+        public Session CurrentSession { get; private set; }
 
         //サーバーAPIのパス。APIを呼び出す基点になる。
         private String _apiPath;
 
-        ApiServer()
+        public ApiServer()
         {
-            MySession = new Session();
+            CurrentSession = new Session();
             _apiPath = String.Format("{0}api/", App.Current.Properties["APIServerPath"]);
         }
 
@@ -35,43 +34,38 @@ namespace ClientTest.Models
         /// 汎用的な取得メソッド
         /// </summary>
         /// <typeparam name="T">データを詰めたいDTOを指定。</typeparam>
-        //public async Task<T> Fetch<T>(String controller)
-        //{
-        //    //ログインしているか確認
-        //    if (!MySession.IsLoggedIn) return default(T);
+        public async Task<String> Fetch(String controller)
+        {
+            String result = null;
 
-        //    //接続開始
-        //    using (var client = new HttpClient())
-        //    {
-        //        //認証の為に、トークンをヘッダーにセット。
-        //        client.DefaultRequestHeaders.Authorization =
-        //            new AuthenticationHeaderValue("Bearer", MySession.AccessToken);
+            //ログインしているか確認
+            if (!CurrentSession.IsLoggedIn) return result;
 
-        //        var res = await client.GetAsync(String.Format(
-        //                "{0}{1}", _apiPath, controller)
-        //                );
+            //接続開始
+            using (var client = new HttpClient())
+            {
+                //認証の為に、トークンをヘッダーにセット。
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", CurrentSession.AccessToken);
 
-        //        MySession.CheckResponseStatus(res);
+                var res = await client.GetAsync(String.Format(
+                        "{0}{1}", _apiPath, controller)
+                        );
 
-        //        //中身を展開
-        //        var content = await res.Content.ReadAsStringAsync();
+                await CurrentSession.CheckResponseStatus(res);
 
-        //        //中身をチェック
-        //        if (!String.IsNullOrEmpty(content) && content != "null")
-        //        {
-        //            //辞書型の列挙に詰める
-        //            var dics = JsonConvert.DeserializeObject<Dictionary<string, T>>(content);
+                //中身を展開
+                var content = await res.Content.ReadAsStringAsync();
 
-    //    foreach (KeyValuePair<string, string> kvp in dict) {
-    //  Console.WriteLine("{0} : {1}", kvp.Key, kvp.Value);
-    //}
-        //            foreach(var dic in dics)
-        //            {
-                            
-        //            }
-        //         }
-        //    }
-        //}
+                //中身をチェック
+                if (!String.IsNullOrEmpty(content) && content != "null")
+                {
+                    result = content;
+                }
+
+                return result;
+            }
+        }
         
     }
 }
