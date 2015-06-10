@@ -76,6 +76,9 @@ namespace ClientTest.Models
                 //中身をロード
                 var content = await res.Content.ReadAsStringAsync();
 
+                //エラーを詰める
+                ErrorObject.ErrorHandle(content);
+
                 switch(res.StatusCode)
                 {
                     case HttpStatusCode.BadRequest:

@@ -105,39 +105,68 @@ namespace ClientTest.Models
                 await CurrentSession.CheckResponseStatus(res);
             }
         }
+
+        public async Task Register(String userName, String password, String email = "")
+        {
+            var sendObj = new { UserName = userName, Email = email, Password = password };
+
+            using (var client = new HttpClient())
+            {
+                var sendContent = JsonConvert.SerializeObject(sendObj);
+
+                var res = await client.PostAsync(
+                    new Uri( _apiPath + "Account/Register"),
+                    new StringContent(sendContent, Encoding.UTF8, "application/json"));
+
+                await CurrentSession.CheckResponseStatus(res);
+            }
+        }
     }
 
     public class ErrorObject
     {
         public String Message;
-        [JsonProperty(PropertyName = "ModelState")]
-        public Dictionary<string, string[]> modelstate;
+        public Dictionary<string, string[]> ModelState;
 
-        //public static void ErrorHandle()
-        //{
-        //    // Sometimes, there may be Model Errors:
-        //    if (deserializedErrorObject.ModelState != null)
-        //    {
-        //        var errors =
-        //            deserializedErrorObject.ModelState
-        //                                    .Select(kvp => string.Join(". ", kvp.Value));
-        //        for (int i = 0; i < errors.Count(); i++)
-        //        {
-        //            // Wrap the errors up into the base Exception.Data Dictionary:
-        //            ex.Data.Add(i, errors.ElementAt(i));
-        //        }
-        //    }
-        //    // Othertimes, there may not be Model Errors:
-        //    else
-        //    {
-        //        var error =
-        //            JsonConvert.DeserializeObject<Dictionary<string, string>>(httpErrorObject);
-        //        foreach (var kvp in error)
-        //        {
-        //            // Wrap the errors up into the base Exception.Data Dictionary:
-        //            ex.Data.Add(kvp.Key, kvp.Value);
-        //        }
-        //    }
-        //}
+        public static void ErrorHandle(String content)
+        {
+            // Create an anonymous object to use as the template for deserialization:
+            var anonymousErrorObject = new { Message = "", ExceptionMessage = "" };
+
+            //var errObj = JsonConvert.DeserializeAnonymousType(content,anonymousErrorObject);
+            var errObj = JsonConvert.DeserializeObject<ErrorObject>(content);
+
+            //エラーの種類は3種類
+            //ModelStateDictionary型(MessageとModelState): BadRequestなど
+            //"error"と"error_description"の組：ログインの時のみ
+            //"Message","ExceptionMessage",etcの組：例外を投げたとき（InternalServerErrorのときなど）
+
+            var ex = new Exception();
+
+            //// Sometimes, there may be Model Errors:
+            //if (errObj.ModelState != null)
+            //{
+            //    var errors =
+            //        errObj.ModelState.Select(kvp => string.Join(". ", kvp.Value));
+            //    for (int i = 0; i < errors.Count(); i++)
+            //    {
+            //        // Wrap the errors up into the base Exception.Data Dictionary:
+            //        ex.Data.Add(i, errors.ElementAt(i));
+            //    }
+            //}
+            //// Othertimes, there may not be Model Errors:
+            //else
+            //{
+            //    var error =
+            //        JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
+            //    foreach (var kvp in error)
+            //    {
+            //        // Wrap the errors up into the base Exception.Data Dictionary:
+            //        ex.Data.Add(kvp.Key, kvp.Value);
+            //    }
+            //}
+
+            throw ex;
+        }
     }
 }

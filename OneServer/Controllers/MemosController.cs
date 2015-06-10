@@ -38,7 +38,7 @@ namespace OneServer.Controllers
             }
             catch(InvalidOperationException) //1つ以上のメモがあったとき
             {
-                return ApiControllerExtension.InternalServerError(this,"Memosの状態に矛盾があります。");
+                return InternalServerError(new InvalidOperationException("Memosの状態に矛盾があります。"));
             }
 
             return Ok(memo);

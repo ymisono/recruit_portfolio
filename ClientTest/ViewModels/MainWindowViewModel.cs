@@ -53,9 +53,8 @@ namespace ClientTest.ViewModels
          * 自動的にUIDispatcher上での通知に変換されます。変更通知に際してUIDispatcherを操作する必要はありません。
          */
 
-        private Authorizer _authorizer;
         private ApiServer _apiServer = new ApiServer();
-        private Memo _memo;
+        private Memo _memo = new Memo();
         
 
         #region DisplayUserName変更通知プロパティ
@@ -162,7 +161,9 @@ namespace ClientTest.ViewModels
 
             try
             {
-                await _authorizer.Register(DisplayUserName,DisplayPassword);
+                await _apiServer.Register(DisplayUserName,DisplayPassword);
+                MessageBox.Show(String.Format("登録しました！\nようこそ{0}さん", DisplayUserName));
+
                 //成功したらログインも
                 Login();
             }
@@ -286,7 +287,7 @@ namespace ClientTest.ViewModels
 
         public void Initialize()
         {
-            _authorizer = new Authorizer();
+
         }
     }
 }
