@@ -38,7 +38,7 @@ namespace OneServer.Controllers
             }
             catch(InvalidOperationException) //1つ以上のメモがあったとき
             {
-                return InternalServerError(new InvalidOperationException("Memosの状態に矛盾があります。"));
+                return InternalServerError(new InvalidOperationException("不正なDB内容;同じOwnerIDを持つMemoが複数あります。"));
             }
 
             return Ok(memo);

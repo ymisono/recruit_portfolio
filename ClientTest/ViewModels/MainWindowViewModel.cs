@@ -167,9 +167,10 @@ namespace ClientTest.ViewModels
                 //成功したらログインも
                 Login();
             }
-            catch(ApplicationException e)
+            catch(ApplicationException ex)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(String.Format("登録に失敗しました。\n{0}", ex.Message),
+                   "登録失敗", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
         #endregion

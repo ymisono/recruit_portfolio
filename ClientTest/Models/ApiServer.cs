@@ -53,7 +53,7 @@ namespace ClientTest.Models
                         "{0}{1}", _apiPath, restResource)
                         );
 
-                await CurrentSession.CheckResponseStatus(res);
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
 
                 //中身を展開
                 var content = await res.Content.ReadAsStringAsync();
@@ -83,7 +83,7 @@ namespace ClientTest.Models
                         new StringContent(sendContent, Encoding.UTF8, "application/json")
                     );
 
-                await CurrentSession.CheckResponseStatus(res);
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
             }
         }
 
@@ -102,7 +102,7 @@ namespace ClientTest.Models
                         new StringContent(sendContent, Encoding.UTF8, "application/json")
                     );
 
-                await CurrentSession.CheckResponseStatus(res);
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
             }
         }
 
@@ -118,55 +118,8 @@ namespace ClientTest.Models
                     new Uri( _apiPath + "Account/Register"),
                     new StringContent(sendContent, Encoding.UTF8, "application/json"));
 
-                await CurrentSession.CheckResponseStatus(res);
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
             }
-        }
-    }
-
-    public class ErrorObject
-    {
-        public String Message;
-        public Dictionary<string, string[]> ModelState;
-
-        public static void ErrorHandle(String content)
-        {
-            // Create an anonymous object to use as the template for deserialization:
-            var anonymousErrorObject = new { Message = "", ExceptionMessage = "" };
-
-            //var errObj = JsonConvert.DeserializeAnonymousType(content,anonymousErrorObject);
-            var errObj = JsonConvert.DeserializeObject<ErrorObject>(content);
-
-            //エラーの種類は3種類
-            //ModelStateDictionary型(MessageとModelState): BadRequestなど
-            //"error"と"error_description"の組：ログインの時のみ
-            //"Message","ExceptionMessage",etcの組：例外を投げたとき（InternalServerErrorのときなど）
-
-            var ex = new Exception();
-
-            //// Sometimes, there may be Model Errors:
-            //if (errObj.ModelState != null)
-            //{
-            //    var errors =
-            //        errObj.ModelState.Select(kvp => string.Join(". ", kvp.Value));
-            //    for (int i = 0; i < errors.Count(); i++)
-            //    {
-            //        // Wrap the errors up into the base Exception.Data Dictionary:
-            //        ex.Data.Add(i, errors.ElementAt(i));
-            //    }
-            //}
-            //// Othertimes, there may not be Model Errors:
-            //else
-            //{
-            //    var error =
-            //        JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
-            //    foreach (var kvp in error)
-            //    {
-            //        // Wrap the errors up into the base Exception.Data Dictionary:
-            //        ex.Data.Add(kvp.Key, kvp.Value);
-            //    }
-            //}
-
-            throw ex;
         }
     }
 }
