@@ -201,7 +201,6 @@ namespace ClientTest.ViewModels
             //ログイン
             try
             {
-                //await _authorizer.Login(DisplayUserName, DisplayPassword);
                 await _apiServer.CurrentSession.Login(DisplayUserName, DisplayPassword);
                 userinfo = UserInfo.Deserialize(await _apiServer.Read("Account/UserInfo"));
                 
