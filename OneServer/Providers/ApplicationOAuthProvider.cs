@@ -35,7 +35,16 @@ namespace OneServer.Providers
 
             if (user == null)
             {
+                context.Rejected();
                 context.SetError("invalid_grant", "ユーザー名またはパスワードが正しくありません。");
+                return;
+            }
+
+            //IsDeletedフラグをチェック
+            if (user.IsDeleted)
+            {
+                context.Rejected();
+                context.SetError("invalid_grant", "このユーザーは削除されています。");
                 return;
             }
 
