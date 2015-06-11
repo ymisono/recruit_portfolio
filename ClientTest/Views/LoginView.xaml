@@ -38,8 +38,8 @@
             <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="True" />
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
-    
-    <Grid Margin="50 30">
+
+    <Grid Margin="50 30" FocusManager.FocusedElement="{Binding ElementName=PasswordInputBox}">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
@@ -53,7 +53,7 @@
                         <Setter Property="ToolTip"
                                 Value="{Binding RelativeSource={x:Static RelativeSource.Self},
                             Path=(Validation.Errors)[0].ErrorContent}" />
-                    </Trigger>
+                    </Trigger>                  
                 </Style.Triggers>
                 <!--ヴァリデーションに失敗した時の、TextBoxの見た目変更-->
                 <Setter Property="Validation.ErrorTemplate">
@@ -76,13 +76,13 @@
         </Grid.Resources>
 
         <!--ユーザー名-->
-        <Grid Grid.Row="0" VerticalAlignment="Center">
+        <Grid Grid.Row="0" VerticalAlignment="Center" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.4*" />
                 <ColumnDefinition Width="0.6* " />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="ユーザー名" VerticalAlignment="Center" />
-            <TextBox Grid.Column="1" >
+            <TextBox Grid.Column="1"  >
                 <TextBox.Text>
                     <Binding Path="UserName" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
                         <Binding.ValidationRules>
@@ -98,7 +98,7 @@
                 <ColumnDefinition Width="0.6* " />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="パスワード" VerticalAlignment="Center"/>
-            <PasswordBox Grid.Column="1" PasswordChar="*" >
+            <PasswordBox Name="PasswordInputBox" Grid.Column="1" PasswordChar="*" >
                 <i:Interaction.Behaviors>
                     <l:PasswordBoxBindingSupportBehavior Password="{Binding Password}" />
                 </i:Interaction.Behaviors>
