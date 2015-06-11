@@ -59,8 +59,6 @@ namespace ClientTest.ViewModels
         private ApiServer _apiServer = new ApiServer();
         private Memo _memo = new Memo();
 
-        private LoginModel _loginModel;
-        
 
         #region DisplayUserName変更通知プロパティ
         private string _DisplayUserName;
@@ -349,7 +347,6 @@ namespace ClientTest.ViewModels
                 DisplayUserName = "";
             }
 
-            _loginModel = new LoginModel();
             using (var vm = new LoginViewModel(_apiServer.CurrentSession))
             {
                 Messenger.Raise(new TransitionMessage(vm, "Transition"));
