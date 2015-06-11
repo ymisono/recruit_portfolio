@@ -1,8 +1,8 @@
-﻿using System.Net.Http;
-using System.Web.Http;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Microsoft.AspNet.Identity;
+using System.Net.Http;
+using System.Web.Http;
 
 namespace OneServer.Controllers
 {

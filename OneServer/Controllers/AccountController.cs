@@ -9,7 +9,6 @@ using OneServer.Providers;
 using OneServer.Results;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
