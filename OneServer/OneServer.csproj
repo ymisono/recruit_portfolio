@@ -225,6 +225,10 @@
     <Compile Include="Migrations\201506090656581_relocal.Designer.cs">
       <DependentUpon>201506090656581_relocal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506111156192_IsDeletedFlag.cs" />
+    <Compile Include="Migrations\201506111156192_IsDeletedFlag.Designer.cs">
+      <DependentUpon>201506111156192_IsDeletedFlag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -328,6 +332,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506090656581_relocal.resx">
       <DependentUpon>201506090656581_relocal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506111156192_IsDeletedFlag.resx">
+      <DependentUpon>201506111156192_IsDeletedFlag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
