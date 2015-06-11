@@ -20,7 +20,7 @@ namespace UnitTester
             Assert.IsFalse(internalServer.CurrentSession.IsLoggedIn);
 
             //misonoでログイン
-            privateVM.SetFieldOrProperty("DisplayUserName", "misono");
+            privateVM.SetFieldOrProperty("DisplayUsername", "misono");
             privateVM.SetFieldOrProperty("DisplayPassword", "password");
             privateVM.Invoke("Login");
             //Taskがないので、待てない。(タイマーを使った方がいいか？)
