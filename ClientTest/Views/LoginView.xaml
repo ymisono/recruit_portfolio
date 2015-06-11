@@ -8,9 +8,11 @@
         xmlns:vm="clr-namespace:ClientTest.ViewModels"
         Title="ログイン画面" Height="320" Width="400">
     
+    <!--
     <Window.DataContext>
         <vm:LoginViewModel/>
     </Window.DataContext>
+    -->
     
      <i:Interaction.Triggers>
      

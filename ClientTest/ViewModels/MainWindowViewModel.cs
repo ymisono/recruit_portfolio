@@ -349,13 +349,11 @@ namespace ClientTest.ViewModels
                 DisplayUserName = "";
             }
 
-            //var loginwin = new LoginView();
-            //loginwin.ShowDialog();
             _loginModel = new LoginModel();
-
-            Messenger.Raise(new TransitionMessage(
-                new LoginViewModel(_loginModel), "Transition"
-                ));
+            using (var vm = new LoginViewModel(_apiServer.CurrentSession))
+            {
+                Messenger.Raise(new TransitionMessage(vm, "Transition"));
+            }
         }
     }
 }

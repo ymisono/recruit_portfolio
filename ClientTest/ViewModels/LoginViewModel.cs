@@ -12,14 +12,14 @@ using Livet.EventListeners;
 using Livet.Messaging.Windows;
 
 using ClientTest.Models;
+using System.Windows;
 
 namespace ClientTest.ViewModels
 {
     public class LoginViewModel : ViewModel
     {
         #region フィールド
-        private LoginModel _loginModel;
-
+        private Session _session;
 
         #endregion
 
@@ -51,17 +51,25 @@ namespace ClientTest.ViewModels
             return true;
         }
 
-        public void Login()
+        public async void Login()
         {
+            //ログイン処理
+            try
+            {
+                await _session.LoginAsync(Username, Password);
+            }
+            catch(ApplicationException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             Messenger.Raise(new WindowActionMessage(WindowAction.Close,"Close"));
         }
         #endregion
 
-        public LoginViewModel() { }
-
-        public LoginViewModel(LoginModel loginModel)
+        public LoginViewModel(Session session)
         {
-            _loginModel = loginModel;
+            _session = session;
         }
 
         public void Initialize()
