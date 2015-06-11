@@ -16,7 +16,7 @@ using System.Windows;
 
 namespace ClientTest.ViewModels
 {
-    public class LoginViewModel : ViewModel
+    public class LoginViewModel : ViewModel, IDataErrorInfo
     {
         #region フィールド
         private Session _session;
@@ -24,9 +24,27 @@ namespace ClientTest.ViewModels
         #endregion
 
         #region プロパティ
-        public String Username { get; set; }
+        private String _username;
+        public String UserName
+        {
+            get { return _username; }
+            set
+            {
+                _username = value;
+                RaisePropertyChanged("UserName");
+            }
+        }
 
-        public String Password { get; set; }
+        private String _password;
+        public String Password
+        {
+            get { return _password; }
+            set
+            {
+                _password = value;
+                RaisePropertyChanged("Password");
+            }
+        }
 
         #endregion
 
@@ -56,7 +74,7 @@ namespace ClientTest.ViewModels
             //ログイン処理
             try
             {
-                await _session.LoginAsync(Username, Password);
+                await _session.LoginAsync(UserName, Password);
             }
             catch(ApplicationException ex)
             {
@@ -76,5 +94,45 @@ namespace ClientTest.ViewModels
         {
         }
 
+#region IDataErrorInfo
+        private Dictionary<String, String> _errors = new Dictionary<string, string>
+        {
+            {"UserName", null}, {"Password", null}
+        };
+
+        public string Error
+        {
+            get
+            {
+                var list = new List<String>();
+
+                if (!String.IsNullOrEmpty(this["UserName"]))
+                {
+                    list.Add("ユーザー名");
+                }
+                if (!String.IsNullOrEmpty(this["Password"]))
+                {
+                    list.Add("パスワード");
+                }
+
+                return String.Join("・", list) + "が未入力です。";
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (_errors.ContainsKey(columnName))
+                {
+                    return _errors[columnName];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+#endregion
     }
 }

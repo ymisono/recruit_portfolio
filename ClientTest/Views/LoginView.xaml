@@ -6,6 +6,7 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:v="clr-namespace:ClientTest.Views"
         xmlns:vm="clr-namespace:ClientTest.ViewModels"
+        xmlns:validator="clr-namespace:ClientTest.Validator"
         Title="ログイン画面" Height="320" Width="400">
     
     <!--
@@ -44,15 +45,52 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="4*" />
         </Grid.RowDefinitions>
+        <Grid.Resources>
+            <!--ツールティップにヴァリデーションの結果を表示-->
+            <Style TargetType="{x:Type TextBox}" >
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="True">
+                        <Setter Property="ToolTip"
+                                Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                            Path=(Validation.Errors)[0].ErrorContent}" />
+                    </Trigger>
+                </Style.Triggers>
+                <!--ヴァリデーションに失敗した時の、TextBoxの見た目変更-->
+                <Setter Property="Validation.ErrorTemplate">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <DockPanel DockPanel.Dock="Right">
+                                <AdornedElementPlaceholder>
+                                    <Border BorderBrush="Red" BorderThickness="2" />
+                                </AdornedElementPlaceholder>
+                                <TextBlock Margin="3 3 3 0" Text="*" Foreground="Red"
+                                           ToolTip="{Binding Path=AdornedElement.ToolTip,
+                                            RelativeSource={RelativeSource Mode=FindAncestor,
+                                            AncestorType={x:Type Adorner}}}"
+                                           />
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
 
         <!--ユーザー名-->
-        <Grid Grid.Row="0"  VerticalAlignment="Center">
+        <Grid Grid.Row="0" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.4*" />
                 <ColumnDefinition Width="0.6* " />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="ユーザー名" VerticalAlignment="Center" />
-            <TextBox Grid.Column="1" Text="{Binding Username}" />
+            <TextBox Grid.Column="1" >
+                <TextBox.Text>
+                    <Binding Path="UserName" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
+                        <Binding.ValidationRules>
+                            <validator:UserNameValidator />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </Grid>
         <Grid Grid.Row="1"  VerticalAlignment="Center">
             <Grid.ColumnDefinitions>

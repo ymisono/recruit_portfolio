@@ -124,12 +124,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\ApiServer.cs" />
-    <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Utility\ApiServerResponseErrorHandler.cs" />
     <Compile Include="Utility\LocalSettings.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Memo.cs" />
     <Compile Include="Models\UserInfo.cs" />
+    <Compile Include="Validator\UserNameValidator.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\LoginView.xaml.cs">
