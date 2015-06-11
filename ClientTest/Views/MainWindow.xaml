@@ -48,14 +48,14 @@
         <Grid Grid.Row="0" HorizontalAlignment="Stretch" Background="Black" >
             <Label HorizontalAlignment="Right" VerticalAlignment="Center" Content="{Binding MyName}" Foreground="White" />
         </Grid>
-        <StackPanel Grid.Row="1" Margin="10" >
+        <StackPanel Grid.Row="1" Margin="10" FocusManager.FocusedElement="{Binding ElementName=passwordBox}" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <TextBlock Text="ユーザー名" Margin="0 0 10 0"/>
                 <TextBox Width="300" Text="{Binding DisplayUserName}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <TextBlock Text="パスワード" Margin="0 0 10 0"/>
-                <PasswordBox Width="300" PasswordChar="*" >
+                <PasswordBox Name="passwordBox" Width="300" PasswordChar="*" >
                     <i:Interaction.Behaviors>
                         <l:PasswordBoxBindingSupportBehavior Password="{Binding DisplayPassword}" />
                     </i:Interaction.Behaviors>
