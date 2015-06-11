@@ -30,6 +30,11 @@
 
         <!--WindowのCloseキャンセル処理に対応する場合は、WindowCloseCancelBehaviorの使用を検討してください-->
 
+        
+        <!--失敗表示メッセージボックス-->
+        <l:InteractionMessageTrigger MessageKey="Error" Messenger="{Binding Messenger}">
+            <l:InformationDialogInteractionMessageAction />
+        </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
     <Grid>

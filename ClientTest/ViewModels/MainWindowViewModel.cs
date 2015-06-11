@@ -1,6 +1,7 @@
 ﻿using ClientTest.Models;
 using Livet;
 using Livet.Commands;
+using Livet.Messaging;
 using System;
 using System.Net.Http;
 using System.Security;
@@ -212,10 +213,12 @@ namespace ClientTest.ViewModels
                 //前回のログイン名を覚えておく
                 LocalSettings.AddUpdateAppSettings("RememberUserName", _apiServer.CurrentSession.UserInfo.UserName);
             }
-            catch(ApplicationException ex)
+            catch(ApplicationException e)
             {
-                MessageBox.Show(String.Format("ログインできません。\n{0}",ex.Message),
-                    "ログイン", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                Messenger.Raise(new InformationMessage(
+                    String.Format("ログインできません。\n{0}",e.Message),
+                    "ログイン失敗", MessageBoxImage.Exclamation,"Error")
+                    );
                 return;
             }
 

@@ -75,9 +75,6 @@ namespace ClientTest.Models
 
                 dynamic deserializedContent = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync());
                 AccessToken = deserializedContent.access_token;
-
-                //エラーチェック
-                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
             }
 
             //ユーザー情報の読み取り
