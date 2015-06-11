@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClientTest.ViewModels;
 using ClientTest.Models;
+using System.Threading;
 
 namespace UnitTester
 {
@@ -19,14 +20,11 @@ namespace UnitTester
             Assert.IsFalse(internalServer.CurrentSession.IsLoggedIn);
 
             //misonoでログイン
-            var vm = new MainWindowViewModel();
-            vm.DisplayUserName = "misono";
-            vm.DisplayPassword = "password";
-            vm.Login();
-
             privateVM.SetFieldOrProperty("DisplayUserName", "misono");
             privateVM.SetFieldOrProperty("DisplayPassword", "password");
             privateVM.Invoke("Login");
+            //Taskがないので、待てない。(タイマーを使った方がいいか？)
+            Thread.Sleep(1000);
             internalServer = privateVM.GetFieldOrProperty("_apiServer") as ApiServer;
             Assert.IsTrue(internalServer.CurrentSession.IsLoggedIn);
         }
