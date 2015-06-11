@@ -102,6 +102,8 @@ namespace ClientTest.Models
         public async Task LogoutAsync()
         {
             //なんか意味ないらしい。
+            //何もしないAsync操作
+            await Task.Run(() => { });
 
             //using (var client = new HttpClient())
             //{
