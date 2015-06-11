@@ -64,7 +64,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <Button Width="70" Height="30" Margin="0 0 10 0" Content="新規登録" Command="{Binding RegisterCommand}" />
                 <Button Width="80" Height="35" Margin="10 0 10 0" Content="ログイン" Command="{Binding LoginCommand}" />
-                <Button Width="70" Height="30" Margin="10 0 0 0" Content="ログアウト" Visibility="Collapsed"/>
+                <Button Width="70" Height="30" Margin="10 0 0 0" Content="ログアウト" Command="{Binding LogoutCommand}"/>
             </StackPanel>
         </StackPanel>
 

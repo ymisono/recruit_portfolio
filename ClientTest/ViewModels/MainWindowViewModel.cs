@@ -267,6 +267,8 @@ namespace ClientTest.ViewModels
         {
             try
             {
+                if (_memo == null) return;
+
                 _memo.Content = memoText;
                 _memo.OwnerId = _apiServer.CurrentSession.UserInfo.Id;
 
@@ -292,6 +294,43 @@ namespace ClientTest.ViewModels
         }
         #endregion
 
+
+        #region LogoutCommand
+        private ViewModelCommand _LogoutCommand;
+
+        public ViewModelCommand LogoutCommand
+        {
+            get
+            {
+                if (_LogoutCommand == null)
+                {
+                    _LogoutCommand = new ViewModelCommand(Logout, CanLogout);
+                }
+                return _LogoutCommand;
+            }
+        }
+
+        public bool CanLogout()
+        {
+            return true;
+        }
+
+        public async void Logout()
+        {
+            try
+            {
+                await _apiServer.CurrentSession.LogoutAsync();
+
+                _memo = null;
+                memoText = "";
+                MyName = "";
+            }
+            catch(ApplicationException)
+            {
+
+            }
+        }
+        #endregion
 
        
 

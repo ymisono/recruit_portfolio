@@ -98,5 +98,25 @@ namespace ClientTest.Models
                 }
             }
         }
+
+        public async Task LogoutAsync()
+        {
+            //なんか意味ないらしい。
+
+            //using (var client = new HttpClient())
+            //{
+            //    client.DefaultRequestHeaders.Authorization =
+            //        new AuthenticationHeaderValue("Bearer", AccessToken);
+
+            //    var res = await client.PostAsync(_serverPath + "api/Account/Logout",null);
+
+            //    //エラーチェック
+            //    await ApiServerResponseErrorHandler.CheckResponseStatus(res);
+            //}
+
+            //手元の情報をリセット
+            AccessToken = null;
+            UserInfo = null;
+        }
     }
 }
