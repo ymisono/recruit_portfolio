@@ -1,4 +1,5 @@
 ﻿using ClientTest.Models;
+using ClientTest.Utility;
 using ClientTest.Views;
 using Livet;
 using Livet.Commands;
@@ -57,6 +58,8 @@ namespace ClientTest.ViewModels
 
         private ApiServer _apiServer = new ApiServer();
         private Memo _memo = new Memo();
+
+        private LoginModel _loginModel;
         
 
         #region DisplayUserName変更通知プロパティ
@@ -346,8 +349,13 @@ namespace ClientTest.ViewModels
                 DisplayUserName = "";
             }
 
-            var loginwin = new LoginView();
-            loginwin.ShowDialog();
+            //var loginwin = new LoginView();
+            //loginwin.ShowDialog();
+            _loginModel = new LoginModel();
+
+            Messenger.Raise(new TransitionMessage(
+                new LoginViewModel(_loginModel), "Transition"
+                ));
         }
     }
 }

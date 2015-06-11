@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClientTest.Models
+namespace ClientTest.Utility
 {
     /// <summary>
     /// ローカルに保存する設定を管理するクラス。

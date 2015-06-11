@@ -31,9 +31,15 @@
         <!--WindowのCloseキャンセル処理に対応する場合は、WindowCloseCancelBehaviorの使用を検討してください-->
 
         
+        
         <!--失敗表示メッセージボックス-->
         <l:InteractionMessageTrigger MessageKey="Error" Messenger="{Binding Messenger}">
             <l:InformationDialogInteractionMessageAction />
+        </l:InteractionMessageTrigger>
+
+        <!--画面遷移トリガー-->
+        <l:InteractionMessageTrigger MessageKey="Transition" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type v:LoginView}" Mode="Modal"/>
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
