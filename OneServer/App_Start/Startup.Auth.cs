@@ -42,7 +42,7 @@ namespace OneServer
                 Provider = new ApplicationOAuthProvider(PublicClientId),
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
-                AllowInsecureHttp = true
+                AllowInsecureHttp = false,
             };
 
             // アプリケーションがベアラ トークンを使用してユーザーを認証できるようにします
