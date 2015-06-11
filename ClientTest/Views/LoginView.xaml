@@ -1,0 +1,67 @@
+﻿<Window x:Class="ClientTest.Views.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:v="clr-namespace:ClientTest.Views"
+        xmlns:vm="clr-namespace:ClientTest.ViewModels"
+        Title="ログイン画面" Height="320" Width="400">
+    
+    <!--
+    <Window.DataContext>
+        <vm:LoginViewViewModel/>
+    </Window.DataContext>
+    -->
+     <i:Interaction.Triggers>
+     
+     	<!--Viewに特別な要件が存在しない限りは、トリガーやアクションの自作にこだわらず積極的にコードビハインドを使いましょう -->
+    	<!--Viewのコードビハインドは、基本的にView内で完結するロジックとViewModelからのイベントの受信(専用リスナを使用する)に限るとトラブルが少なくなります -->
+    	<!--Livet1.1からはコードビハインドでViewModelのイベントを受信するためのWeakEventLisnterサポートが追加されています --> 
+        
+        <!--WindowのContentRenderedイベントのタイミングでViewModelのInitializeメソッドが呼ばれます-->
+        <i:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize"/>
+        </i:EventTrigger>
+
+        <!--Windowが閉じたタイミングでViewModelのDisposeメソッドが呼ばれます-->
+        <i:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction/>
+        </i:EventTrigger>
+
+        <!--WindowのCloseキャンセル処理に対応する場合は、WindowCloseCancelBehaviorの使用を検討してください-->
+
+    </i:Interaction.Triggers>
+    
+    <Grid Margin="50 30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
+
+        <!--ユーザー名-->
+        <Grid Grid.Row="0"  VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*" />
+                <ColumnDefinition Width="0.6* " />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="ユーザー名" VerticalAlignment="Center" />
+            <TextBox Grid.Column="1" Text="{Binding DisplayUserName}" />
+        </Grid>
+        <Grid Grid.Row="1"  VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*" />
+                <ColumnDefinition Width="0.6* " />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="パスワード" VerticalAlignment="Center"/>
+            <PasswordBox Grid.Column="1" PasswordChar="*" >
+                <i:Interaction.Behaviors>
+                    <l:PasswordBoxBindingSupportBehavior Password="{Binding DisplayPassword}" />
+                </i:Interaction.Behaviors>
+            </PasswordBox>
+            
+        </Grid>
+        <Button Grid.Row="2" Width="100" Height="35" Content="ログイン" Command="{Binding LoginCommand}" />
+    </Grid>
+</Window>

@@ -1,4 +1,5 @@
 ﻿using ClientTest.Models;
+using ClientTest.Views;
 using Livet;
 using Livet.Commands;
 using Livet.Messaging;
@@ -344,6 +345,9 @@ namespace ClientTest.ViewModels
             {
                 DisplayUserName = "";
             }
+
+            var loginwin = new LoginView();
+            loginwin.ShowDialog();
         }
     }
 }
