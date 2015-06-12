@@ -133,19 +133,20 @@
                     </Style.Triggers>
                 </Style>
             </Canvas.Style>
-            <TextBlock Canvas.Top="120" Canvas.Left="100" Name="LoadMessageText" Text="{Binding LoadMessage}" FontSize="18.667" >
+            <TextBlock Canvas.Top="120" Canvas.Left="100" Name="LoadMessageText" Text="{Binding LoadMessage}" FontSize="18.667" />
+            <TextBlock Canvas.Top="120" Canvas.Left="100" Text="{Binding HelloMessage}" FontSize="18.667" >
                 <TextBlock.Style>
-					<Style TargetType="TextBlock">
-						<Style.Triggers>
-                    		<!--メニューを一時的に消去するトリガー-->
-							<DataTrigger Binding="{Binding IsMenuHidden}" Value="False" >
-								<Setter Property="Visibility" Value="Collapsed"/>
-							</DataTrigger>
-							<!--ようこそのアニメーション設定-->
-							<DataTrigger Binding="{Binding IsHelloAnimationReady}" Value="True">
-								<DataTrigger.EnterActions>
-									<BeginStoryboard>
-										<Storyboard Duration="0:0:0:1.8">
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <!--メニューを一時的に消去するトリガー-->
+                            <DataTrigger Binding="{Binding IsMenuHidden}" Value="False" >
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <!--ようこそのアニメーション設定-->
+                            <DataTrigger Binding="{Binding IsHelloAnimationReady}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard Duration="0:0:0:1.8">
                                             <DoubleAnimation
 												Storyboard.TargetProperty="(Canvas.Top)"
 												From="85"
@@ -163,11 +164,11 @@
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
                                         </Storyboard>
-									</BeginStoryboard>
-								</DataTrigger.EnterActions>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
                 </TextBlock.Style>
             </TextBlock>
         </Canvas>
