@@ -39,72 +39,137 @@
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
-    <Grid Margin="50 30" FocusManager.FocusedElement="{Binding ElementName=PasswordInputBox}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="4*" />
-        </Grid.RowDefinitions>
-        <Grid.Resources>
-            <!--ツールティップにヴァリデーションの結果を表示-->
-            <Style TargetType="{x:Type TextBox}" >
-                <Style.Triggers>
-                    <Trigger Property="Validation.HasError" Value="True">
-                        <Setter Property="ToolTip"
-                                Value="{Binding RelativeSource={x:Static RelativeSource.Self},
-                            Path=(Validation.Errors)[0].ErrorContent}" />
-                    </Trigger>                  
-                </Style.Triggers>
-                <!--ヴァリデーションに失敗した時の、TextBoxの見た目変更-->
-                <Setter Property="Validation.ErrorTemplate">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <DockPanel DockPanel.Dock="Right">
-                                <AdornedElementPlaceholder>
-                                    <Border BorderBrush="Red" BorderThickness="2" />
-                                </AdornedElementPlaceholder>
-                                <TextBlock Margin="3 3 3 0" Text="*" Foreground="Red"
-                                           ToolTip="{Binding Path=AdornedElement.ToolTip,
-                                            RelativeSource={RelativeSource Mode=FindAncestor,
-                                            AncestorType={x:Type Adorner}}}"
-                                           />
-                            </DockPanel>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </Grid.Resources>
+    <Grid Name="LayoutRoot" FocusManager.FocusedElement="{Binding ElementName=PasswordInputBox}">
+        <Grid Margin="50 25" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <!--メニューを一時的に消去するトリガー-->
+                        <DataTrigger Binding="{Binding IsMenuHidden}" Value="True" >
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.Resources>
+                <!--ツールティップにヴァリデーションの結果を表示-->
+                <Style TargetType="{x:Type TextBox}" >
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="ToolTip"
+                                    Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                                Path=(Validation.Errors)[0].ErrorContent}" />
+                        </Trigger>                  
+                    </Style.Triggers>
+                    <!--ヴァリデーションに失敗した時の、TextBoxの見た目変更-->
+                    <Setter Property="Validation.ErrorTemplate">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <DockPanel DockPanel.Dock="Right">
+                                    <AdornedElementPlaceholder>
+                                        <Border BorderBrush="Red" BorderThickness="2" />
+                                    </AdornedElementPlaceholder>
+                                    <TextBlock Margin="3 3 3 0" Text="*" Foreground="Red"
+                                               ToolTip="{Binding Path=AdornedElement.ToolTip,
+                                                RelativeSource={RelativeSource Mode=FindAncestor,
+                                                AncestorType={x:Type Adorner}}}"
+                                               />
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Grid.Resources>
 
-        <!--ユーザー名-->
-        <Grid Grid.Row="0" VerticalAlignment="Center" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.4*" />
-                <ColumnDefinition Width="0.6* " />
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="ユーザー名" VerticalAlignment="Center" />
-            <TextBox Grid.Column="1"  >
-                <TextBox.Text>
-                    <Binding Path="UserName" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
-                        <Binding.ValidationRules>
-                            <validator:UserNameValidator />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
-        </Grid>
-        <Grid Grid.Row="1"  VerticalAlignment="Center">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.4*" />
-                <ColumnDefinition Width="0.6* " />
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="パスワード" VerticalAlignment="Center"/>
-            <PasswordBox Name="PasswordInputBox" Grid.Column="1" PasswordChar="*" >
-                <i:Interaction.Behaviors>
-                    <l:PasswordBoxBindingSupportBehavior Password="{Binding Password}" />
-                </i:Interaction.Behaviors>
-            </PasswordBox>
+            <!--ユーザー名-->
+            <Grid Grid.Row="0" VerticalAlignment="Center" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.4*" />
+                    <ColumnDefinition Width="0.6* " />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="ユーザー名" VerticalAlignment="Center" />
+                <TextBox Grid.Column="1"  >
+                    <TextBox.Text>
+                        <Binding Path="UserName" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
+                            <Binding.ValidationRules>
+                                <validator:UserNameValidator />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </Grid>
+            <Grid Grid.Row="1"  VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.4*" />
+                    <ColumnDefinition Width="0.6* " />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="パスワード" VerticalAlignment="Center"/>
+                <PasswordBox Name="PasswordInputBox" Grid.Column="1" PasswordChar="*" >
+                    <i:Interaction.Behaviors>
+                        <l:PasswordBoxBindingSupportBehavior Password="{Binding Password}" />
+                    </i:Interaction.Behaviors>
+                </PasswordBox>
             
+            
+            </Grid>
+            <!--通知メッセージ-->
+            <TextBlock Grid.Row="2" Text="{Binding NotifyMessage}" VerticalAlignment="Center" FontSize="13.333" FontWeight="Bold" Foreground="#FFC51212" />
+            
+            <Button Grid.Row="3" Width="100" Height="35" Content="ログイン" Command="{Binding LoginCommand}" />
         </Grid>
-        <Button Grid.Row="2" Width="100" Height="35" Content="ログイン" Command="{Binding LoginCommand}" />
-    </Grid>
+        
+        <!--待機状態のgrid-->
+        <Canvas Name="HiddenCanvas">
+            <Canvas.Style>
+                <Style TargetType="{x:Type Canvas}">
+                    <Style.Triggers>
+
+                    </Style.Triggers>
+                </Style>
+            </Canvas.Style>
+            <TextBlock Canvas.Top="120" Canvas.Left="100" Name="LoadMessageText" Text="{Binding LoadMessage}" FontSize="18.667" >
+                <TextBlock.Style>
+					<Style TargetType="TextBlock">
+						<Style.Triggers>
+                    		<!--メニューを一時的に消去するトリガー-->
+							<DataTrigger Binding="{Binding IsMenuHidden}" Value="False" >
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</DataTrigger>
+							<!--ようこそのアニメーション設定-->
+							<DataTrigger Binding="{Binding IsHelloAnimationReady}" Value="True">
+								<DataTrigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard Duration="0:0:0:1.8">
+                                            <DoubleAnimation
+												Storyboard.TargetProperty="(Canvas.Top)"
+												From="85"
+												To="120" >
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut" />
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation
+												Storyboard.TargetProperty="Opacity"
+												From="0"
+												To="1" >
+                                                <DoubleAnimation.EasingFunction>
+                                                    <SineEase EasingMode="EaseOut" />
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+									</BeginStoryboard>
+								</DataTrigger.EnterActions>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Canvas>
+	</Grid>
 </Window>
