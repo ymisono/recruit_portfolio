@@ -19,8 +19,8 @@ namespace ClientTest.Utility
         /// <exception cref="ApplicationException">500:サーバー内の状態が不正。</exception>
         public static async Task CheckResponseStatus(HttpResponseMessage res)
         {
-            const String templateMsg = "コード:{0} ({1})\n\n詳細:{2}";
-            const String templateExtraMsg = "コード:{0} ({1})\n{2}\n\n詳細:{3}";
+            const String templateMsg = "コード:{0} ({1})\n詳細:{2}";
+            const String templateExtraMsg = "コード:{0} ({1})\n{2}\n詳細:{3}";
 
             //応答ステータスチェック
             if (!res.IsSuccessStatusCode)
@@ -34,7 +34,9 @@ namespace ClientTest.Utility
                 switch (res.StatusCode)
                 {
                     case HttpStatusCode.BadRequest:
-                        throw new ApplicationException(String.Format(templateMsg,400,"不正な入力", details));
+                        var ex = new ApplicationException(String.Format(templateMsg,400,"不正な入力", details));
+                        ex.Data.Add("details", details);
+                        throw ex;
                     case HttpStatusCode.Unauthorized:
                         throw new ApplicationException(String.Format(templateExtraMsg,401,"認証に失敗","再ログインしてください。", details));
                     case HttpStatusCode.InternalServerError:

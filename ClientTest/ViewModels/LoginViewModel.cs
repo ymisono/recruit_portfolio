@@ -15,6 +15,7 @@ using ClientTest.Models;
 using System.Windows;
 using System.Windows.Threading;
 using System.Windows.Media.Animation;
+using ClientTest.Utility;
 
 namespace ClientTest.ViewModels
 {
@@ -157,6 +158,9 @@ namespace ClientTest.ViewModels
                     //ようこそメッセージを表示
                     LoadMessage = "ようこそ " + _username + " さん！";
 
+                    //ユーザー名を憶えておく
+                    LocalSettings.AddUpdateAppSettings("RememberUserName", UserName);
+
                     // タイマーを作成する
                     var timer = new DispatcherTimer();
                     timer.Interval = TimeSpan.FromSeconds(1.4);
@@ -171,10 +175,18 @@ namespace ClientTest.ViewModels
             }
             catch(ApplicationException ex)
             {
+                //隠してたメニューを出す
                 IsMenuHidden = false;
 
-                NotifyMessage = ex.Message;
-                //MessageBox.Show(ex.Message);
+                //詳細が存在してれば、それを使う
+                if(ex.Data.Count>0)
+                {
+                    NotifyMessage = ex.Data["details"] as String;
+                }
+                else
+                {
+                    NotifyMessage = ex.Message;
+                }
             }
             
         }
@@ -190,6 +202,15 @@ namespace ClientTest.ViewModels
             IsMenuHidden = false;
             LoadMessage = "ログインしています……";
 
+            //前に使用したユーザー名があるなら、それを使う
+            try
+            {
+                UserName = LocalSettings.ReadSetting("RememberUserName");
+            }
+            catch (ApplicationException)
+            {
+                UserName = "";
+            }
         }
 
 #region IDataErrorInfo
