@@ -119,9 +119,9 @@
             
             </Grid>
             <!--通知メッセージ-->
-            <TextBlock Grid.Row="2" Text="{Binding NotifyMessage}" VerticalAlignment="Center" FontSize="13.333" FontWeight="Bold" Foreground="#FFC51212" />
+            <TextBlock Grid.Row="2" Text="{Binding NotifyMessage}" VerticalAlignment="Center" FontSize="13.333" FontWeight="Bold" Foreground="OrangeRed" />
             
-            <Button Grid.Row="3" Width="100" Height="35" Content="ログイン" Command="{Binding LoginCommand}" />
+            <Button Grid.Row="3" Content="ログイン" Command="{Binding LoginCommand}" Padding="16 5" BorderBrush="{x:Null}" Background="DarkSeaGreen" Foreground="White" FontSize="20"  HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Grid>
         
         <!--待機状態のgrid-->

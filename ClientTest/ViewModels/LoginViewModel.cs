@@ -159,7 +159,7 @@ namespace ClientTest.ViewModels
 
                     // タイマーを作成する
                     var timer = new DispatcherTimer();
-                    timer.Interval = TimeSpan.FromSeconds(1.5);
+                    timer.Interval = TimeSpan.FromSeconds(1.4);
                     timer.Tick += new EventHandler( (sender, e) => 
                     {
                         //タイマー内でウィンドウを閉じる
