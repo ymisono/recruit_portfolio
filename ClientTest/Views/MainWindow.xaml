@@ -30,8 +30,8 @@
 
         <!--WindowのCloseキャンセル処理に対応する場合は、WindowCloseCancelBehaviorの使用を検討してください-->
 
-        
-        
+
+
         <!--失敗表示メッセージボックス-->
         <l:InteractionMessageTrigger MessageKey="Error" Messenger="{Binding Messenger}">
             <l:InformationDialogInteractionMessageAction />
@@ -43,49 +43,43 @@
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
-    <Grid>
+    <Grid FocusManager.FocusedElement="{Binding ElementName=MemoBox}">
         <Grid.RowDefinitions>
             <RowDefinition Height="0.25*" />
-            <RowDefinition Height="1.2*" />
             <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
 
-        <!--ユーザー名表示-->
-        <Grid Grid.Row="0" HorizontalAlignment="Stretch" Background="DarkSeaGreen" >
-            <Label HorizontalAlignment="Right" VerticalAlignment="Center" Content="{Binding MyName}" Foreground="White" />
-        </Grid>
-        <StackPanel Grid.Row="1" Margin="10" FocusManager.FocusedElement="{Binding ElementName=passwordBox}" >
+        <StackPanel Grid.Row="0" VerticalAlignment="Center" Background="DarkSeaGreen" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
-                <TextBlock Text="ユーザー名" Margin="0 0 10 0"/>
-                <TextBox Width="300" Text="{Binding DisplayUserName}" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
-                <TextBlock Text="パスワード" Margin="0 0 10 0"/>
-                <PasswordBox Name="passwordBox" Width="300" PasswordChar="*" >
-                    <i:Interaction.Behaviors>
-                        <l:PasswordBoxBindingSupportBehavior Password="{Binding DisplayPassword}" />
-                    </i:Interaction.Behaviors>
-                </PasswordBox>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
-                <Button Width="70" Height="30" Margin="0 0 10 0" Content="新規登録" Command="{Binding RegisterCommand}" />
-                <Button Width="80" Height="35" Margin="10 0 10 0" Content="ログイン" Command="{Binding LoginCommand}" />
-                <Button Width="70" Height="30" Margin="10 0 0 0" Content="ログアウト" Command="{Binding LogoutCommand}"/>
+                <Button Width="70" Height="30" Margin="0 0 20 0" Content="新規登録" Command="{Binding RegisterCommand}" Visibility="Collapsed" />
+                <Button Width="70" Height="30" Content="ログアウト" Command="{Binding LogoutCommand}" />
             </StackPanel>
         </StackPanel>
+        <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding LoginCommand}" Content="{Binding MyName}" Foreground="White" Margin="0 0 5 0" Padding="10 3" Background="{x:Null}" BorderBrush="White" BorderThickness="1">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Style.Triggers>
+                        <!--ログイン名の表示状態を変更するトリガー-->
+                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True" >
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
 
+        <!--ユーザー名表示-->
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch" >
+
+        </Grid>
         <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="358*"/>
-                <ColumnDefinition Width="257*"/>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*" />
-                <RowDefinition Height="6*" />
+                <RowDefinition Height="8*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Label Content="クラウドメモ帳（書いた事が保存されるよ！）" FontSize="19" />
-            <TextBox Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding memoText}" Margin="15 15 15 0" Grid.ColumnSpan="2" />
+            <TextBox Name="MemoBox" Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding memoText}" Margin="15 0 15 0" Grid.ColumnSpan="2" />
             <Button Grid.Row="2" Margin="0,8,30,8" Width="70" HorizontalAlignment="Right" Content="保存"
                     Command="{Binding SaveCommand}" Grid.Column="1"/>
         </Grid>

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Threading;
+using System.Windows.Media.Animation;
+using ClientTest.Utility;
 
 namespace ClientTest.ViewModels
 {
@@ -13,6 +15,8 @@ namespace ClientTest.ViewModels
     {
         #region フィールド
         private Session _session;
+
+        private int _loginLoadDotCount = 0;
 
         #endregion
 
@@ -87,6 +91,24 @@ namespace ClientTest.ViewModels
         #endregion
 
 
+        #region HelloMessage変更通知プロパティ
+        private string _HelloMessage;
+
+        public string HelloMessage
+        {
+            get
+            { return _HelloMessage; }
+            set
+            { 
+                if (_HelloMessage == value)
+                    return;
+                _HelloMessage = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+
         #region IsHelloAnimationReady変更通知プロパティ
         private bool _IsHelloAnimationReady = false;
 
@@ -124,11 +146,15 @@ namespace ClientTest.ViewModels
 
         public bool CanLogin()
         {
-            return true;
+            //エラーがなければ、実行可能
+            return _errors.Count > 0;
         }
 
         public async void Login()
         {
+            //ロード画面のタイマー
+            var loginLoadTimer = new DispatcherTimer();
+
             //ログイン処理
             try
             {
@@ -136,6 +162,23 @@ namespace ClientTest.ViewModels
                 var loginTask = _session.LoginAsync(UserName, Password);
                 //メッセージを表示して待つ
                 IsMenuHidden = true;
+                LoadMessage = "ログインしています";
+
+                //アニメーションする
+                loginLoadTimer.Interval = TimeSpan.FromSeconds(0.3);
+                loginLoadTimer.Tick += new EventHandler((s, e) =>
+                {
+                    //文字列を更新
+                    if (_loginLoadDotCount > 2) _loginLoadDotCount = 0;
+                    else _loginLoadDotCount++;
+
+                    if (!_session.IsLoggedIn)
+                    {
+                        LoadMessage = "ログインしています" + new String('.', _loginLoadDotCount);
+                    }
+                    else LoadMessage = "";
+                });
+                loginLoadTimer.Start();
 
                 //ここで待つ
                 await loginTask;
@@ -143,16 +186,27 @@ namespace ClientTest.ViewModels
                 //成功したら閉じる
                 if (_session.IsLoggedIn)
                 {
+                    //ようこそのアニメーションの準備完了
                     IsHelloAnimationReady = true;
 
+                    //ロードのタイマーを止める
+                    loginLoadTimer.Stop();
+                    //ロードの文字列を消す
+                    LoadMessage = "";
+                    
                     //ようこそメッセージを表示
-                    LoadMessage = "ようこそ " + _username + " さん！";
+                    HelloMessage = "ようこそ " + _username + " さん！";
+
+                    //ユーザー名を憶えておく
+                    LocalSettings.AddUpdateAppSettings("RememberUserName", UserName);
 
                     // タイマーを作成する
                     var timer = new DispatcherTimer();
                     timer.Interval = TimeSpan.FromSeconds(1.4);
                     timer.Tick += new EventHandler( (sender, e) => 
                     {
+                        loginLoadTimer.Stop();
+                        timer.Stop();
                         //タイマー内でウィンドウを閉じる
                         Messenger.Raise(new WindowActionMessage(WindowAction.Close, "Close"));
                     });
@@ -162,10 +216,23 @@ namespace ClientTest.ViewModels
             }
             catch(ApplicationException ex)
             {
+                //隠してたメニューを出す
                 IsMenuHidden = false;
 
+                //ロードのタイマーを止める
+                loginLoadTimer.Stop();
+                //ロードの文字列を消す
+                LoadMessage = "";
+
+                //詳細が存在してれば、それを使う
+                if(ex.Data.Contains("details"))
+                {
+                    NotifyMessage = ex.Data["details"] as String;
+                }
+                else
+                {
                 NotifyMessage = ex.Message;
-                //MessageBox.Show(ex.Message);
+            }
             }
             
         }
@@ -179,8 +246,16 @@ namespace ClientTest.ViewModels
         public void Initialize()
         {
             IsMenuHidden = false;
-            LoadMessage = "ログインしています……";
 
+            //前に使用したユーザー名があるなら、それを使う
+            try
+            {
+                UserName = LocalSettings.ReadSetting("RememberUserName");
+            }
+            catch (ApplicationException)
+            {
+                UserName = "";
+            }
         }
 
 #region IDataErrorInfo

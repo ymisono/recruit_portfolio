@@ -60,6 +60,8 @@ namespace ClientTest.ViewModels
         private Memo _memo = new Memo();
 
 
+        public bool IsLoggedIn { get { return _apiServer.CurrentSession.IsLoggedIn; } }
+
         #region DisplayUserName変更通知プロパティ
         private string _DisplayUserName;
 
@@ -167,85 +169,11 @@ namespace ClientTest.ViewModels
                 await _apiServer.RegisterAsync(DisplayUserName,DisplayPassword);
                 MessageBox.Show(String.Format("登録しました！\nようこそ{0}さん", DisplayUserName));
 
-                //成功したらログインも
-                Login();
             }
             catch(ApplicationException ex)
             {
                 MessageBox.Show(String.Format("登録に失敗しました。\n{0}", ex.Message),
                    "登録失敗", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-        }
-        #endregion
-
-
-        #region LoginCommand
-        private ViewModelCommand _LoginCommand;
-
-        public ViewModelCommand LoginCommand
-        {
-            get
-            {
-                if (_LoginCommand == null)
-                {
-                    _LoginCommand = new ViewModelCommand(Login, CanLogin);
-                }
-                return _LoginCommand;
-            }
-        }
-
-        public bool CanLogin()
-        {
-            return true;
-        }
-
-        public async void Login()
-        {
-            //ログイン
-            try
-            {
-                await _apiServer.CurrentSession.LoginAsync(DisplayUserName, DisplayPassword);
-                
-                DisplayUserName = "";
-                DisplayPassword = "";
-
-                if (!String.IsNullOrEmpty(_apiServer.CurrentSession.UserInfo.UserName))
-                    MyName = String.Format("ログイン中：{0}", _apiServer.CurrentSession.UserInfo.UserName);
-
-                //前回のログイン名を覚えておく
-                LocalSettings.AddUpdateAppSettings("RememberUserName", _apiServer.CurrentSession.UserInfo.UserName);
-            }
-            catch(ApplicationException e)
-            {
-                Messenger.Raise(new InformationMessage(
-                    String.Format("ログインできません。\n{0}",e.Message),
-                    "ログイン失敗", MessageBoxImage.Exclamation,"Error")
-                    );
-                return;
-            }
-
-            //メモのロード
-            try
-            {
-                var json = await _apiServer.ReadAsync<Memo>("Memos?ownerid=" + _apiServer.CurrentSession.UserInfo.Id);
-                if (json!=null)
-                {
-                     memoText = json.Content;
-                     _memo = json;
-                }
-                else //何も入ってない場合
-                {
-                    memoText = "";
-                    _memo.Id = -1;
-                }
-            }
-
-            catch (ApplicationException e)
-            {
-                MessageBox.Show( 
-                    String.Format("メモ帳をロードできませんでした。\n{0}",e.Message),
-                    "ロード失敗", MessageBoxButton.OK, MessageBoxImage.Exclamation
-                );
             }
         }
         #endregion
@@ -296,7 +224,6 @@ namespace ClientTest.ViewModels
         }
         #endregion
 
-
         #region LogoutCommand
         private ViewModelCommand _LogoutCommand;
 
@@ -325,7 +252,7 @@ namespace ClientTest.ViewModels
 
                 _memo = null;
                 memoText = "";
-                MyName = "";
+                MyName = "ログイン";
             }
             catch(ApplicationException)
             {
@@ -334,9 +261,30 @@ namespace ClientTest.ViewModels
         }
         #endregion
 
-       
 
-        public void Initialize()
+        #region LoginCommand
+        private ViewModelCommand _LoginCommand;
+
+        public ViewModelCommand LoginCommand
+        {
+            get
+            {
+                if (_LoginCommand == null)
+                {
+                    _LoginCommand = new ViewModelCommand(Login);
+                }
+                return _LoginCommand;
+            }
+        }
+
+        public async void Login()
+        {
+            await InvokeLogin();
+        }
+        #endregion
+
+
+        public async void Initialize()
         {
             try
             {
@@ -347,9 +295,46 @@ namespace ClientTest.ViewModels
                 DisplayUserName = "";
             }
 
+            MyName = "ログイン";
+
+            await InvokeLogin();
+        }
+
+        public async Task InvokeLogin()
+        {
             using (var vm = new LoginViewModel(_apiServer.CurrentSession))
             {
+                //ログイン要求
                 Messenger.Raise(new TransitionMessage(vm, "Transition"));
+
+                //ログイン成功判定
+                if (!_apiServer.CurrentSession.IsLoggedIn) return;
+
+                //ログインサイン
+                MyName = String.Format("ログイン中：{0}", _apiServer.CurrentSession.UserInfo.UserName);
+
+                //メモのロード
+                try
+                {
+                    var json = await _apiServer.ReadAsync<Memo>("Memos?ownerid=" + _apiServer.CurrentSession.UserInfo.Id);
+                    if (json != null)
+                    {
+                        memoText = json.Content;
+                        _memo = json;
+                    }
+                    else //何も入ってない場合
+                    {
+                        memoText = "";
+                        _memo.Id = -1;
+                    }
+                }
+                catch (ApplicationException e)
+                {
+                    MessageBox.Show(
+                        String.Format("メモ帳をロードできませんでした。\n{0}", e.Message),
+                        "ロード失敗", MessageBoxButton.OK, MessageBoxImage.Exclamation
+                    );
+                }
             }
         }
     }
