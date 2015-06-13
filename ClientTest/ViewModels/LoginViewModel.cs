@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ComponentModel;
-
+﻿using ClientTest.Models;
 using Livet;
 using Livet.Commands;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.EventListeners;
 using Livet.Messaging.Windows;
-
-using ClientTest.Models;
-using System.Windows;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Threading;
-using System.Windows.Media.Animation;
 
 namespace ClientTest.ViewModels
 {
