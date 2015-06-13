@@ -113,7 +113,7 @@
             <StackPanel >
                 <CheckBox Content="削除フラグ" IsChecked="False"/>
             </StackPanel>
-            <Button VerticalAlignment="Bottom" Width="150" Height="42" Margin="0 16" Content="登録" FontSize="21.333" />
+            <Button VerticalAlignment="Bottom" Width="150" Height="42" Margin="0 16" Content="登録" Command="{Binding WriteToDBCommand}" FontSize="21.333" />
         </DockPanel>
     </Grid>
 </Window>

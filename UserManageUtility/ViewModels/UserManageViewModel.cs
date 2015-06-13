@@ -1,18 +1,10 @@
-﻿using System;
+﻿using Livet;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
-
-using Livet;
-using Livet.Commands;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.EventListeners;
-using Livet.Messaging.Windows;
-
-using UserManageUtility.Models;
 using System.Text.RegularExpressions;
+using ClientTest.Models;
+using System.Threading.Tasks;
 
 namespace UserManageUtility.ViewModels
 {
@@ -20,6 +12,7 @@ namespace UserManageUtility.ViewModels
     {
         #region フィールド
 
+        private ApiServer _apiServer = new ApiServer();
 
         private static readonly Regex AlphaNumUnderscoreRegex = new Regex(@"^[a-zA-Z0-9_]*$", RegexOptions.Compiled);
 
@@ -117,6 +110,10 @@ namespace UserManageUtility.ViewModels
                     _errors["PasswordConfirm"] = "スペースを含んではいけません";
                     RaisePropertyChanged("Error");
                 }
+                else if (value != Password)
+                {
+                    _errors["PasswordConfirm"] = "確認用パスワードが一致しません";
+                }
                 else
                 {
                     _errors["PasswordConfirm"] = null;
@@ -147,9 +144,62 @@ namespace UserManageUtility.ViewModels
 
         #endregion プロパティ
 
+        #region コマンド
+
+
+        #region WriteToDBCommand
+        private Livet.Commands.ViewModelCommand _WriteToDBCommand;
+
+        public Livet.Commands.ViewModelCommand WriteToDBCommand
+        {
+            get
+            {
+                if (_WriteToDBCommand == null)
+                {
+                    _WriteToDBCommand = new Livet.Commands.ViewModelCommand(WriteToDB);
+                }
+                return _WriteToDBCommand;
+            }
+        }
+
+        public async void WriteToDB()
+        {
+            if (!_apiServer.CurrentSession.IsLoggedIn) return;
+
+            //一つでも空欄があれば、帰る
+            if (String.IsNullOrEmpty(UserName) ||
+                String.IsNullOrEmpty(Password) ||
+                String.IsNullOrEmpty(PasswordConfirm)
+                ) return;
+
+            //エラーが一つでもあれば帰る
+            foreach (var err in _errors)
+            {
+                if (err.Value != null) return;
+            }
+
+            await _apiServer.RegisterAsync(UserName,Password,EmailAddress);
+        }
+        #endregion
+
+
+          #endregion コマンド
+
         public void Initialize()
         {
+            //投げっぱなしだから、いつ終わるか分からないよーん
+            LoginStartUpAsync();
         }
+
+#region ヘルパー（プライベートメソッド）
+
+        //voidで投げっぱ
+        private async void LoginStartUpAsync()
+        {
+            await _apiServer.CurrentSession.LoginAsync("misono", "password");
+        }
+
+#endregion
 
         #region IDataErrorInfo
         private Dictionary<String, String> _errors = new Dictionary<string, string>
@@ -159,21 +209,7 @@ namespace UserManageUtility.ViewModels
 
         public string Error
         {
-            get
-            {
-                var list = new List<String>();
-
-                if (!String.IsNullOrEmpty(this["UserName"]))
-                {
-                    list.Add("ユーザー名");
-                }
-                if (!String.IsNullOrEmpty(this["Password"]))
-                {
-                    list.Add("パスワード");
-                }
-
-                return String.Join("・", list) + "が未入力です。";
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public string this[string columnName]
