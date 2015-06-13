@@ -60,6 +60,8 @@ namespace ClientTest.ViewModels
         private Memo _memo = new Memo();
 
 
+        public bool IsLoggedIn { get { return _apiServer.CurrentSession.IsLoggedIn; } }
+
         #region DisplayUserName変更通知プロパティ
         private string _DisplayUserName;
 
@@ -250,7 +252,7 @@ namespace ClientTest.ViewModels
 
                 _memo = null;
                 memoText = "";
-                MyName = "";
+                MyName = "ログイン";
             }
             catch(ApplicationException)
             {
@@ -292,6 +294,8 @@ namespace ClientTest.ViewModels
             {
                 DisplayUserName = "";
             }
+
+            MyName = "ログイン";
 
             await InvokeLogin();
         }
