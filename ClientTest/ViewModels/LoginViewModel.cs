@@ -1,4 +1,5 @@
 ﻿using ClientTest.Models;
+using ClientTest.Utility;
 using Livet;
 using Livet.Commands;
 using Livet.Messaging.Windows;
@@ -6,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Threading;
-using System.Windows.Media.Animation;
-using ClientTest.Utility;
 
 namespace ClientTest.ViewModels
 {
