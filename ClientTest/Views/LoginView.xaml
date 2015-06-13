@@ -9,12 +9,6 @@
         xmlns:validator="clr-namespace:ClientTest.Validator"
         Title="ログイン画面" Height="320" Width="400" ResizeMode="NoResize">
     
-    <!--
-    <Window.DataContext>
-        <vm:LoginViewModel/>
-    </Window.DataContext>
-    -->
-    
      <i:Interaction.Triggers>
      
      	<!--Viewに特別な要件が存在しない限りは、トリガーやアクションの自作にこだわらず積極的にコードビハインドを使いましょう -->
@@ -39,7 +33,7 @@
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
-    <Grid Name="LayoutRoot" FocusManager.FocusedElement="{Binding ElementName=PasswordInputBox}">
+    <Grid Name="ui_LayoutRoot" FocusManager.FocusedElement="{Binding ElementName=ui_PasswordInputBox}">
         <Grid Margin="40 25" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*" />
@@ -110,7 +104,7 @@
                     <ColumnDefinition Width="0.6* " />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="パスワード" VerticalAlignment="Center"/>
-                <PasswordBox Name="PasswordInputBox" Grid.Column="1" PasswordChar="*" >
+                <PasswordBox Name="ui_PasswordInputBox" Grid.Column="1" PasswordChar="*" >
                     <i:Interaction.Behaviors>
                         <l:PasswordBoxBindingSupportBehavior Password="{Binding Password}" />
                     </i:Interaction.Behaviors>
@@ -125,7 +119,7 @@
         </Grid>
         
         <!--待機状態のgrid-->
-        <Canvas Name="HiddenCanvas">
+        <Canvas Name="ui_HiddenCanvas">
             <Canvas.Style>
                 <Style TargetType="{x:Type Canvas}">
                     <Style.Triggers>
