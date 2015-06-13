@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using ClientTest.Models;
+using ClientTest.Utility;
 using System.Threading.Tasks;
 
 namespace UserManageUtility.ViewModels
@@ -81,6 +82,18 @@ namespace UserManageUtility.ViewModels
                 {
                     _errors["Password"] = null;
                     RaisePropertyChanged();
+                }
+
+                //確認用パスワードとダブってるか
+                if(value == PasswordConfirm)
+                {
+                    _errors["PasswordConfirm"] = null;
+                    RaisePropertyChanged("PasswordConfirm");
+                }
+                else if (!String.IsNullOrEmpty(PasswordConfirm))
+                {
+                    _errors["PasswordConfirm"] = "確認用パスワードが一致しません"; ;
+                    RaisePropertyChanged("PasswordConfirm");
                 }
             }
         }
@@ -236,7 +249,9 @@ namespace UserManageUtility.ViewModels
         //voidで投げっぱ
         private async void LoginStartUpAsync()
         {
-            await _apiServer.CurrentSession.LoginAsync("misono", "password");
+            var pass = LocalSettings.ReadSetting("AdminPass");
+
+            await _apiServer.CurrentSession.LoginAsync("misono", pass);
         }
 
 #endregion

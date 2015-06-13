@@ -7,7 +7,7 @@
         xmlns:v="clr-namespace:UserManageUtility.Views"
         xmlns:vm="clr-namespace:UserManageUtility.ViewModels"
         xmlns:validator="clr-namespace:UserManageUtility.Validator"
-        Title="ユーザー管理" Height="760" Width="980">
+        Title="ユーザー管理" Height="680" Width="980" WindowState="Maximized">
     <Window.DataContext>
         <vm:UserManageViewModel />
     </Window.DataContext>
