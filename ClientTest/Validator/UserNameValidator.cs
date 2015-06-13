@@ -14,15 +14,15 @@ namespace ClientTest.Validator
 
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo)
         {
-            if (!AlphaNumUnderscoreRegex.IsMatch(value.ToString()))
+            var targetName = value as String;
+
+            if (!AlphaNumUnderscoreRegex.IsMatch(targetName.ToString()))
             {
                 return new ValidationResult(false, "半角英数字とアンダースコア(_)のみ使用可能です");
             }
-            else
-            {
-                //正しかった
-                return new ValidationResult(true, null);
-            }
+
+            //正しかった
+            return new ValidationResult(true, null);
         }
     }
 }
