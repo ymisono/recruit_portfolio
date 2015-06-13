@@ -6,7 +6,34 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:v="clr-namespace:UserManageUtility.Views"
         xmlns:vm="clr-namespace:UserManageUtility.ViewModels"
+        xmlns:validator="clr-namespace:UserManageUtility.Validator"
         Title="ユーザー管理" Height="760" Width="980">
+    <Window.DataContext>
+        <vm:UserManageViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <!--検証のデータテンプレート-->
+        <DataTemplate DataType="{x:Type ValidationError}">
+            <TextBlock Foreground="Red" HorizontalAlignment="Right" Text="{Binding Path=ErrorContent}" />
+        </DataTemplate>
+
+        <!--ヴァリデーションのデザインのテンプレート-->
+        <Style x:Key="ValidationTextBoxDecoration" TargetType="{x:Type TextBox}" >
+            <!--ヴァリデーションに失敗した時の、TextBoxの見た目変更-->
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel DockPanel.Dock="Right">
+                            <AdornedElementPlaceholder>
+                                <Border BorderBrush="Red" BorderThickness="2" />
+                            </AdornedElementPlaceholder>
+                            <TextBlock Margin="3 3 3 0" Text="*" Foreground="Red" />
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     
      <i:Interaction.Triggers>
      
@@ -35,21 +62,50 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="1" Margin="20 0">
-            <DockPanel>
+        <StackPanel.Resources>
+            <Style TargetType="{x:Type DockPanel}">
+                <Setter Property="Margin" Value="0 0 0 4"/>
+            </Style>
+        </StackPanel.Resources>
+            <DockPanel LastChildFill="True">
                 <TextBlock DockPanel.Dock="Top" Text="ユーザー名*" Margin="0 0 0 3" />
-                <TextBox Margin="0 0 0 3" />
+                <TextBox Name="ui_userNameBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
+                    <TextBox.Text>
+                        <Binding Path="UserName" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                    </TextBox.Text>
+                </TextBox>
+                <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_userNameBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
             </DockPanel>
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="パスワード*" Margin="0 0 0 3" />
-                <TextBox Margin="0 0 0 3" />
+                <TextBox Name="ui_passwordBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" Margin="0 0 0 3" InputMethod.IsInputMethodEnabled="False" >
+                    <TextBox.Text>
+                        <Binding Path="Password" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                    </TextBox.Text>
+                </TextBox>
+                <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_passwordBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
             </DockPanel>
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="パスワード確認*" Margin="0 0 0 3" />
-                <TextBox Margin="0 0 0 3" />
+                <TextBox Name="ui_passwordConfirmBox" DockPanel.Dock="Top" Margin="0 0 0 3" InputMethod.IsInputMethodEnabled="False" >
+                    <TextBox.Text>
+                        <Binding Path="PasswordConfirm" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                    </TextBox.Text>
+                </TextBox>
+                <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_passwordConfirmBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
             </DockPanel>
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="メールアドレス" Margin="0 0 0 3" />
-                <TextBox Margin="0 0 0 3" />
+                <TextBox Name="ui_emailAddressBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
+                    <TextBox.Text>
+                        <Binding Path="EmailAddress" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
+                            <Binding.ValidationRules>
+                                <validator:EmailAdressValidator />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+				<ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_emailAddressBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
             </DockPanel>
         </StackPanel>
         
