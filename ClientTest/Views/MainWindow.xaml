@@ -7,10 +7,32 @@
         xmlns:v="clr-namespace:ClientTest.Views"
         xmlns:vm="clr-namespace:ClientTest.ViewModels"
         Title="MainWindow" Height="500" Width="620">
-
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
+	<Window.Resources>
+		<Style x:Key="GreenFlatButton" TargetType="Button">
+			<Setter Property="Padding" Value="10 3" />
+			<Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="White" BorderThickness="1" Padding="10 3">
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True" >
+                    <Trigger.Setters>
+                        <Setter Property="Background" Value="Firebrick" />
+                    </Trigger.Setters>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+	</Window.Resources>
 
     <i:Interaction.Triggers>
 
@@ -52,36 +74,10 @@
         <StackPanel Grid.Row="0" VerticalAlignment="Center" Background="DarkSeaGreen" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <Button Width="70" Height="30" Margin="0 0 20 0" Content="新規登録" Command="{Binding RegisterCommand}" Visibility="Collapsed" />
-                <Button Width="70" Height="30" Content="ログアウト" Command="{Binding LogoutCommand}" />
+                <Button Style="{StaticResource GreenFlatButton}" Width="70" Height="30" Content="ログアウト" Command="{Binding LogoutCommand}" />
             </StackPanel>
         </StackPanel>
-        <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding LoginCommand}" Content="{Binding MyName}" Foreground="White" Margin="0 0 5 0" Padding="10 3">
-            <Button.Style>
-                <Style TargetType="Button">
-                    <Setter Property="Background" Value="{x:Null}"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Button}">
-                                <Border Background="{TemplateBinding Background}" BorderBrush="White" BorderThickness="1" Padding="10 3">
-                                    <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <!--ログイン名の表示状態を変更するトリガー-->
-                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True" >
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                        <Trigger Property="IsMouseOver" Value="True" >
-                            <Trigger.Setters>
-                                <Setter Property="Background" Value="Firebrick" />
-                            </Trigger.Setters>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
+        <Button Style="{StaticResource GreenFlatButton}" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding LoginCommand}" Content="{Binding MyName}" Margin="0 0 5 0" />
 
         <!--ユーザー名表示-->
         <Grid Grid.Row="1" HorizontalAlignment="Stretch" >
