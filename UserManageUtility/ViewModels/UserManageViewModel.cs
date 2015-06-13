@@ -113,6 +113,7 @@ namespace UserManageUtility.ViewModels
                 else if (value != Password)
                 {
                     _errors["PasswordConfirm"] = "確認用パスワードが一致しません";
+                    RaisePropertyChanged("Error");
                 }
                 else
                 {
@@ -142,6 +143,24 @@ namespace UserManageUtility.ViewModels
         #endregion
 
 
+        #region NotifyMessage変更通知プロパティ
+        private string _NotifyMessage;
+
+        public string NotifyMessage
+        {
+            get
+            { return _NotifyMessage; }
+            set
+            { 
+                if (_NotifyMessage == value)
+                    return;
+                _NotifyMessage = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+
         #endregion プロパティ
 
         #region コマンド
@@ -164,21 +183,42 @@ namespace UserManageUtility.ViewModels
 
         public async void WriteToDB()
         {
-            if (!_apiServer.CurrentSession.IsLoggedIn) return;
+            NotifyMessage = "";
+
+            if (!_apiServer.CurrentSession.IsLoggedIn)
+            {
+                NotifyMessage = "ログインしてません";
+                return;
+            }
 
             //一つでも空欄があれば、帰る
             if (String.IsNullOrEmpty(UserName) ||
                 String.IsNullOrEmpty(Password) ||
                 String.IsNullOrEmpty(PasswordConfirm)
-                ) return;
+                )
+            {
+                NotifyMessage = "必須入力に空欄があります";
+                return;
+            }
 
             //エラーが一つでもあれば帰る
             foreach (var err in _errors)
             {
-                if (err.Value != null) return;
+                if (err.Value != null)
+                {
+                    NotifyMessage = "入力項目にエラーがあります";
+                    return;
+                }
             }
 
-            await _apiServer.RegisterAsync(UserName,Password,EmailAddress);
+            try
+            {
+                await _apiServer.RegisterAsync(UserName, Password, EmailAddress);
+            }
+            catch(ApplicationException ex)
+            {
+                NotifyMessage = ex.Message;
+            }
         }
         #endregion
 
