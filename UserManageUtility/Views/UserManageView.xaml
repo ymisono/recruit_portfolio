@@ -63,12 +63,12 @@
         </Grid.ColumnDefinitions>
         
         <StackPanel>
-            <ListView>
+            <ListView ItemsSource="{Binding Users}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="#" Width="12" />
-                        <GridViewColumn Header="ユーザー名" Width="60" />
-                        <!--<GridViewColumn Header="ID" displaymemberbinding="{Binding ID}" width="50" />-->
+                        <GridViewColumn Header="ユーザー名" Width="70" DisplayMemberBinding="{Binding UserName}" />
+                        <GridViewColumn Header="メール" DisplayMemberBinding="{Binding Email}" Width="120" />
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -122,13 +122,13 @@
             </DockPanel>
             
         </StackPanel>
-        <TextBlock Grid.Column="1" VerticalAlignment="Bottom" Text="{Binding NotifyMessage}" Foreground="Red" FontSize="16" Margin="0 26" />
+        <TextBlock Grid.Column="1" VerticalAlignment="Bottom" Text="{Binding Notification}" Foreground="Red" FontSize="16" Margin="0 26" />
         
         <DockPanel Grid.Column="2">
             <StackPanel >
                 <CheckBox Content="削除フラグ" IsChecked="False"/>
             </StackPanel>
-            <Button VerticalAlignment="Bottom" Width="150" Height="42" Margin="0 16" Content="登録" Command="{Binding WriteToDBCommand}" FontSize="21.333" />
+            <Button VerticalAlignment="Bottom" Width="150" Height="42" Margin="0 16" Content="新規登録" Command="{Binding WriteToDBCommand}" FontSize="21.333" />
         </DockPanel>
     </Grid>
 </Window>

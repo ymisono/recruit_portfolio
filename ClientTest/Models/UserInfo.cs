@@ -1,11 +1,8 @@
 ﻿using System;
 
-using Livet;
-using Newtonsoft.Json;
-
 namespace ClientTest.Models
 {
-    public class UserInfo : NotificationObject
+    public class UserInfo
     {
         public String Id { get; set; }
 

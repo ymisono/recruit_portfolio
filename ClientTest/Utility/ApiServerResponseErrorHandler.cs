@@ -39,6 +39,8 @@ namespace ClientTest.Utility
                         throw ex;
                     case HttpStatusCode.Unauthorized:
                         throw new ApplicationException(String.Format(templateExtraMsg,401,"認証に失敗","再ログインしてください。", details));
+                    case HttpStatusCode.NotFound:
+                        throw new ApplicationException(String.Format(templateExtraMsg, 404, "リソース獲得失敗", "要求されたリソースがありませんでした。", details));
                     case HttpStatusCode.InternalServerError:
                         throw new ApplicationException(String.Format(templateExtraMsg,500,"サーバー内で不正な処理が発生","サポートへご連絡お願いします。", details));
                     case HttpStatusCode.ServiceUnavailable:

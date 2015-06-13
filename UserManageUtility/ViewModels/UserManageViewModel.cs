@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using ClientTest.Models;
 using ClientTest.Utility;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Collections.ObjectModel;
 
 namespace UserManageUtility.ViewModels
 {
@@ -20,6 +22,37 @@ namespace UserManageUtility.ViewModels
         #endregion フィールド
 
         #region プロパティ
+
+
+        #region Users変更通知プロパティ
+        private ICollection<UserInfo> _Users;
+        /// <summary>
+        /// 全ユーザー
+        /// </summary>
+        public ICollection<UserInfo> Users
+        {
+            get { return _Users; }
+            private set 
+            {
+                if (value == null) return;
+
+                //最初だった場合
+                if (_Users == null)
+                {
+                    _Users = value;
+                }
+                else
+                {
+                    foreach (var user in value)
+                    {
+                        _Users.Add(user);
+                    }
+                }
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
 
         #region UserName変更通知プロパティ
         private string _UserName;
@@ -156,18 +189,18 @@ namespace UserManageUtility.ViewModels
         #endregion
 
 
-        #region NotifyMessage変更通知プロパティ
-        private string _NotifyMessage;
+        #region Notification変更通知プロパティ
+        private string _notification;
 
-        public string NotifyMessage
+        public string Notification
         {
             get
-            { return _NotifyMessage; }
+            { return _notification; }
             set
             { 
-                if (_NotifyMessage == value)
+                if (_notification == value)
                     return;
-                _NotifyMessage = value;
+                _notification = value;
                 RaisePropertyChanged();
             }
         }
@@ -196,11 +229,11 @@ namespace UserManageUtility.ViewModels
 
         public async void WriteToDB()
         {
-            NotifyMessage = "";
+            Notification = "";
 
             if (!_apiServer.CurrentSession.IsLoggedIn)
             {
-                NotifyMessage = "ログインしてません";
+                Notification = "ログインしてません";
                 return;
             }
 
@@ -210,7 +243,7 @@ namespace UserManageUtility.ViewModels
                 String.IsNullOrEmpty(PasswordConfirm)
                 )
             {
-                NotifyMessage = "必須入力に空欄があります";
+                Notification = "必須入力に空欄があります";
                 return;
             }
 
@@ -219,7 +252,7 @@ namespace UserManageUtility.ViewModels
             {
                 if (err.Value != null)
                 {
-                    NotifyMessage = "入力項目にエラーがあります";
+                    Notification = "入力項目にエラーがあります";
                     return;
                 }
             }
@@ -230,7 +263,7 @@ namespace UserManageUtility.ViewModels
             }
             catch(ApplicationException ex)
             {
-                NotifyMessage = ex.Message;
+                Notification = ex.Message;
             }
         }
         #endregion
@@ -249,11 +282,26 @@ namespace UserManageUtility.ViewModels
         //voidで投げっぱ
         private async void LoginStartUpAsync()
         {
-            var pass = LocalSettings.ReadSetting("AdminPass");
+            try
+            {
+                var pass = LocalSettings.ReadSetting("AdminPass");
 
-            await _apiServer.CurrentSession.LoginAsync("misono", pass);
+                await _apiServer.CurrentSession.LoginAsync("misono", pass);
+
+                //ここで更新する
+                await Update();
+            }
+            catch(ApplicationException ex)
+            {
+                MessageBox.Show(ex.Message);
+                Application.Current.Shutdown();
+            }
         }
 
+        private async Task Update()
+        {
+            Users = await _apiServer.ReadAsync<ICollection<UserInfo>>("Account/UserInfo");
+        }
 #endregion
 
         #region IDataErrorInfo

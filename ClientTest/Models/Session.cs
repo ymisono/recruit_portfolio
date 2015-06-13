@@ -84,7 +84,7 @@ namespace ClientTest.Models
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", AccessToken);
 
-                var res = await client.GetAsync( _serverPath+"api/Account/UserInfo");
+                var res = await client.GetAsync( _serverPath+"api/Account/LoginUserInfo");
 
                 //エラーチェック
                 await ApiServerResponseErrorHandler.CheckResponseStatus(res);

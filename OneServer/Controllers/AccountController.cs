@@ -4,11 +4,13 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
+using ClientTest.Models;
 using OneServer.Models;
 using OneServer.Providers;
 using OneServer.Results;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -37,15 +39,14 @@ namespace OneServer.Controllers
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
-        // GET api/Account/UserInfo
+        // GET api/Account/LoginUserInfo
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-        [Route("UserInfo")]
-        public async Task<UserInfoViewModel> GetUserInfo()
+        [Route("LoginUserInfo")]
+        public async Task<UserInfoViewModel> GetLoginUserInfo()
         {
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
             
             var curUser = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            
 
             return new UserInfoViewModel
             {
@@ -55,6 +56,27 @@ namespace OneServer.Controllers
                 HasRegistered = externalLogin == null,
                 LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
             };
+        }
+
+        //!!危険AdminRoleのみ
+        [Route("UserInfo")]
+        public IHttpActionResult GetUserInfo()
+        {
+            var db = new ApplicationDbContext();
+
+            //削除フラグも含めて取ってくる
+            var users = db.Users;
+
+            var returnUsers = new List<UserInfo>();
+
+            foreach(var user in users)
+            {
+                returnUsers.Add(
+                    new UserInfo { Id = user.Id, UserName = user.UserName, Email = user.Email }
+                    );
+            }
+
+            return Ok(returnUsers);
         }
 
         // POST api/Account/Logout
