@@ -110,6 +110,29 @@ namespace ClientTest.Models
             }
         }
 
+        public async Task DeleteByIdAsync(String id, String restResource)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", CurrentSession.AccessToken);
+
+                //PUT
+                var res = await client.DeleteAsync(
+                        new Uri(_apiPath + restResource + "/" + id)
+                    );
+
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
+            }
+        }
+
+        /// <summary>
+        /// 登録
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task RegisterAsync(String userName, String password, String email = "")
         {
             var sendObj = new { UserName = userName, Email = email, Password = password };

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using UserManageUtility.Models;
 
 namespace UserManageUtility.ViewModels
 {
@@ -24,13 +25,12 @@ namespace UserManageUtility.ViewModels
 
         #region プロパティ
 
-
         #region Users変更通知プロパティ
-        private ObservableCollection<UserInfo> _Users;
+        private ObservableCollection<SelectableUserInfo> _Users;
         /// <summary>
         /// 全ユーザー
         /// </summary>
-        public ObservableCollection<UserInfo> Users
+        public ObservableCollection<SelectableUserInfo> Users
         {
             get { return _Users; }
             private set 
@@ -50,7 +50,6 @@ namespace UserManageUtility.ViewModels
                         _Users.Add(user);
                     }
                 }
-
                 RaisePropertyChanged("Users");
             }
         }
@@ -280,8 +279,54 @@ namespace UserManageUtility.ViewModels
         }
         #endregion
 
+        #region DeleteCommand
+        private Livet.Commands.ViewModelCommand _DeleteCommand;
 
-          #endregion コマンド
+        public Livet.Commands.ViewModelCommand DeleteCommand
+        {
+            get
+            {
+                if (_DeleteCommand == null)
+                {
+                    _DeleteCommand = new Livet.Commands.ViewModelCommand(Delete);
+                }
+                return _DeleteCommand;
+            }
+        }
+
+        public async void Delete()
+        {
+            var selectedUser = Users.SingleOrDefault(u => u.IsSelected == true);
+
+            if (selectedUser == null)
+            {
+                Notification = "対象が選択されていません";
+                return;
+            }
+
+            try
+            {
+                Notification = "削除中です";
+
+                await _apiServer.DeleteByIdAsync(selectedUser.Id, "Account");
+
+                //空にする
+                Users.Clear();
+
+                await Update();
+
+                Notification = "削除しました";
+            }
+            catch(ApplicationException ex)
+            {
+                Notification = ex.Message;
+            }
+
+            
+        }
+        #endregion
+
+        #endregion コマンド
 
         public void Initialize()
         {
@@ -312,7 +357,7 @@ namespace UserManageUtility.ViewModels
 
         private async Task Update()
         {
-            Users = await _apiServer.ReadAsync<ObservableCollection<UserInfo>>("Account/UserInfo");
+            Users = await _apiServer.ReadAsync<ObservableCollection<SelectableUserInfo>>("Account/UserInfo");
         }
 #endregion
 

@@ -33,6 +33,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Storyboard x:Key="OnLostFocus1"/>
+        <Storyboard x:Key="Storyboard1"/>
     </Window.Resources>
     
      <i:Interaction.Triggers>
@@ -55,7 +57,7 @@
 
     </i:Interaction.Triggers>
     
-    <Grid Name="ui_layoutRoot" Margin="32 16">
+    <Grid Name="ui_layoutRoot" Margin="32 16" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
@@ -63,15 +65,27 @@
         </Grid.ColumnDefinitions>
         
         <StackPanel>
-            <ListView ItemsSource="{Binding Users,UpdateSourceTrigger=PropertyChanged}">
+            <ListView Name="ui_userList" ItemsSource="{Binding Users,UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" >
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" >
+                        <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="#" Width="12" />
                         <GridViewColumn Header="ユーザー名" Width="70" DisplayMemberBinding="{Binding UserName}" />
                         <GridViewColumn Header="メール" DisplayMemberBinding="{Binding Email}" Width="120" />
+                        <GridViewColumn Header="削除F" Width="40">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsDeleted}" IsEnabled="False" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>
+            <Button Content="選択解除" Height="25" Width="80" Margin="0 10" Click="UnSelect_Click"/>
         </StackPanel>
         
         <StackPanel Grid.Column="1" Margin="20 0">
@@ -80,7 +94,7 @@
                 <Setter Property="Margin" Value="0 0 0 4"/>
             </Style>
         </StackPanel.Resources>
-            <DockPanel LastChildFill="True">
+            <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="ユーザー名*" Margin="0 0 0 3" />
                 <TextBox Name="ui_userNameBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
                     <TextBox.Text>
@@ -125,10 +139,13 @@
         <TextBlock Grid.Column="1" VerticalAlignment="Bottom" Text="{Binding Notification}" Foreground="Red" FontSize="16" Margin="0 26" />
         
         <DockPanel Grid.Column="2">
-            <StackPanel >
+            <StackPanel DockPanel.Dock="Top">
                 <CheckBox Content="削除フラグ" IsChecked="False"/>
             </StackPanel>
-            <Button VerticalAlignment="Bottom" Width="150" Height="42" Margin="0 16" Content="新規登録" Command="{Binding WriteToDBCommand}" FontSize="21.333" />
+            <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+                <Button Width="150" Height="42" Margin="0 10" Content="新規登録" Command="{Binding WriteToDBCommand}" FontSize="21.333" />
+                <Button Width="80" Height="35" Margin="0 10" Content="削除" Command="{Binding DeleteCommand}" />
+            </StackPanel>
         </DockPanel>
     </Grid>
 </Window>

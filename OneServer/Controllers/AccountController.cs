@@ -26,9 +26,7 @@ namespace OneServer.Controllers
     {
         private const string LocalLoginProvider = "Local";
 
-        public AccountController()
-        {
-        }
+        public AccountController() {}
 
         public AccountController(ApplicationUserManager userManager,
             ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
@@ -72,7 +70,7 @@ namespace OneServer.Controllers
             foreach(var user in users)
             {
                 returnUsers.Add(
-                    new UserInfo { Id = user.Id, UserName = user.UserName, Email = user.Email }
+                    new UserInfo { Id = user.Id, UserName = user.UserName, Email = user.Email, IsDeleted = user.IsDeleted }
                     );
             }
 
@@ -386,6 +384,25 @@ namespace OneServer.Controllers
             return Ok();
         }
 
+        #region Delete
+
+        //DELETE api/Account/{guid}
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public IHttpActionResult DeleteUser(Guid id)
+        {
+            if (id == null) return BadRequest("無効なIdです");
+
+            var targetUser = UserManager.FindById(id.ToString());
+
+            //削除！
+            UserManager.Delete(targetUser);
+            
+            return Ok();
+        }
+
+        #endregion
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && UserManager != null)
@@ -397,7 +414,7 @@ namespace OneServer.Controllers
             base.Dispose(disposing);
         }
 
-
+        #region プライベートメソッド
 
         private class ExternalLoginData
         {
@@ -467,5 +484,7 @@ namespace OneServer.Controllers
                 return HttpServerUtility.UrlTokenEncode(data);
             }
         }
+
+        #endregion プライベートメソッド
     }
 }

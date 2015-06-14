@@ -1,4 +1,9 @@
-﻿using System.Windows;
+﻿using Livet;
+using Livet.Commands;
+using Livet.Messaging;
+using System;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace UserManageUtility.Views
 {
@@ -18,6 +23,11 @@ namespace UserManageUtility.Views
         public UserManageView()
         {
             InitializeComponent();
+        }
+
+        private void UnSelect_Click(object sender, RoutedEventArgs e)
+        {
+            ui_userList.SelectedItem = null;
         }
     }
 }

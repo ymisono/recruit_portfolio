@@ -11,6 +11,8 @@ namespace ClientTest.Models
 
         public String Email { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         /// <summary>
         /// 比較オペレーター
         /// </summary>
