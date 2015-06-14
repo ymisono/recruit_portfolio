@@ -1,13 +1,14 @@
-﻿using Livet;
+﻿using ClientTest.Models;
+using ClientTest.Utility;
+using Livet;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Text.RegularExpressions;
-using ClientTest.Models;
-using ClientTest.Utility;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Collections.ObjectModel;
 
 namespace UserManageUtility.ViewModels
 {
@@ -25,16 +26,16 @@ namespace UserManageUtility.ViewModels
 
 
         #region Users変更通知プロパティ
-        private ICollection<UserInfo> _Users;
+        private ObservableCollection<UserInfo> _Users;
         /// <summary>
         /// 全ユーザー
         /// </summary>
-        public ICollection<UserInfo> Users
+        public ObservableCollection<UserInfo> Users
         {
             get { return _Users; }
             private set 
             {
-                if (value == null) return;
+                if (ReferenceEquals(null,value)) return;
 
                 //最初だった場合
                 if (_Users == null)
@@ -43,12 +44,14 @@ namespace UserManageUtility.ViewModels
                 }
                 else
                 {
-                    foreach (var user in value)
+                    var newUsers = value.Where(x => !_Users.Any(y => x.Id == y.Id));
+                    foreach (var user in newUsers)
                     {
                         _Users.Add(user);
                     }
                 }
-                RaisePropertyChanged();
+
+                RaisePropertyChanged("Users");
             }
         }
         #endregion
@@ -259,7 +262,16 @@ namespace UserManageUtility.ViewModels
 
             try
             {
-                await _apiServer.RegisterAsync(UserName, Password, EmailAddress);
+                var registerTask = _apiServer.RegisterAsync(UserName, Password, EmailAddress);
+
+                Notification = "書き込み中……";
+
+                await registerTask;
+
+                //ついでに更新
+                await Update();
+
+                Notification = "登録しました";
             }
             catch(ApplicationException ex)
             {
@@ -300,7 +312,7 @@ namespace UserManageUtility.ViewModels
 
         private async Task Update()
         {
-            Users = await _apiServer.ReadAsync<ICollection<UserInfo>>("Account/UserInfo");
+            Users = await _apiServer.ReadAsync<ObservableCollection<UserInfo>>("Account/UserInfo");
         }
 #endregion
 

@@ -63,7 +63,7 @@
         </Grid.ColumnDefinitions>
         
         <StackPanel>
-            <ListView ItemsSource="{Binding Users}">
+            <ListView ItemsSource="{Binding Users,UpdateSourceTrigger=PropertyChanged}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="#" Width="12" />
