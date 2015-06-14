@@ -25,9 +25,14 @@ namespace UserManageUtility.Views
             InitializeComponent();
         }
 
-        private void UnSelect_Click(object sender, RoutedEventArgs e)
+        private void UnSelectUser_Click(object sender, RoutedEventArgs e)
         {
             ui_userList.SelectedItem = null;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ui_roleList.SelectedItem = null;
         }
     }
 }

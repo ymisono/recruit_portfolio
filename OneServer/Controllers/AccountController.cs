@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
+using System.Collections.ObjectModel;
 
 namespace OneServer.Controllers
 {
@@ -69,9 +70,23 @@ namespace OneServer.Controllers
 
             foreach(var user in users)
             {
+                //対応するロールをゲット
+                var roles = UserManager.GetRoles(user.Id);
+                ICollection<Role> castedRoles = new Collection<Role>();
+                foreach(var r in roles)
+                {
+                    var tempRole = RoleManager.FindByName(r);
+                    castedRoles.Add(new Role { Id = tempRole.Id, Name = r, Description = tempRole.Description });
+                }
+
                 returnUsers.Add(
-                    new UserInfo { Id = user.Id, UserName = user.UserName, Email = user.Email, IsDeleted = user.IsDeleted }
-                    );
+                    new UserInfo 
+                    {
+                        Id = user.Id, UserName = user.UserName,
+                                   Email = user.Email,
+                                   Roles = castedRoles,
+                                   IsDeleted = user.IsDeleted
+                    });
             }
 
             return Ok(returnUsers);

@@ -43,15 +43,17 @@ namespace OneServer.Controllers
             return Ok(roles);
         }
 
-        [Route("Create")]
-        public async Task<IHttpActionResult> Create(CreateRoleBindingModel model)
+        //POST /api/Roles
+        [Route("",Name="PostRole")]
+        [HttpPost]
+        public async Task<IHttpActionResult> PostRole(CreateRoleBindingModel model)
         {
             if (!ModelState.IsValid || model == null)
             {
                 return BadRequest(ModelState);
             }
 
-            var role = new ApplicationRole { Name = model.Name };
+            var role = new ApplicationRole { Name = model.Name, Description = model.Description };
 
             var result = await this.RoleManager.CreateAsync(role);
 
@@ -60,7 +62,7 @@ namespace OneServer.Controllers
                 return GetErrorResult(result);
             }
 
-            Uri locationHeader = new Uri(Url.Link("GetRole", new { id = role.Id }));
+            Uri locationHeader = new Uri(Url.Link("PostRole", new { id = role.Id }));
 
             var factory = new ModelFactory();
             return Created(locationHeader, factory.Create(role));

@@ -1,6 +1,7 @@
 ﻿using ClientTest.Models;
 using ClientTest.Utility;
 using Livet;
+using Livet.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,6 +25,8 @@ namespace UserManageUtility.ViewModels
         #endregion フィールド
 
         #region プロパティ
+
+        #region ユーザー関係
 
         #region Users変更通知プロパティ
         private ObservableCollection<SelectableUserInfo> _Users;
@@ -54,36 +57,6 @@ namespace UserManageUtility.ViewModels
             }
         }
         #endregion
-
-
-        #region Roles変更通知プロパティ
-        private ObservableCollection<Role> _Roles;
-
-        public ObservableCollection<Role> Roles
-        {
-            get { return _Roles; }
-            private set
-            {
-                if (ReferenceEquals(null,value)) return;
-
-                //最初だった場合
-                if (_Roles == null)
-                {
-                    _Roles = value;
-                }
-                else
-                {
-                    var newRoles = value.Where(x => !_Roles.Any(y => x.Id == y.Id));
-                    foreach (var role in newRoles)
-                    {
-                        _Roles.Add(role);
-                    }
-                }
-                RaisePropertyChanged("Roles");
-            }
-        }
-        #endregion
-
 
         #region UserName変更通知プロパティ
         private string _UserName;
@@ -219,6 +192,72 @@ namespace UserManageUtility.ViewModels
         }
         #endregion
 
+        #endregion ユーザー関係
+
+        #region Roles変更通知プロパティ
+        private ObservableCollection<Role> _Roles;
+
+        public ObservableCollection<Role> Roles
+        {
+            get { return _Roles; }
+            private set
+            {
+                if (ReferenceEquals(null, value)) return;
+
+                //最初だった場合
+                if (_Roles == null)
+                {
+                    _Roles = value;
+                }
+                else
+                {
+                    var newRoles = value.Where(x => !_Roles.Any(y => x.Id == y.Id));
+                    foreach (var role in newRoles)
+                    {
+                        _Roles.Add(role);
+                    }
+                }
+                RaisePropertyChanged("Roles");
+            }
+        }
+        #endregion
+
+
+        #region RoleName変更通知プロパティ
+        private string _RoleName;
+
+        public string RoleName
+        {
+            get
+            { return _RoleName; }
+            set
+            { 
+                if (_RoleName == value)
+                    return;
+                _RoleName = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+
+        #region RoleDescription変更通知プロパティ
+        private string _RoleDescription;
+
+        public string RoleDescription
+        {
+            get
+            { return _RoleDescription; }
+            set
+            { 
+                if (_RoleDescription == value)
+                    return;
+                _RoleDescription = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
 
         #region Notification変更通知プロパティ
         private string _notification;
@@ -309,21 +348,21 @@ namespace UserManageUtility.ViewModels
         #endregion
 
         #region DeleteCommand
-        private Livet.Commands.ViewModelCommand _DeleteCommand;
+        private Livet.Commands.ListenerCommand<ConfirmationMessage> _DeleteCommand;
 
-        public Livet.Commands.ViewModelCommand DeleteCommand
+        public Livet.Commands.ListenerCommand<ConfirmationMessage> DeleteCommand
         {
             get
             {
                 if (_DeleteCommand == null)
                 {
-                    _DeleteCommand = new Livet.Commands.ViewModelCommand(Delete);
+                    _DeleteCommand = new Livet.Commands.ListenerCommand<ConfirmationMessage>(Delete);
                 }
                 return _DeleteCommand;
             }
         }
 
-        public async void Delete()
+        public async void Delete(ConfirmationMessage message)
         {
             var selectedUser = Users.SingleOrDefault(u => u.IsSelected == true);
 
@@ -333,25 +372,69 @@ namespace UserManageUtility.ViewModels
                 return;
             }
 
+            if (message.Response.HasValue && message.Response.Value)
+            {
+                try
+                {
+                    Notification = "削除中です";
+
+                    await _apiServer.DeleteByIdAsync(selectedUser.Id, "Account");
+
+                    //空にする
+                    Users.Clear();
+
+                    await Update();
+
+                    Notification = "削除しました";
+                }
+                catch (ApplicationException ex)
+                {
+                    Notification = ex.Message;
+                }
+            }
+            
+        }
+        #endregion
+
+        #region AddNewRoleCommand
+        private Livet.Commands.ViewModelCommand _AddNewRoleCommand;
+
+        public Livet.Commands.ViewModelCommand AddNewRoleCommand
+        {
+            get
+            {
+                if (_AddNewRoleCommand == null)
+                {
+                    _AddNewRoleCommand = new Livet.Commands.ViewModelCommand(AddNewRole);
+                }
+                return _AddNewRoleCommand;
+            }
+        }
+
+        public async void AddNewRole()
+        {
+            //対象
+            if ( String.IsNullOrEmpty(RoleName) || String.IsNullOrEmpty(RoleDescription ) )
+            {
+                Notification = "対象が入力されていません";
+                return;
+            }
+
             try
             {
-                Notification = "削除中です";
+                Notification = "ロール追加中です";
 
-                await _apiServer.DeleteByIdAsync(selectedUser.Id, "Account");
-
-                //空にする
-                Users.Clear();
+                await _apiServer.CreateAsync<Role>(
+                    new Role { Name = RoleName, Description=RoleDescription }, "Roles");
 
                 await Update();
 
-                Notification = "削除しました";
+                Notification = "追加しました";
             }
-            catch(ApplicationException ex)
+            catch (ApplicationException ex)
             {
                 Notification = ex.Message;
             }
-
-            
         }
         #endregion
 

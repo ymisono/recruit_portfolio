@@ -7,6 +7,7 @@
         xmlns:v="clr-namespace:UserManageUtility.Views"
         xmlns:vm="clr-namespace:UserManageUtility.ViewModels"
         xmlns:validator="clr-namespace:UserManageUtility.Validator"
+        xmlns:converter="clr-namespace:UserManageUtility.Converter"
         Title="ユーザー管理" Height="680" Width="980" WindowState="Maximized">
     <Window.DataContext>
         <vm:UserManageViewModel />
@@ -33,8 +34,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Storyboard x:Key="OnLostFocus1"/>
-        <Storyboard x:Key="Storyboard1"/>
+        <converter:RoleNameConverter x:Key="RoleNameConverter" />
     </Window.Resources>
     
      <i:Interaction.Triggers>
@@ -63,8 +63,12 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        
-        <StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
             <ListView Name="ui_userList" ItemsSource="{Binding Users,UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" >
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem" >
@@ -75,6 +79,7 @@
                     <GridView>
                         <GridViewColumn Header="ユーザー名" Width="70" DisplayMemberBinding="{Binding UserName}" />
                         <GridViewColumn Header="メール" DisplayMemberBinding="{Binding Email}" Width="120" />
+                        <GridViewColumn Header="ロール" DisplayMemberBinding="{Binding Roles,Converter={StaticResource RoleNameConverter}}" Width="50" />
                         <GridViewColumn Header="削除F" Width="40">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
@@ -85,7 +90,10 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <ListView Name="ui_roleList" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" Margin="0 12">
+            <Button Content="選択解除" Height="25" Width="80" Margin="0 10" Click="UnSelectUser_Click" />
+        </StackPanel>
+        <StackPanel Grid.Row="1" >
+        <ListView Name="ui_roleList" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" Margin="0 12">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="ロール名" Width="96" DisplayMemberBinding="{Binding Name}" />
@@ -93,7 +101,12 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <Button Content="選択解除" Height="25" Width="80" Margin="0 10" />
+            <Button Content="選択解除" Height="25" Width="80" Margin="0 5" Click="Button_Click" />
+            <TextBlock Text="ロール名*" Margin="0 0 0 3" />
+            <TextBox Text="{Binding RoleName}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" />
+            <TextBlock Text="ロール説明" Margin="0 0 0 3" />
+            <TextBox Text="{Binding RoleDescription}" Margin="0 0 0 3" />
+            <Button Content="新規ロール追加" Height="25" Width="90" Margin="0 5" Command="{Binding AddNewRoleCommand}" />
         </StackPanel>
         
         <StackPanel Grid.Column="1" Margin="20 0">
@@ -144,7 +157,7 @@
             </DockPanel>
             
         </StackPanel>
-        <TextBlock Grid.Column="1" VerticalAlignment="Bottom" Text="{Binding Notification}" Foreground="Red" FontSize="16" Margin="0 26" />
+        <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Notification}" Foreground="Red" FontSize="16" Margin="0 26" />
         
         <DockPanel Grid.Column="2">
             <StackPanel DockPanel.Dock="Top">
@@ -152,7 +165,20 @@
             </StackPanel>
             <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
                 <Button Width="150" Height="42" Margin="0 10" Content="新規登録" Command="{Binding WriteToDBCommand}" FontSize="21.333" />
-                <Button Width="80" Height="35" Margin="0 10" Content="削除" Command="{Binding DeleteCommand}" />
+                <Button Width="80" Height="35" Margin="0 10" Content="削除"  >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <l:ConfirmationDialogInteractionMessageAction>
+                                <l:DirectInteractionMessage CallbackCommand="{Binding DeleteCommand}">
+                                    <l:ConfirmationMessage Button="OKCancel" 
+                                                  Caption="確認"
+                                                  Text="選択されたユーザーをDBから永久に削除してよろしいですか？"
+                                                  Image="Warning"   />
+                                </l:DirectInteractionMessage>
+                            </l:ConfirmationDialogInteractionMessageAction>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
             </StackPanel>
         </DockPanel>
     </Grid>

@@ -11,6 +11,7 @@ namespace OneServer.Models
         [Display(Name = "Role Name")]
         public string Name { get; set; }
 
+        public string Description { get; set; }
     }
 
     public class UsersInRoleModel

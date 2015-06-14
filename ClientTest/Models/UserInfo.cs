@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace ClientTest.Models
@@ -10,6 +11,8 @@ namespace ClientTest.Models
         public String UserName { get; set; }
 
         public String Email { get; set; }
+
+        public virtual ICollection<Role> Roles { get; set; }
 
         public bool IsDeleted { get; set; }
 
