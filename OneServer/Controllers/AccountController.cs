@@ -57,6 +57,7 @@ namespace OneServer.Controllers
             };
         }
 
+        // GET api/Account/UserInfo
         //!!危険AdminRoleのみ
         [Route("UserInfo")]
         public IHttpActionResult GetUserInfo()
@@ -84,6 +85,7 @@ namespace OneServer.Controllers
                     {
                         Id = user.Id, UserName = user.UserName,
                                    Email = user.Email,
+                                   PhoneNumber = user.PhoneNumber,
                                    Roles = castedRoles,
                                    IsDeleted = user.IsDeleted
                     });
@@ -354,7 +356,7 @@ namespace OneServer.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser() { UserName = model.UserName, Email = model.Email };
+            var user = new ApplicationUser() { UserName = model.UserName, Email = model.Email, PhoneNumber = model.PhoneNumber };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 

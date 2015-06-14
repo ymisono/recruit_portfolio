@@ -59,8 +59,8 @@
     
     <Grid Name="ui_layoutRoot" Margin="32 16" >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -77,9 +77,10 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="ユーザー名" Width="70" DisplayMemberBinding="{Binding UserName}" />
-                        <GridViewColumn Header="メール" DisplayMemberBinding="{Binding Email}" Width="120" />
-                        <GridViewColumn Header="ロール" DisplayMemberBinding="{Binding Roles,Converter={StaticResource RoleNameConverter}}" Width="50" />
+                        <GridViewColumn Header="ユーザー名" DisplayMemberBinding="{Binding UserName}" Width="70"/>
+                        <GridViewColumn Header="メール" DisplayMemberBinding="{Binding Email}" Width="140" />
+                        <GridViewColumn Header="電話番号" DisplayMemberBinding="{Binding PhoneNumber}" Width="70" />
+                        <GridViewColumn Header="ロール" DisplayMemberBinding="{Binding Roles,Converter={StaticResource RoleNameConverter}}" Width="80" />
                         <GridViewColumn Header="削除F" Width="40">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
@@ -155,7 +156,19 @@
                 </TextBox>
 				<ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_emailAddressBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
             </DockPanel>
-            
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="電話番号" Margin="0 0 0 3" />
+                <TextBox Name="ui_phoneNumberBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
+                    <TextBox.Text>
+                        <Binding Path="PhoneNumber" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
+                            <Binding.ValidationRules>
+                                <validator:PhoneNumberValidator />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_phoneNumberBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
+            </DockPanel>
         </StackPanel>
         <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Notification}" Foreground="Red" FontSize="16" Margin="0 26" />
         

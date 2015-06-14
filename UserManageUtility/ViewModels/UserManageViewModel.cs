@@ -192,6 +192,24 @@ namespace UserManageUtility.ViewModels
         }
         #endregion
 
+        #region PhoneNumber変更通知プロパティ
+        private string _PhoneNumber;
+
+        public string PhoneNumber
+        {
+            get
+            { return _PhoneNumber; }
+            set
+            { 
+                if (_PhoneNumber == value)
+                    return;
+                _PhoneNumber = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+
         #endregion ユーザー関係
 
         #region Roles変更通知プロパティ
@@ -307,7 +325,7 @@ namespace UserManageUtility.ViewModels
                 return;
             }
 
-            //一つでも空欄があれば、帰る
+            //必須項目に一つでも空欄があれば、帰る
             if (String.IsNullOrEmpty(UserName) ||
                 String.IsNullOrEmpty(Password) ||
                 String.IsNullOrEmpty(PasswordConfirm)
@@ -329,7 +347,7 @@ namespace UserManageUtility.ViewModels
 
             try
             {
-                var registerTask = _apiServer.RegisterAsync(UserName, Password, EmailAddress);
+                var registerTask = _apiServer.RegisterAsync(UserName, Password, EmailAddress,PhoneNumber);
 
                 Notification = "書き込み中……";
 

@@ -12,6 +12,8 @@ namespace ClientTest.Models
 
         public String Email { get; set; }
 
+        public String PhoneNumber { get; set; }
+
         public virtual ICollection<Role> Roles { get; set; }
 
         public bool IsDeleted { get; set; }

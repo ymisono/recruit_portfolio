@@ -48,6 +48,8 @@ namespace OneServer.Models
         [DataType(DataType.Password)]
         [Display(Name = "パスワード")]
         public string Password { get; set; }
+
+        public string PhoneNumber { get; set; }
     }
 
     public class RegisterExternalBindingModel
