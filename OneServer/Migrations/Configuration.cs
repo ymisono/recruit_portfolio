@@ -22,9 +22,16 @@ namespace OneServer.Migrations
         {
             var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(context));
 
+            //misonoアカウント
             context.Users.AddOrUpdate(
                 u => u.UserName,
                 new ApplicationUser() { UserName = "misono", Email = "misono@test.com", PasswordHash = new PasswordHasher().HashPassword("password") }
+            );
+
+            //アドミン
+            context.Users.AddOrUpdate(
+                u => u.UserName,
+                new ApplicationUser() { UserName = "admin", PasswordHash = new PasswordHasher().HashPassword("password") }
             );
 
             context.SaveChanges();
@@ -34,6 +41,26 @@ namespace OneServer.Migrations
 
             //If the userId is not null, then the SecurityStamp needs updating.
             if (!string.IsNullOrEmpty(userId)) userManager.UpdateSecurityStamp(userId);
+
+            //ロール
+            var adminRole = context.Roles.SingleOrDefault(x => x.Name == "Administrator");
+            //adminがなければ
+            if (adminRole == null)
+            {
+                context.Roles.AddOrUpdate(r => r.Name,
+                    new ApplicationRole() { Name = "Administrator", Description = "管理者ロール。管理者権限の操作ができる。" });
+
+                context.SaveChanges();
+
+                //adminUserを入手
+                var admin = context.Users.Single(u => u.UserName == "admin");
+
+                if (admin != null)
+                {
+                    //UserRoleで対応関係を作る
+                    userManager.AddToRole(admin.Id, "Administrator"); //この時点でAdminstratorはあるはず
+                }
+            }
 
             //Memo
             var myId = context.Users.Single(x => x.UserName == "misono").Id;

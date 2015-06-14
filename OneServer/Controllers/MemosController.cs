@@ -7,7 +7,6 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using OneServer.Models;
 using System;
-using OneServer.CustomIHttpActionResult;
 
 namespace OneServer.Controllers
 {

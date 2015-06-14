@@ -203,7 +203,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="CustomIHttpActionResult\ApiControllerExtension.cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\MemosController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
@@ -231,9 +230,14 @@
     <Compile Include="Migrations\201506111156192_IsDeletedFlag.Designer.cs">
       <DependentUpon>201506111156192_IsDeletedFlag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506141622131_newrole.cs" />
+    <Compile Include="Migrations\201506141622131_newrole.Designer.cs">
+      <DependentUpon>201506141622131_newrole.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ApplicationRole.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Memo.cs" />
     <Compile Include="Models\RoleBindingModels.cs" />
@@ -337,6 +341,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506111156192_IsDeletedFlag.resx">
       <DependentUpon>201506111156192_IsDeletedFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506141622131_newrole.resx">
+      <DependentUpon>201506141622131_newrole.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

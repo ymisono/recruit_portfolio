@@ -85,6 +85,14 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+            <ListView Name="ui_roleList" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" Margin="0 12">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="ロール名" Width="96" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="説明" DisplayMemberBinding="{Binding Description}" Width="240" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
             <Button Content="選択解除" Height="25" Width="80" Margin="0 10" Click="UnSelect_Click"/>
         </StackPanel>
         

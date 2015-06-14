@@ -15,7 +15,7 @@ namespace OneServer.Controllers
     [RoutePrefix("api/Roles")]
     public class RolesController : BaseApiController
     {
-        [Route("{id:guid}",Name = "GetBookById")]
+        [Route("{id:guid}",Name = "GetRole")]
         public async Task<IHttpActionResult> GetRole(string Id)
         {
             var role = await this.RoleManager.FindByIdAsync(Id);
@@ -34,16 +34,13 @@ namespace OneServer.Controllers
         public IHttpActionResult GetAllRoles()
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            IdentityRole rs = db.Roles.First<IdentityRole>();
-            IdentityRole rmRoles = this.RoleManager.Roles.First<IdentityRole>();
+            //var rs = db.Roles.First<ApplicationRole>();
+            var rmRoles = this.RoleManager.Roles.First<ApplicationRole>();
             var id = rmRoles.Id;
 
             var roles = this.RoleManager.Roles;
 
-            var misono = db.Users.Single(m => m.UserName == "misono");
-            var misonoRole = misono.Roles;
-
-            return Ok(id);
+            return Ok(roles);
         }
 
         [Route("Create")]
@@ -54,7 +51,7 @@ namespace OneServer.Controllers
                 return BadRequest(ModelState);
             }
 
-            var role = new IdentityRole { Name = model.Name };
+            var role = new ApplicationRole { Name = model.Name };
 
             var result = await this.RoleManager.CreateAsync(role);
 
@@ -63,7 +60,7 @@ namespace OneServer.Controllers
                 return GetErrorResult(result);
             }
 
-            Uri locationHeader = new Uri(Url.Link("GetBookById", new { id = role.Id }));
+            Uri locationHeader = new Uri(Url.Link("GetRole", new { id = role.Id }));
 
             var factory = new ModelFactory();
             return Created(locationHeader, factory.Create(role));

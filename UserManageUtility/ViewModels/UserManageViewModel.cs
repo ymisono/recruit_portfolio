@@ -56,6 +56,35 @@ namespace UserManageUtility.ViewModels
         #endregion
 
 
+        #region Roles変更通知プロパティ
+        private ObservableCollection<Role> _Roles;
+
+        public ObservableCollection<Role> Roles
+        {
+            get { return _Roles; }
+            private set
+            {
+                if (ReferenceEquals(null,value)) return;
+
+                //最初だった場合
+                if (_Roles == null)
+                {
+                    _Roles = value;
+                }
+                else
+                {
+                    var newRoles = value.Where(x => !_Roles.Any(y => x.Id == y.Id));
+                    foreach (var role in newRoles)
+                    {
+                        _Roles.Add(role);
+                    }
+                }
+                RaisePropertyChanged("Roles");
+            }
+        }
+        #endregion
+
+
         #region UserName変更通知プロパティ
         private string _UserName;
 
@@ -358,6 +387,8 @@ namespace UserManageUtility.ViewModels
         private async Task Update()
         {
             Users = await _apiServer.ReadAsync<ObservableCollection<SelectableUserInfo>>("Account/UserInfo");
+
+            Roles = await _apiServer.ReadAsync<ObservableCollection<Role>>("Roles");
         }
 #endregion
 
