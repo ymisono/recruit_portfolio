@@ -370,12 +370,16 @@ namespace UserManageUtility.ViewModels
         {
             try
             {
+                Notification = "初期化中……";
+
                 var pass = LocalSettings.ReadSetting("AdminPass");
 
                 await _apiServer.CurrentSession.LoginAsync("misono", pass);
 
                 //ここで更新する
                 await Update();
+
+                Notification = "";
             }
             catch(ApplicationException ex)
             {
