@@ -62,6 +62,7 @@ namespace UserManageUtility.Views
 
                 ui_IsDeletedCheckBox.IsChecked = selectedUser.IsDeleted;
 
+
                 //該当するロールを選択
                 var selectedRolesOfUser = selectedUser.Roles;
                 //一度も選択されてないなら、選択をはずす
@@ -71,6 +72,8 @@ namespace UserManageUtility.Views
                     return;
                 }
 
+
+                ui_roleList.SelectedItems.Clear();
                 foreach(var r1 in selectedRolesOfUser)
                 {
                     var allRoles = ui_roleList.Items;//.SingleOrDefault(x => x.Id == r.Id);
@@ -78,7 +81,8 @@ namespace UserManageUtility.Views
                     {
                         if (r1.Id == r2.Id)
                         {
-                            ui_roleList.SelectedItem = r2;
+                            ui_roleList.SelectedItems.Add(r2);
+                            break;
                         }
                     }
                 }

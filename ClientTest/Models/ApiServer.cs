@@ -110,6 +110,30 @@ namespace ClientTest.Models
             }
         }
 
+        /// <summary>
+        /// 単体のエンティテイを更新する
+        /// </summary>
+        public async Task UpdateByIdAsync<T>(T newObj, String restResource)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", CurrentSession.AccessToken);
+
+                var sendContent = JsonConvert.SerializeObject(newObj);
+
+                dynamic entity = newObj;
+
+                //PUT
+                var res = await client.PutAsync(
+                        new Uri(_apiPath + restResource + "/" + entity.Id),
+                        new StringContent(sendContent, Encoding.UTF8, "application/json")
+                    );
+
+                await ApiServerResponseErrorHandler.CheckResponseStatus(res);
+            }
+        }
+
         public async Task DeleteByIdAsync(String id, String restResource)
         {
             using (var client = new HttpClient())

@@ -337,7 +337,6 @@ namespace UserManageUtility.ViewModels
         }
         #endregion
 
-
         #region WriteToDBCommand
         private Livet.Commands.ViewModelCommand _WriteToDBCommand;
 
@@ -493,6 +492,82 @@ namespace UserManageUtility.ViewModels
             }
         }
         #endregion
+
+        #region MapRolesToUserCommand
+        private Livet.Commands.ViewModelCommand _MapRolesToUserCommand;
+
+        public Livet.Commands.ViewModelCommand MapRolesToUserCommand
+        {
+            get
+            {
+                if (_MapRolesToUserCommand == null)
+                {
+                    _MapRolesToUserCommand = new Livet.Commands.ViewModelCommand(MapRolesToUser);
+                }
+                return _MapRolesToUserCommand;
+            }
+        }
+
+        public async void MapRolesToUser()
+        {
+            var selectedUser = Users.SingleOrDefault(x=>x.IsSelected==true);
+            var selectedRoles = Roles.Where(x => x.IsSelected == true);
+            var unselectedRoles = Roles.Where(x => x.IsSelected == false);
+
+            if (selectedUser == null || selectedRoles.Count() == 0)
+            {
+                Notification = "未選択の項目があります";
+                return;
+            }
+
+            //あるロールをユーザーが持っているか
+            foreach (var role in selectedRoles)
+            {
+                var hit = selectedUser.Roles.SingleOrDefault(x => x.Id == role.Id);
+                if (hit == null)
+                {
+                    selectedUser.Roles.Add(role);
+                }
+            }
+
+            //あるロールをユーザーが持ってない
+            foreach (var role in unselectedRoles)
+            {
+                var hit = selectedUser.Roles.SingleOrDefault(x => x.Id == role.Id);
+                if (hit != null)
+                {
+                    selectedUser.Roles.Remove(role);
+                }
+            }
+
+            try
+            {
+                var task = _apiServer.UpdateAsync(
+                    new UserInfo
+                    {
+                        Id = selectedUser.Id,
+                        Email = selectedUser.Email,
+                        UserName = selectedUser.UserName,
+                        Roles = selectedUser.Roles,
+                        IsDeleted = selectedUser.IsDeleted
+                    },
+                    "Account/UserInfo");
+
+                Notification = "反映中です";
+
+                await task;
+
+                Notification = "反映しました";
+            }
+            catch(ApplicationException ex)
+            {
+                Notification = ex.Message;
+            }
+
+        }
+        #endregion
+
+
 
         #endregion コマンド
 

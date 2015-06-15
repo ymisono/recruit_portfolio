@@ -94,6 +94,55 @@ namespace OneServer.Controllers
             return Ok(returnUsers);
         }
 
+        //PUT api/Account/UserInfo/{guid}
+        [Route("UserInfo")]
+        [HttpPut]
+        public IHttpActionResult PutUserInfo(UserInfo user)
+        {
+            //更新
+            var db = new ApplicationDbContext();
+
+            var existingUser = db.Users.SingleOrDefault(x => x.Id == user.Id);
+            if(existingUser == null)
+            {
+                return BadRequest();
+            }
+
+            existingUser.Email = user.Email;
+            existingUser.PhoneNumber = user.PhoneNumber;
+
+            //Roles
+            //削除
+            foreach (var r in existingUser.Roles)
+            {
+                var ur = user.Roles.SingleOrDefault(x => x.Id == r.RoleId);
+                //なければ
+                if (ur == null)
+                {
+                    //自分自身から消す
+                    var deleteRole = RoleManager.FindById(r.RoleId);
+                    RoleManager.Delete(deleteRole);
+                }
+            }
+
+            //追加
+            foreach(var r in user.Roles)
+            {
+                var er = existingUser.Roles.SingleOrDefault(x => x.RoleId == r.Id);
+                if (er == null)
+                {
+                    existingUser.Roles.Add(
+                        new IdentityUserRole { RoleId = r.Id, UserId = user.Id}
+                        );
+                }
+                
+            }
+
+            db.SaveChanges();
+
+            return Ok();
+        }
+
         // POST api/Account/Logout
         [Route("Logout")]
         public IHttpActionResult Logout()

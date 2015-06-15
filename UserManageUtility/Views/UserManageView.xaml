@@ -93,6 +93,11 @@
                 </ListView.View>
             </ListView>
             <Button Content="選択解除" Height="25" Width="80" Margin="0 10" Click="UnSelectUser_Click" />
+            <Button Content="ロールを反映" Height="25" Width="80" Margin="0 10" Command="{Binding MapRolesToUserCommand}"  >
+                <Button.ToolTip>
+                    選択されたユーザーのロールを、ロールリストから選ばれた物を反映する
+                </Button.ToolTip>
+            </Button>
         </StackPanel>
         <StackPanel Grid.Row="1" >
             <ListView Name="ui_roleList" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged}" Margin="0 12">

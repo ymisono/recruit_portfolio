@@ -90,6 +90,7 @@ namespace OneServer.Controllers
 
         }
 
+        /*
         [Route("ManageUsersInRole")]
         [HttpPost]
         public async Task<IHttpActionResult> ManageUsersInRole(UsersInRoleModel model)
@@ -151,5 +152,6 @@ namespace OneServer.Controllers
 
             return Ok();
         }
+         * */
     }
 }
