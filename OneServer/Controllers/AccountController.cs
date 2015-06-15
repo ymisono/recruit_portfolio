@@ -120,8 +120,8 @@ namespace OneServer.Controllers
                 if (ur == null)
                 {
                     //自分自身から消す
-                    var deleteRole = RoleManager.FindById(r.RoleId);
-                    RoleManager.Delete(deleteRole);
+                    var removeRole = RoleManager.FindById(r.RoleId);
+                    UserManager.RemoveFromRole(r.UserId,removeRole.Name);
                 }
             }
 
