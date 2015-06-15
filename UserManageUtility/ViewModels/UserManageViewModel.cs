@@ -28,6 +28,23 @@ namespace UserManageUtility.ViewModels
 
         #region ユーザー関係
 
+        #region UserId変更通知プロパティ
+        private string _UserId;
+
+        public string UserId
+        {
+            get
+            { return _UserId; }
+            set
+            { 
+                if (_UserId == value)
+                    return;
+                _UserId = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
         #region Users変更通知プロパティ
         private ObservableCollection<SelectableUserInfo> _Users;
         /// <summary>
@@ -38,7 +55,11 @@ namespace UserManageUtility.ViewModels
             get { return _Users; }
             private set 
             {
-                if (ReferenceEquals(null,value)) return;
+                if (ReferenceEquals(null, value))
+                {
+                    _Users = null;
+                    return;
+                }
 
                 //最初だった場合
                 if (_Users == null)
@@ -218,7 +239,7 @@ namespace UserManageUtility.ViewModels
                 if (_IsDeleted == value)
                     return;
                 _IsDeleted = value;
-                RaisePropertyChanged();
+                RaisePropertyChanged("IsDeleted");
             }
         }
         #endregion
@@ -236,7 +257,11 @@ namespace UserManageUtility.ViewModels
             get { return _Roles; }
             private set
             {
-                if (ReferenceEquals(null, value)) return;
+                if (ReferenceEquals(null, value))
+                {
+                    _Roles = null;
+                    return;
+                }
 
                 //最初だった場合
                 if (_Roles == null)
@@ -363,9 +388,18 @@ namespace UserManageUtility.ViewModels
             }
 
             //必須項目に一つでも空欄があれば、帰る
-            if (String.IsNullOrEmpty(UserName) ||
-                String.IsNullOrEmpty(Password) ||
-                String.IsNullOrEmpty(PasswordConfirm)
+            if ( 
+                //新規の場合
+                (
+                    UserId == null &&
+                    (
+                        String.IsNullOrEmpty(UserName)|| 
+                        String.IsNullOrEmpty(Password) ||
+                        String.IsNullOrEmpty(PasswordConfirm)
+                    )
+                ) ||
+                //変更の場合
+                (UserId != null && String.IsNullOrEmpty(UserName))
                 )
             {
                 Notification = "必須入力に空欄があります";
@@ -384,16 +418,37 @@ namespace UserManageUtility.ViewModels
 
             try
             {
-                var registerTask = _apiServer.RegisterAsync(UserName, Password, EmailAddress,PhoneNumber);
+                Task addOrUpdateTask;
+                //新規（POST）
+                if (UserId == null)
+                {
+                    //選択されているロール
+                    var selectedRoles = Roles.Where(x => x.IsSelected == true);
+                    addOrUpdateTask = _apiServer.RegisterAsync(UserName, Password, EmailAddress, PhoneNumber,selectedRoles);
+                }
+                else
+                {
+                    //ここでは必ず選択されているはず
+                    var selectedUser = Users.Single(u=>u.IsSelected==true);
+                    addOrUpdateTask = _apiServer.UpdateAsync( 
+                        new UserInfo
+                        {
+                            Id =UserId, UserName=UserName, Email =EmailAddress,
+                            PhoneNumber = PhoneNumber,
+                            IsDeleted = IsDeleted,
+                            Roles = selectedUser.Roles,
+                        }, "Account/UserInfo");
+                }
 
                 Notification = "書き込み中……";
 
-                await registerTask;
+                await addOrUpdateTask;
 
                 //ついでに更新
+                Users = null;
                 await Update();
 
-                Notification = "登録しました";
+                Notification = "完了しました";
             }
             catch(ApplicationException ex)
             {
@@ -437,7 +492,8 @@ namespace UserManageUtility.ViewModels
 
                     //空にする
                     Users.Clear();
-
+                    ClearUserInput();
+                    ClearRoleInput();
                     await Update();
 
                     Notification = "削除しました";
@@ -514,9 +570,9 @@ namespace UserManageUtility.ViewModels
             var selectedRoles = Roles.Where(x => x.IsSelected == true);
             var unselectedRoles = Roles.Where(x => x.IsSelected == false);
 
-            if (selectedUser == null || selectedRoles.Count() == 0)
+            if (selectedUser == null)
             {
-                Notification = "未選択の項目があります";
+                Notification = "不正な動作です";
                 return;
             }
 
@@ -542,20 +598,15 @@ namespace UserManageUtility.ViewModels
 
             try
             {
-                var task = _apiServer.UpdateAsync(
-                    new UserInfo
-                    {
-                        Id = selectedUser.Id,
-                        Email = selectedUser.Email,
-                        UserName = selectedUser.UserName,
-                        Roles = selectedUser.Roles,
-                        IsDeleted = selectedUser.IsDeleted
-                    },
-                    "Account/UserInfo");
+                var task = _apiServer.UpdateAsync(SelectableUserInfo.GetBase(selectedUser), "Account/UserInfo");
 
                 Notification = "反映中です";
 
                 await task;
+
+                //ユーザーを一旦空にする
+                Users = null;
+                await Update();
 
                 Notification = "反映しました";
             }
@@ -581,8 +632,10 @@ namespace UserManageUtility.ViewModels
         //ユーザーの入力項目をクリア
         public void ClearUserInput()
         {
+            UserId = null;
             _UserName = null;
             RaisePropertyChanged("UserName");
+            UserId = null;
             Password = null;
             PasswordConfirm = null;
             EmailAddress = null;

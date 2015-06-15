@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using ClientTest.Utility;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ClientTest.Models
 {
@@ -157,9 +159,9 @@ namespace ClientTest.Models
         /// <param name="password"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task RegisterAsync(String userName, String password, String email = null, String phoneNumber = null)
+        public async Task RegisterAsync(String userName, String password, String email = null, String phoneNumber = null, IEnumerable<Role> roles = null)
         {
-            var sendObj = new { UserName = userName, Email = email, PhoneNumber = phoneNumber, Password = password };
+            var sendObj = new { UserName = userName, Email = email, PhoneNumber = phoneNumber, Password = password, Roles = roles };
 
             using (var client = new HttpClient())
             {

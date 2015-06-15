@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using ClientTest.Models;
 
 namespace OneServer.Models
 {
@@ -50,6 +52,8 @@ namespace OneServer.Models
         public string Password { get; set; }
 
         public string PhoneNumber { get; set; }
+
+        public ICollection<Role> Roles { get; set; }
     }
 
     public class RegisterExternalBindingModel

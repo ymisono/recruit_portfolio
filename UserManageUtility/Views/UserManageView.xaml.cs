@@ -56,6 +56,7 @@ namespace UserManageUtility.Views
 
                 //VMにアクセス
                 var vm = this.DataContext as UserManageViewModel;
+                vm.UserId = selectedUser.Id;
                 vm.UserName = selectedUser.UserName;
                 vm.EmailAddress = selectedUser.Email;
                 vm.PhoneNumber = selectedUser.PhoneNumber;

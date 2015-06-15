@@ -94,7 +94,7 @@ namespace OneServer.Controllers
             return Ok(returnUsers);
         }
 
-        //PUT api/Account/UserInfo/{guid}
+        //PUT api/Account/UserInfo
         [Route("UserInfo")]
         [HttpPut]
         public IHttpActionResult PutUserInfo(UserInfo user)
@@ -110,6 +110,7 @@ namespace OneServer.Controllers
 
             existingUser.Email = user.Email;
             existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.IsDeleted = user.IsDeleted;
 
             //Roles
             //削除
@@ -120,8 +121,8 @@ namespace OneServer.Controllers
                 if (ur == null)
                 {
                     //自分自身から消す
-                    var deleteRole = RoleManager.FindById(r.RoleId);
-                    RoleManager.Delete(deleteRole);
+                    var removeRole = RoleManager.FindById(r.RoleId);
+                    UserManager.RemoveFromRole(r.UserId,removeRole.Name);
                 }
             }
 
@@ -135,7 +136,6 @@ namespace OneServer.Controllers
                         new IdentityUserRole { RoleId = r.Id, UserId = user.Id}
                         );
                 }
-                
             }
 
             db.SaveChanges();
@@ -409,9 +409,30 @@ namespace OneServer.Controllers
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
+            //作成チェック
             if (!result.Succeeded)
             {
                 return GetErrorResult(result);
+            }
+
+            //ロール追加
+            if (model.Roles != null && model.Roles.Count>0)
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var curUser = db.Users.Single(x => x.UserName == model.UserName);
+                    foreach (var r in model.Roles)
+                    {
+                        var er = curUser.Roles.SingleOrDefault(x => x.RoleId == r.Id);
+                        if (er == null)
+                        {
+                            curUser.Roles.Add(
+                                new IdentityUserRole { RoleId = r.Id, UserId = curUser.Id }
+                                );
+                        }
+                    }
+                    db.SaveChanges();
+                }
             }
 
             return Ok();
