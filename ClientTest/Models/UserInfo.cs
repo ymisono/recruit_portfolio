@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace ClientTest.Models
 {
-    public class UserInfo : IEquatable<UserInfo>
+    public class UserInfo
     {
         public String Id { get; set; }
 
@@ -18,35 +18,39 @@ namespace ClientTest.Models
 
         public bool IsDeleted { get; set; }
 
-        /// <summary>
-        /// 比較オペレーター
-        /// </summary>
-        public bool Equals(UserInfo obj)
-        {
-            if (obj == null) return false;
+        ///// <summary>
+        ///// 比較オペレーター
+        ///// </summary>
+        //public bool Equals(UserInfo obj)
+        //{
+        //    if (obj == null) return false;
 
-            //IDとUserNameが一致すれば、等価
-            return this.Id == obj.Id && this.UserName == obj.UserName;
-        }
+        //    //全項目（コレクションを除く）が一致すれば、等価
+        //    return this.Id == obj.Id &&
+        //        this.UserName == obj.UserName &&
+        //        this.Email == obj.Email &&
+        //        this.PhoneNumber == obj.PhoneNumber &&
+        //        this.IsDeleted == obj.IsDeleted;
+        //}
 
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as UserInfo);
-        }
+        //public override bool Equals(object obj)
+        //{
+        //    return this.Equals(obj as UserInfo);
+        //}
 
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hash = (int)2166136261;
-                // Suitable nullity checks etc, of course :)
-                hash = hash * 16777619 ^ Id.GetHashCode();
-                hash = hash * 16777619 ^ UserName.GetHashCode();
-                if (Email != null)
-                    hash = hash * 16777619 ^ Email.GetHashCode();
-                return hash;
-            }
-        }
+        //public override int GetHashCode()
+        //{
+        //    unchecked // Overflow is fine, just wrap
+        //    {
+        //        int hash = (int)2166136261;
+        //        // Suitable nullity checks etc, of course :)
+        //        hash = hash * 16777619 ^ Id.GetHashCode();
+        //        hash = hash * 16777619 ^ UserName.GetHashCode();
+        //        if (Email != null)
+        //            hash = hash * 16777619 ^ Email.GetHashCode();
+        //        return hash;
+        //    }
+        //}
 
         public override string ToString()
         {
@@ -58,15 +62,15 @@ namespace ClientTest.Models
                 );
         }
 
-        public static bool operator ==(UserInfo leftOperand, UserInfo rightOperand)
-        {
-            if (ReferenceEquals(null, leftOperand)) return ReferenceEquals(null, rightOperand);
-            return leftOperand.Equals(rightOperand);
-        }
+        //public static bool operator ==(UserInfo leftOperand, UserInfo rightOperand)
+        //{
+        //    if (ReferenceEquals(null, leftOperand)) return ReferenceEquals(null, rightOperand);
+        //    return leftOperand.Equals(rightOperand);
+        //}
 
-        public static bool operator !=(UserInfo leftOperand, UserInfo rightOperand)
-        {
-            return !(leftOperand == rightOperand);
-        }
+        //public static bool operator !=(UserInfo leftOperand, UserInfo rightOperand)
+        //{
+        //    return !(leftOperand == rightOperand);
+        //}
     }
 }

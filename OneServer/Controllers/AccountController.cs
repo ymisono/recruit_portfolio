@@ -94,7 +94,7 @@ namespace OneServer.Controllers
             return Ok(returnUsers);
         }
 
-        //PUT api/Account/UserInfo/{guid}
+        //PUT api/Account/UserInfo
         [Route("UserInfo")]
         [HttpPut]
         public IHttpActionResult PutUserInfo(UserInfo user)
