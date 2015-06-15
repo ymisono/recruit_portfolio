@@ -64,6 +64,13 @@ namespace UserManageUtility.Views
 
                 //該当するロールを選択
                 var selectedRolesOfUser = selectedUser.Roles;
+                //一度も選択されてないなら、選択をはずす
+                if (selectedRolesOfUser.Count == 0)
+                {
+                    ui_roleList.SelectedItem = null;
+                    return;
+                }
+
                 foreach(var r1 in selectedRolesOfUser)
                 {
                     var allRoles = ui_roleList.Items;//.SingleOrDefault(x => x.Id == r.Id);
