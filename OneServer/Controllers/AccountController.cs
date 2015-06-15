@@ -136,7 +136,6 @@ namespace OneServer.Controllers
                         new IdentityUserRole { RoleId = r.Id, UserId = user.Id}
                         );
                 }
-                
             }
 
             db.SaveChanges();
@@ -410,9 +409,30 @@ namespace OneServer.Controllers
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
+            //作成チェック
             if (!result.Succeeded)
             {
                 return GetErrorResult(result);
+            }
+
+            //ロール追加
+            if (model.Roles != null && model.Roles.Count>0)
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var curUser = db.Users.Single(x => x.UserName == model.UserName);
+                    foreach (var r in model.Roles)
+                    {
+                        var er = curUser.Roles.SingleOrDefault(x => x.RoleId == r.Id);
+                        if (er == null)
+                        {
+                            curUser.Roles.Add(
+                                new IdentityUserRole { RoleId = r.Id, UserId = curUser.Id }
+                                );
+                        }
+                    }
+                    db.SaveChanges();
+                }
             }
 
             return Ok();

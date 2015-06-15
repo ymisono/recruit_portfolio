@@ -422,7 +422,9 @@ namespace UserManageUtility.ViewModels
                 //新規（POST）
                 if (UserId == null)
                 {
-                    addOrUpdateTask = _apiServer.RegisterAsync(UserName, Password, EmailAddress, PhoneNumber);
+                    //選択されているロール
+                    var selectedRoles = Roles.Where(x => x.IsSelected == true);
+                    addOrUpdateTask = _apiServer.RegisterAsync(UserName, Password, EmailAddress, PhoneNumber,selectedRoles);
                 }
                 else
                 {
@@ -490,7 +492,8 @@ namespace UserManageUtility.ViewModels
 
                     //空にする
                     Users.Clear();
-
+                    ClearUserInput();
+                    ClearRoleInput();
                     await Update();
 
                     Notification = "削除しました";
@@ -629,6 +632,7 @@ namespace UserManageUtility.ViewModels
         //ユーザーの入力項目をクリア
         public void ClearUserInput()
         {
+            UserId = null;
             _UserName = null;
             RaisePropertyChanged("UserName");
             UserId = null;
