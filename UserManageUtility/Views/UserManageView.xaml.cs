@@ -76,7 +76,7 @@ namespace UserManageUtility.Views
                 ui_roleList.SelectedItems.Clear();
                 foreach(var r1 in selectedRolesOfUser)
                 {
-                    var allRoles = ui_roleList.Items;//.SingleOrDefault(x => x.Id == r.Id);
+                    var allRoles = ui_roleList.Items;
                     foreach(Role r2 in allRoles)
                     {
                         if (r1.Id == r2.Id)
