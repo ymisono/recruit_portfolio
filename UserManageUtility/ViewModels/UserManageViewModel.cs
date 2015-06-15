@@ -91,7 +91,6 @@ namespace UserManageUtility.ViewModels
         }
         #endregion UserName
 
-
         #region Password変更通知プロパティ
         private string _Password;
 
@@ -136,7 +135,6 @@ namespace UserManageUtility.ViewModels
         }
         #endregion Password
 
-
         #region PasswordConfirm変更通知プロパティ
         private string _PasswordConfirm;
 
@@ -174,7 +172,6 @@ namespace UserManageUtility.ViewModels
         }
         #endregion
 
-
         #region EmailAddress変更通知プロパティ
         private string _EmailAddress;
 
@@ -209,8 +206,27 @@ namespace UserManageUtility.ViewModels
         }
         #endregion
 
+        #region IsDeleted変更通知プロパティ
+        private bool _IsDeleted;
+
+        public bool IsDeleted
+        {
+            get
+            { return _IsDeleted; }
+            set
+            { 
+                if (_IsDeleted == value)
+                    return;
+                _IsDeleted = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
 
         #endregion ユーザー関係
+
+        #region ロール関係
 
         #region Roles変更通知プロパティ
         private ObservableCollection<Role> _Roles;
@@ -276,6 +292,7 @@ namespace UserManageUtility.ViewModels
         }
         #endregion
 
+        #endregion ロール関係
 
         #region Notification変更通知プロパティ
         private string _notification;
@@ -298,6 +315,27 @@ namespace UserManageUtility.ViewModels
         #endregion プロパティ
 
         #region コマンド
+
+        #region ClickUserListCommand
+        private Livet.Commands.ViewModelCommand _ClickUserListCommand;
+
+        public Livet.Commands.ViewModelCommand ClickUserListCommand
+        {
+            get
+            {
+                if (_ClickUserListCommand == null)
+                {
+                    _ClickUserListCommand = new Livet.Commands.ViewModelCommand(ClickUserList);
+                }
+                return _ClickUserListCommand;
+            }
+        }
+
+        public void ClickUserList()
+        {
+
+        }
+        #endregion
 
 
         #region WriteToDBCommand
@@ -464,6 +502,26 @@ namespace UserManageUtility.ViewModels
             LoginStartUpAsync();
         }
 
+
+        //ユーザーの入力項目をクリア
+        public void ClearUserInput()
+        {
+            _UserName = null;
+            RaisePropertyChanged("UserName");
+            Password = null;
+            PasswordConfirm = null;
+            EmailAddress = null;
+            PhoneNumber = null;
+            IsDeleted = false;
+            RaisePropertyChanged();
+        }
+
+        public void ClearRoleInput()
+        {
+            RoleName = null;
+            RoleDescription = null;
+        }
+
 #region ヘルパー（プライベートメソッド）
 
         //voidで投げっぱ
@@ -495,6 +553,7 @@ namespace UserManageUtility.ViewModels
 
             Roles = await _apiServer.ReadAsync<ObservableCollection<Role>>("Roles");
         }
+
 #endregion
 
         #region IDataErrorInfo

@@ -1,9 +1,12 @@
-﻿using Livet;
+﻿using ClientTest.Models;
+using Livet;
 using Livet.Commands;
 using Livet.Messaging;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using UserManageUtility.Models;
+using UserManageUtility.ViewModels;
 
 namespace UserManageUtility.Views
 {
@@ -28,11 +31,48 @@ namespace UserManageUtility.Views
         private void UnSelectUser_Click(object sender, RoutedEventArgs e)
         {
             ui_userList.SelectedItem = null;
+
+            var vm = this.DataContext as UserManageViewModel;
+            vm.ClearUserInput();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ui_roleList.SelectedItem = null;
+
+            var vm = this.DataContext as UserManageViewModel;
+            vm.ClearRoleInput();
+        }
+
+        //VMでどうしても取れない
+        private void ListViewItem_MouseLeftButtonUp(object sender, RoutedEventArgs e)
+        {
+            var item = sender as ListViewItem;
+            if (item != null && item.IsSelected)
+            {
+                var selectedUser = ui_userList.SelectedItem as SelectableUserInfo;
+
+                //VMにアクセス
+                var vm = this.DataContext as UserManageViewModel;
+                vm.UserName = selectedUser.UserName;
+                vm.EmailAddress = selectedUser.Email;
+                vm.PhoneNumber = selectedUser.PhoneNumber;
+
+                ui_IsDeletedCheckBox.IsChecked = selectedUser.IsDeleted;
+            }
+        }
+
+        private void RoleListItem_MouseLeftButtonUp(object sender, RoutedEventArgs e)
+        {
+            var item = sender as ListViewItem;
+            if (item != null && item.IsSelected)
+            {
+                var selectedRole = ui_roleList.SelectedItem as Role;
+
+                var vm = this.DataContext as UserManageViewModel;
+                vm.RoleName = selectedRole.Name;
+                vm.RoleDescription = selectedRole.Description;
+            }
         }
     }
 }
