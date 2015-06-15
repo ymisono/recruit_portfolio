@@ -513,7 +513,6 @@ namespace UserManageUtility.ViewModels
             EmailAddress = null;
             PhoneNumber = null;
             IsDeleted = false;
-            RaisePropertyChanged();
         }
 
         public void ClearRoleInput()

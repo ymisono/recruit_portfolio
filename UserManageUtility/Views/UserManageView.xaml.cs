@@ -3,6 +3,8 @@ using Livet;
 using Livet.Commands;
 using Livet.Messaging;
 using System;
+using System.Collections;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using UserManageUtility.Models;
@@ -59,17 +61,40 @@ namespace UserManageUtility.Views
                 vm.PhoneNumber = selectedUser.PhoneNumber;
 
                 ui_IsDeletedCheckBox.IsChecked = selectedUser.IsDeleted;
+
+                //該当するロールを選択
+                var selectedRolesOfUser = selectedUser.Roles;
+                foreach(var r1 in selectedRolesOfUser)
+                {
+                    var allRoles = ui_roleList.Items;//.SingleOrDefault(x => x.Id == r.Id);
+                    foreach(Role r2 in allRoles)
+                    {
+                        if (r1.Id == r2.Id)
+                        {
+                            ui_roleList.SelectedItem = r2;
+                        }
+                    }
+                }
             }
         }
 
         private void RoleListItem_MouseLeftButtonUp(object sender, RoutedEventArgs e)
         {
+            var vm = this.DataContext as UserManageViewModel;
+
+            //複数選択されてた場合、ボックスを無効化する
+            if (ui_roleList.SelectedItems.Count > 1)
+            {
+                vm.RoleName = "";
+                vm.RoleDescription = "";
+                return;
+            }
+
             var item = sender as ListViewItem;
             if (item != null && item.IsSelected)
             {
                 var selectedRole = ui_roleList.SelectedItem as Role;
 
-                var vm = this.DataContext as UserManageViewModel;
                 vm.RoleName = selectedRole.Name;
                 vm.RoleDescription = selectedRole.Description;
             }
