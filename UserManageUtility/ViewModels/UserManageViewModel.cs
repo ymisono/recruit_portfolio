@@ -239,7 +239,7 @@ namespace UserManageUtility.ViewModels
                 if (_IsDeleted == value)
                     return;
                 _IsDeleted = value;
-                RaisePropertyChanged();
+                RaisePropertyChanged("IsDeleted");
             }
         }
         #endregion

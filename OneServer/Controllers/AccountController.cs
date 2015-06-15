@@ -110,6 +110,7 @@ namespace OneServer.Controllers
 
             existingUser.Email = user.Email;
             existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.IsDeleted = user.IsDeleted;
 
             //Roles
             //削除
