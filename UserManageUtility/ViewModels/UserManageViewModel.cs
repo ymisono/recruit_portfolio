@@ -572,7 +572,7 @@ namespace UserManageUtility.ViewModels
 
             if (selectedUser == null)
             {
-                Notification = "不正な動作です";
+                Notification = "ユーザーが選択されていません";
                 return;
             }
 
@@ -586,13 +586,17 @@ namespace UserManageUtility.ViewModels
                 }
             }
 
-            //あるロールをユーザーが持ってない
+            //選択されてないロールのリストからユーザーが持ってるものを取り除く
             foreach (var role in unselectedRoles)
             {
                 var hit = selectedUser.Roles.SingleOrDefault(x => x.Id == role.Id);
                 if (hit != null)
                 {
-                    selectedUser.Roles.Remove(role);
+                    var tempList = selectedUser.Roles.ToList();
+                    tempList.RemoveAll(x => x.Id == hit.Id);
+                    selectedUser.Roles = tempList;
+
+                    //selectedUser.Roles = selectedUser.Roles.Where(x => !(x.Id == hit.Id)); //Collectionなのでうまくいかない
                 }
             }
 
