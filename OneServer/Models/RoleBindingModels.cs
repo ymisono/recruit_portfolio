@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OneServer.Models
 {
-    public class CreateRoleBindingModel
+    public class CreateUpdateRoleBindingModel
     {
         [Required]
         [StringLength(256, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]

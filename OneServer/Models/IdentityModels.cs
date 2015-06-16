@@ -4,17 +4,39 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
+using System;
 
 namespace OneServer.Models
 {
     // ApplicationUser クラスにプロパティを追加することでユーザーのプロファイル データを追加できます。詳細については、http://go.microsoft.com/fwlink/?LinkID=317594 を参照してください。
     public class ApplicationUser : IdentityUser
     {
-        //カスタムプロパディ
+        #region カスタムプロパディ
+
+        /// <summary>
+        /// 姓
+        /// </summary>
+        public String LastName { get; set; }
+        /// <summary>
+        /// 名
+        /// </summary>
+        public String FirstName { get; set; }
+
+        /// <summary>
+        /// 姓（フリガナ）
+        /// </summary>
+        public String LastNameKana { get; set; }
+        /// <summary>
+        /// 名（フリナガ）
+        /// </summary>
+        public String FirstNameKana { get; set; }
+
         /// <summary>
         /// 削除フラグ。実際の運用ではDELETEをしない。
         /// </summary>
         public bool IsDeleted { get; set; }
+
+        #endregion カスタムプロパディ
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {

@@ -10,6 +10,48 @@ namespace ClientTest.Models
 
         public String UserName { get; set; }
 
+        /// <summary>
+        /// 姓
+        /// </summary>
+        public String LastName { get; set; }
+        /// <summary>
+        /// 名
+        /// </summary>
+        public String FirstName { get; set; }
+
+        /// <summary>
+        /// 本名（空白なし）
+        /// </summary>
+        public String FullName
+        {
+            get { return LastName + FirstName; }
+        }
+
+        /// <summary>
+        /// 本名（半角空白）
+        /// </summary>
+        public String FullNameWithHalfSpace
+        {
+            get { return LastName + " " + FirstName; }
+        }
+
+        /// <summary>
+        /// 姓（フリガナ）
+        /// </summary>
+        public String LastNameKana { get; set; }
+        /// <summary>
+        /// 名（フリナガ）
+        /// </summary>
+        public String FirstNameKana { get; set; }
+
+        /// <summary>
+        /// 本名（空白なし）
+        /// </summary>
+        public String FullNameKana
+        {
+            get { return LastNameKana + FirstNameKana; }
+        }
+
         public String Email { get; set; }
 
         public String PhoneNumber { get; set; }
@@ -17,40 +59,6 @@ namespace ClientTest.Models
         public virtual ICollection<Role> Roles { get; set; }
 
         public bool IsDeleted { get; set; }
-
-        ///// <summary>
-        ///// 比較オペレーター
-        ///// </summary>
-        //public bool Equals(UserInfo obj)
-        //{
-        //    if (obj == null) return false;
-
-        //    //全項目（コレクションを除く）が一致すれば、等価
-        //    return this.Id == obj.Id &&
-        //        this.UserName == obj.UserName &&
-        //        this.Email == obj.Email &&
-        //        this.PhoneNumber == obj.PhoneNumber &&
-        //        this.IsDeleted == obj.IsDeleted;
-        //}
-
-        //public override bool Equals(object obj)
-        //{
-        //    return this.Equals(obj as UserInfo);
-        //}
-
-        //public override int GetHashCode()
-        //{
-        //    unchecked // Overflow is fine, just wrap
-        //    {
-        //        int hash = (int)2166136261;
-        //        // Suitable nullity checks etc, of course :)
-        //        hash = hash * 16777619 ^ Id.GetHashCode();
-        //        hash = hash * 16777619 ^ UserName.GetHashCode();
-        //        if (Email != null)
-        //            hash = hash * 16777619 ^ Email.GetHashCode();
-        //        return hash;
-        //    }
-        //}
 
         public override string ToString()
         {
@@ -62,15 +70,13 @@ namespace ClientTest.Models
                 );
         }
 
-        //public static bool operator ==(UserInfo leftOperand, UserInfo rightOperand)
-        //{
-        //    if (ReferenceEquals(null, leftOperand)) return ReferenceEquals(null, rightOperand);
-        //    return leftOperand.Equals(rightOperand);
-        //}
-
-        //public static bool operator !=(UserInfo leftOperand, UserInfo rightOperand)
-        //{
-        //    return !(leftOperand == rightOperand);
-        //}
+        /// <summary>
+        /// 日本語形式でのフルネームを取得する
+        /// </summary>
+        /// <returns></returns>
+        public String GetFullName(String separater = "")
+        {
+            return LastName + separater ?? "" + FirstName;
+        }
     }
 }

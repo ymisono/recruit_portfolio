@@ -1,6 +1,7 @@
 ﻿using ClientTest.Models;
 using ClientTest.Utility;
 using Livet;
+using Livet.Commands;
 using Livet.Messaging;
 using System;
 using System.Collections.Generic;
@@ -525,22 +526,48 @@ namespace UserManageUtility.ViewModels
         public async void AddNewRole()
         {
             //対象
-            if ( String.IsNullOrEmpty(RoleName) || String.IsNullOrEmpty(RoleDescription ) )
+            if ( String.IsNullOrEmpty(RoleName) )
             {
-                Notification = "対象が入力されていません";
+                Notification = "ロール名が入力されていません";
+                return;
+            }
+
+            var selectedRoles = Roles.Where(x=>x.IsSelected==true);
+            if ( (selectedRoles.Count() > 1) == true)
+            {
+                Notification = "ロールの追加・削除は一つずつ行ってください";
                 return;
             }
 
             try
             {
-                Notification = "ロール追加中です";
+                //新規追加
+                //入力ロールが既存ロールリストにないとき
+                //ここでは必ず選択が1つのはず
+                var selectedRole = selectedRoles.SingleOrDefault();
+                //ロールがIdを持っていなければ新規
+                if(selectedRole == null)
+                {
+                    Notification = "ロール追加中です";
 
-                await _apiServer.CreateAsync<Role>(
-                    new Role { Name = RoleName, Description=RoleDescription }, "Roles");
+                    await _apiServer.CreateAsync<Role>(
+                        new Role { Name = RoleName, Description = RoleDescription }, "Roles");
+                }
+                else //あるなら、変更
+                {
+                    Notification = "ロール変更中です";
+
+                    await _apiServer.UpdateByIdAsync<Role>(
+                        new Role { Id = selectedRole.Id, Name = RoleName, Description = RoleDescription }, "Roles");
+
+                    //変更の場合、一端クリアする
+                    Users = null; //こっちも変わる
+                    Roles = null;
+                }
 
                 await Update();
 
-                Notification = "追加しました";
+                Notification = "完了しました";
             }
             catch (ApplicationException ex)
             {
@@ -548,6 +575,66 @@ namespace UserManageUtility.ViewModels
             }
         }
         #endregion
+
+
+        #region DeleteRoleCommand
+        private ListenerCommand<ConfirmationMessage> _DeleteRoleCommand;
+
+        public ListenerCommand<ConfirmationMessage> DeleteRoleCommand
+        {
+            get
+            {
+                if (_DeleteRoleCommand == null)
+                {
+                    _DeleteRoleCommand = new ListenerCommand<ConfirmationMessage>(DeleteRole);
+                }
+                return _DeleteRoleCommand;
+            }
+        }
+
+        public async void DeleteRole(ConfirmationMessage message)
+        {
+            if ( !message.Response.HasValue || !message.Response.Value)
+            {
+                return;
+            }
+
+            //待機するタスク
+            var tasks = new List<Task>();
+
+            var selectedRoles = Roles.Where(x => x.IsSelected == true);
+            if(selectedRoles==null)
+            {
+                Notification = "ロールが選択されてません";
+                return;
+            }
+
+            try
+            {
+                Notification = "削除中……";
+                foreach (var role in selectedRoles)
+                {
+                    tasks.Add(_apiServer.DeleteByIdAsync(role.Id, "Roles"));
+                }
+                //ここで待つ
+                while (tasks.Count > 0)
+                {
+                    var finishedTask = await Task.WhenAny(tasks);
+                    tasks.Remove(finishedTask);
+                }
+                Notification = "削除完了しました";
+
+                //リセット・リロード
+                Roles = null;
+                await Update();
+            }
+            catch(ApplicationException ex)
+            {
+                Notification = ex.Message;
+            }
+        }
+        #endregion
+
 
         #region MapRolesToUserCommand
         private Livet.Commands.ViewModelCommand _MapRolesToUserCommand;

@@ -234,6 +234,10 @@
     <Compile Include="Migrations\201506141622131_newrole.Designer.cs">
       <DependentUpon>201506141622131_newrole.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506160518406_UserProperty.cs" />
+    <Compile Include="Migrations\201506160518406_UserProperty.Designer.cs">
+      <DependentUpon>201506160518406_UserProperty.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -344,6 +348,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506141622131_newrole.resx">
       <DependentUpon>201506141622131_newrole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506160518406_UserProperty.resx">
+      <DependentUpon>201506160518406_UserProperty.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

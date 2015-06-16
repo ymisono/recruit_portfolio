@@ -46,7 +46,7 @@ namespace OneServer.Controllers
         //POST /api/Roles
         [Route("",Name="PostRole")]
         [HttpPost]
-        public async Task<IHttpActionResult> PostRole(CreateRoleBindingModel model)
+        public async Task<IHttpActionResult> PostRole(CreateUpdateRoleBindingModel model)
         {
             if (!ModelState.IsValid || model == null)
             {
@@ -66,9 +66,33 @@ namespace OneServer.Controllers
 
             var factory = new ModelFactory();
             return Created(locationHeader, factory.Create(role));
-
         }
 
+        //PUT /api/Roles/{guid}
+        [Route("{Id:guid}")]
+        [HttpPut]
+        public IHttpActionResult PutRole([FromUri] String Id, [FromBody] CreateUpdateRoleBindingModel model)
+        {
+            if( String.IsNullOrEmpty(Id) || !ModelState.IsValid || model == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var role = RoleManager.FindById(Id);
+            //変更
+            role.Name = model.Name;
+            role.Description = model.Description;
+            var result = RoleManager.Update(role);
+
+            if(!result.Succeeded)
+            {
+                return GetErrorResult(result);
+            }
+
+            return Ok();
+        }
+
+        //DELETE /api/Roles/{guid}
         [Route("{id:guid}")]
         public async Task<IHttpActionResult> DeleteRole(string Id)
         {

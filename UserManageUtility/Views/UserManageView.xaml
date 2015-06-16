@@ -45,7 +45,7 @@
         </Style>
     </Window.Resources>
     
-     <i:Interaction.Triggers>
+    <i:Interaction.Triggers>
      
      	<!--Viewに特別な要件が存在しない限りは、トリガーやアクションの自作にこだわらず積極的にコードビハインドを使いましょう -->
     	<!--Viewのコードビハインドは、基本的にView内で完結するロジックとViewModelからのイベントの受信(専用リスナを使用する)に限るとトラブルが少なくなります -->
@@ -65,15 +65,19 @@
 
     </i:Interaction.Triggers>
     
-    <Grid Name="ui_layoutRoot" Margin="32 16" >
+    <Grid Name="ui_layoutRoot" Margin="20 16" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*" />
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <!--ユーザーリスト-->
-        <StackPanel >
-            <ListView Name="ui_userList" ItemsSource="{Binding Users,UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" >
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="12*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <ListView Name="ui_userList" Grid.Row="0" ItemsSource="{Binding Users,UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" >
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem" >
                         <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
@@ -83,6 +87,7 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="ユーザー名" DisplayMemberBinding="{Binding UserName}" Width="70"/>
+                        <GridViewColumn Header="本名" DisplayMemberBinding="{Binding FullNameWithHalfSpace}" Width="60" />
                         <GridViewColumn Header="メール" DisplayMemberBinding="{Binding Email}" Width="140" />
                         <GridViewColumn Header="電話番号" DisplayMemberBinding="{Binding PhoneNumber}" Width="70" />
                         <GridViewColumn Header="ロール" DisplayMemberBinding="{Binding Roles,Converter={StaticResource RoleNameConverter}}" Width="120" />
@@ -96,8 +101,8 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <Button Content="選択解除" Height="25" Width="80" Margin="0 10" Click="UnSelectUser_Click" />
-        </StackPanel>
+            <Button Grid.Row="1" Content="ユーザー選択解除" Height="25" Width="110" Margin="0 10" Click="UnSelectUser_Click" />
+        </Grid>
         <!--ユーザー基本情報欄-->
         <StackPanel Grid.Column="1" Margin="20 0">
             <StackPanel.Resources>
@@ -173,19 +178,33 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="選択解除" Height="25" Width="80" Margin="5 5" Click="Button_Click" />
-                    <Button Content="ロールを反映" Height="25" Width="80" Margin="5 5" Command="{Binding MapRolesToUserCommand}"  >
-                        <Button.ToolTip>
-                            選択されたユーザーのロールを、ロールリストから選ばれた物を反映する
-                        </Button.ToolTip>
-                    </Button>
-                </StackPanel>
+                <Button Content="ロール選択解除" Height="25" Width="96" Margin="5 5" Click="Button_Click" />
                 <TextBlock Text="ロール名*" Margin="0 0 0 3" />
                 <TextBox Text="{Binding RoleName}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" />
                 <TextBlock Text="ロール説明" Margin="0 0 0 3" />
                 <TextBox Text="{Binding RoleDescription}" Margin="0 0 0 3" />
-                <Button Content="新規ロール追加" Height="25" Width="90" Margin="0 5" Command="{Binding AddNewRoleCommand}" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="ロール追加・変更" Margin="10 5" Padding="5 3" Command="{Binding AddNewRoleCommand}" />
+                    <Button Content="選択ロール削除" Margin="10 5" Padding="3 3" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <l:ConfirmationDialogInteractionMessageAction>
+                                    <l:DirectInteractionMessage CallbackCommand="{Binding DeleteRoleCommand}">
+                                        <l:ConfirmationMessage Button="OKCancel" 
+                                                  Caption="確認"
+                                                  Text="選択されたロールをDBから永久に削除してよろしいですか？"
+                                                  Image="Warning"   />
+                                    </l:DirectInteractionMessage>
+                                </l:ConfirmationDialogInteractionMessageAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                </StackPanel>
+                <Button Content="ロールをユーザーに反映" Width="148" Margin="5 24" Padding="5 3" Command="{Binding MapRolesToUserCommand}"  >
+                    <Button.ToolTip>
+                        選択されたユーザーのロールを、ロールリストから選ばれた物を反映する
+                    </Button.ToolTip>
+                </Button>
             </StackPanel>
         </StackPanel>
         <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Notification}" Foreground="Red" FontSize="16" Margin="0 26" />
@@ -196,7 +215,7 @@
                 <CheckBox Name="ui_IsDeletedCheckBox" Content="削除フラグ" IsChecked="{Binding IsDeleted}"/>
             </StackPanel>
             <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
-                <Button Width="150" Height="42" Margin="0 10" Command="{Binding WriteToDBCommand}" FontSize="21.333"  >
+                <Button Margin="0 10" Padding="5 3" Command="{Binding WriteToDBCommand}" FontSize="21.333"  >
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Content" Value="変更" />
