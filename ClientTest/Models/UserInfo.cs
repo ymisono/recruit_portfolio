@@ -52,6 +52,14 @@ namespace ClientTest.Models
             get { return LastNameKana + FirstNameKana; }
         }
 
+        /// <summary>
+        /// 本名（空白なし）
+        /// </summary>
+        public String FullNameKanaWithHalfSpace
+        {
+            get { return LastNameKana + " " + FirstNameKana; }
+        }
+
         public String Email { get; set; }
 
         public String PhoneNumber { get; set; }

@@ -282,7 +282,6 @@ namespace UserManageUtility.ViewModels
         }
         #endregion
 
-
         #region RoleName変更通知プロパティ
         private string _RoleName;
 
@@ -299,7 +298,6 @@ namespace UserManageUtility.ViewModels
             }
         }
         #endregion
-
 
         #region RoleDescription変更通知プロパティ
         private string _RoleDescription;
@@ -446,7 +444,8 @@ namespace UserManageUtility.ViewModels
                 await addOrUpdateTask;
 
                 //ついでに更新
-                Users = null;
+                Users.Clear();
+                ClearUserInput();
                 await Update();
 
                 Notification = "完了しました";
@@ -751,7 +750,7 @@ namespace UserManageUtility.ViewModels
 
                 var pass = LocalSettings.ReadSetting("AdminPass");
 
-                await _apiServer.CurrentSession.LoginAsync("misono", pass);
+                await _apiServer.CurrentSession.LoginAsync("admin", pass);
 
                 //ここで更新する
                 await Update();

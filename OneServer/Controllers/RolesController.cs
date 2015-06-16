@@ -13,6 +13,7 @@ using System.Web.Http.ModelBinding;
 namespace OneServer.Controllers
 {
     [RoutePrefix("api/Roles")]
+    [Authorize(Roles = "Administrators")]
     public class RolesController : BaseApiController
     {
         [Route("{id:guid}",Name = "GetRole")]

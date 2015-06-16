@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 
 namespace OneServer.Controllers
 {
-    [Authorize]
     [RoutePrefix("api/Account")]
     public class AccountController : BaseApiController
     {
@@ -59,6 +58,7 @@ namespace OneServer.Controllers
 
         // GET api/Account/UserInfo
         //!!危険AdminRoleのみ
+        [Authorize(Roles = "Administrators")]
         [Route("UserInfo")]
         public IHttpActionResult GetUserInfo()
         {
@@ -87,6 +87,10 @@ namespace OneServer.Controllers
                                    Email = user.Email,
                                    PhoneNumber = user.PhoneNumber,
                                    Roles = castedRoles,
+                                   LastName = user.LastName,
+                                   FirstName = user.FirstName,
+                                   LastNameKana = user.LastNameKana,
+                                   FirstNameKana = user.FirstNameKana,
                                    IsDeleted = user.IsDeleted
                     });
             }
@@ -95,6 +99,7 @@ namespace OneServer.Controllers
         }
 
         //PUT api/Account/UserInfo
+        [Authorize(Roles = "Administrators")]
         [Route("UserInfo")]
         [HttpPut]
         public IHttpActionResult PutUserInfo(UserInfo user)
