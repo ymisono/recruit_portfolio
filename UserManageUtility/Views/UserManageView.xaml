@@ -73,212 +73,227 @@
 
     </i:Interaction.Triggers>
     
-    <Grid Name="ui_layoutRoot" Margin="20 16" >
+    <Grid Name="ui_layoutRoot" >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*" />
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <!--ユーザーリスト-->
-        <Grid >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="12*" />
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
-            <ListView Name="ui_userList" Grid.Row="0" ItemsSource="{Binding Users,UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" >
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" >
-                        <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
-                        <EventSetter Event="MouseLeftButtonUp" Handler="ListViewItem_MouseLeftButtonUp" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn CellTemplate="{StaticResource FirstCell}" Width="auto" />
-                        <GridViewColumn Header="ユーザー名" DisplayMemberBinding="{Binding UserName}" Width="70" />
-                        <GridViewColumn Header="本名" DisplayMemberBinding="{Binding FullNameWithHalfSpace}" Width="80" />
-                        <GridViewColumn Header="フリガナ" DisplayMemberBinding="{Binding FullNameKanaWithHalfSpace}" Width="100" />
-                        <GridViewColumn Header="メール" DisplayMemberBinding="{Binding Email}" Width="140" />
-                        <GridViewColumn Header="電話番号" DisplayMemberBinding="{Binding PhoneNumber}" Width="70" />
-                        <GridViewColumn Header="ロール" DisplayMemberBinding="{Binding Roles,Converter={StaticResource RoleNameConverter}}" Width="120" />
-                        <GridViewColumn Header="削F" Width="auto">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <CheckBox IsChecked="{Binding IsDeleted}" IsEnabled="False" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-            <Button Grid.Row="1" Content="ユーザー選択解除" Height="25" Width="110" Margin="0 10" Click="UnSelectUser_Click" />
-        </Grid>
-        <!--ユーザー基本情報欄-->
-        <StackPanel Grid.Column="1" Margin="20 0">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type DockPanel}">
-                    <Setter Property="Margin" Value="0 0 0 4"/>
-                </Style>
-            </StackPanel.Resources>
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="ユーザー名*" Margin="0 0 0 3" />
-                <TextBox Name="ui_userNameBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
-                    <TextBox.Text>
-                        <Binding Path="UserName" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                    </TextBox.Text>
-                </TextBox>
-                <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_userNameBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
-            </DockPanel>
-            <DockPanel Style="{StaticResource PasswordHidePanel}">
-                <TextBlock DockPanel.Dock="Top" Text="パスワード*" Margin="0 0 0 3" />
-                <TextBox Name="ui_passwordBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" Margin="0 0 0 3" InputMethod.IsInputMethodEnabled="False" >
-                    <TextBox.Text>
-                        <Binding Path="Password" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                    </TextBox.Text>
-                </TextBox>
-                <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_passwordBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
-            </DockPanel>
-            <DockPanel Style="{StaticResource PasswordHidePanel}">
-                <TextBlock DockPanel.Dock="Top" Text="パスワード確認*" Margin="0 0 0 3" />
-                <TextBox Name="ui_passwordConfirmBox" DockPanel.Dock="Top" Margin="0 0 0 3" InputMethod.IsInputMethodEnabled="False" >
-                    <TextBox.Text>
-                        <Binding Path="PasswordConfirm" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                    </TextBox.Text>
-                </TextBox>
-                <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_passwordConfirmBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
-            </DockPanel>
-            <Grid>
+        
+        <!--サイドバー-->
+        <StackPanel Grid.Column="0" Background="MidnightBlue">
+            <Button Name="ui_userManagementButton" Content="ユーザー管理" Height="40" Foreground="LightGray" Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0" Click="ui_userManagementButton_Click" />
+            <Button Name="ui_agencyManagementButton"  Content="企業管理" Height="40" Foreground="LightGray" Background="Transparent" Click="ui_agencyManagementButton_Click"/>
+        </StackPanel>
+
+        <Grid Name="ui_userManagementContent" Grid.Column="1" Margin="12 8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            
+            <!--ユーザーリスト-->
+            <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="12*" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <DockPanel Grid.Column="0" Grid.Row="0" Margin="0 0 8 0">
-                    <TextBlock DockPanel.Dock="Top" Text="姓" Margin="0 0 0 3" />
-                    <TextBox DockPanel.Dock="Top" Text="{Binding LastName}" Margin="0 0 0 3"/>
-                </DockPanel>
-                <DockPanel Grid.Column="1" Grid.Row="0" Margin="8 0 0 0">
-                    <TextBlock DockPanel.Dock="Top" Text="名" Margin="0 0 0 3" />
-                    <TextBox DockPanel.Dock="Top" Text="{Binding FirstName}" Margin="0 0 0 3" />
-                </DockPanel>
-                <DockPanel Grid.Column="0" Grid.Row="1" Margin="0 0 8 0">
-                    <TextBlock DockPanel.Dock="Top" Text="姓（フリガナ）" Margin="0 0 0 3" />
-                    <TextBox DockPanel.Dock="Top" Text="{Binding LastNameKana}" Margin="0 0 0 3" />
-                </DockPanel>
-                <DockPanel Grid.Column="1" Grid.Row="1" Margin="8 0 0 0">
-                    <TextBlock DockPanel.Dock="Top" Text="名（フリガナ）" Margin="0 0 0 3" />
-                    <TextBox  DockPanel.Dock="Top" Text="{Binding FirstNameKana}" Margin="0 0 0 3" />
-                </DockPanel>
-            </Grid>
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="メールアドレス" Margin="0 0 0 3" />
-                <TextBox Name="ui_emailAddressBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
-                    <TextBox.Text>
-                        <Binding Path="EmailAddress" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
-                            <Binding.ValidationRules>
-                                <validator:EmailAdressValidator />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-				<ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_emailAddressBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
-            </DockPanel>
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="電話番号" Margin="0 0 0 3" />
-                <TextBox Name="ui_phoneNumberBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
-                    <TextBox.Text>
-                        <Binding Path="PhoneNumber" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
-                            <Binding.ValidationRules>
-                                <validator:PhoneNumberValidator />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-                <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_phoneNumberBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
-            </DockPanel>
-            <StackPanel DockPanel.Dock="Top" Margin="0 3">
-                <CheckBox Name="ui_IsDeletedCheckBox" Content="削除フラグ" IsChecked="{Binding IsDeleted}"/>
-            </StackPanel>
-            <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Notification}" Foreground="Red" FontSize="16" Margin="0 26" />
-        </StackPanel>
-        <!--付属情報-->
-        <!--ロール関連-->
-        <StackPanel Grid.Column="2">
-                <ListView Name="ui_roleList" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged}" Margin="0 12">
+                <ListView Name="ui_userList" Grid.Row="0" ItemsSource="{Binding Users,UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" >
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" >
                             <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
-                            <EventSetter Event="MouseLeftButtonUp" Handler="RoleListItem_MouseLeftButtonUp" />
+                            <EventSetter Event="MouseLeftButtonUp" Handler="ListViewItem_MouseLeftButtonUp" />
                         </Style>
                     </ListView.ItemContainerStyle>
                     <ListView.View>
                         <GridView>
-                        <GridViewColumn CellTemplate="{StaticResource FirstCell}" Width="auto" />
-                            <GridViewColumn Header="ロール名" Width="96" DisplayMemberBinding="{Binding Name}" />
-                            <GridViewColumn Header="説明" DisplayMemberBinding="{Binding Description}" Width="240" />
+                            <GridViewColumn CellTemplate="{StaticResource FirstCell}" Width="auto" />
+                            <GridViewColumn Header="ユーザー名" DisplayMemberBinding="{Binding UserName}" Width="70" />
+                            <GridViewColumn Header="本名" DisplayMemberBinding="{Binding FullNameWithHalfSpace}" Width="80" />
+                            <GridViewColumn Header="フリガナ" DisplayMemberBinding="{Binding FullNameKanaWithHalfSpace}" Width="100" />
+                            <GridViewColumn Header="メール" DisplayMemberBinding="{Binding Email}" Width="140" />
+                            <GridViewColumn Header="電話番号" DisplayMemberBinding="{Binding PhoneNumber}" Width="70" />
+                            <GridViewColumn Header="ロール" DisplayMemberBinding="{Binding Roles,Converter={StaticResource RoleNameConverter}}" Width="120" />
+                            <GridViewColumn Header="削F" Width="auto">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsDeleted}" IsEnabled="False" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>
-                <Button Content="ロール選択解除" Height="25" Width="96" Margin="5 5" Click="Button_Click" />
-                <TextBlock Text="ロール名*" Margin="0 0 0 3" />
-                <TextBox Text="{Binding RoleName}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" />
-                <TextBlock Text="ロール説明" Margin="0 0 0 3" />
-                <TextBox Text="{Binding RoleDescription}" Margin="0 0 0 3" />
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="ロール追加・変更" Margin="10 5" Padding="5 3" Command="{Binding AddNewRoleCommand}" />
-                    <Button Content="選択ロール削除" Margin="10 10" FontSize="9">
+                <Button Grid.Row="1" Content="ユーザー選択解除" Height="25" Width="110" Margin="0 10" Click="UnSelectUser_Click" />
+            </Grid>
+        
+            <!--ユーザー基本情報欄-->
+            <StackPanel Grid.Column="1" Margin="20 0">
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type DockPanel}">
+                        <Setter Property="Margin" Value="0 0 0 4"/>
+                    </Style>
+                </StackPanel.Resources>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="ユーザー名*" Margin="0 0 0 3" />
+                    <TextBox Name="ui_userNameBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
+                        <TextBox.Text>
+                            <Binding Path="UserName" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                        </TextBox.Text>
+                    </TextBox>
+                    <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_userNameBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
+                </DockPanel>
+                <DockPanel Style="{StaticResource PasswordHidePanel}">
+                    <TextBlock DockPanel.Dock="Top" Text="パスワード*" Margin="0 0 0 3" />
+                    <TextBox Name="ui_passwordBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" Margin="0 0 0 3" InputMethod.IsInputMethodEnabled="False" >
+                        <TextBox.Text>
+                            <Binding Path="Password" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                        </TextBox.Text>
+                    </TextBox>
+                    <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_passwordBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
+                </DockPanel>
+                <DockPanel Style="{StaticResource PasswordHidePanel}">
+                    <TextBlock DockPanel.Dock="Top" Text="パスワード確認*" Margin="0 0 0 3" />
+                    <TextBox Name="ui_passwordConfirmBox" DockPanel.Dock="Top" Margin="0 0 0 3" InputMethod.IsInputMethodEnabled="False" >
+                        <TextBox.Text>
+                            <Binding Path="PasswordConfirm" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                        </TextBox.Text>
+                    </TextBox>
+                    <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_passwordConfirmBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
+                </DockPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Grid.Column="0" Grid.Row="0" Margin="0 0 8 0">
+                        <TextBlock DockPanel.Dock="Top" Text="姓" Margin="0 0 0 3" />
+                        <TextBox DockPanel.Dock="Top" Text="{Binding LastName}" Margin="0 0 0 3"/>
+                    </DockPanel>
+                    <DockPanel Grid.Column="1" Grid.Row="0" Margin="8 0 0 0">
+                        <TextBlock DockPanel.Dock="Top" Text="名" Margin="0 0 0 3" />
+                        <TextBox DockPanel.Dock="Top" Text="{Binding FirstName}" Margin="0 0 0 3" />
+                    </DockPanel>
+                    <DockPanel Grid.Column="0" Grid.Row="1" Margin="0 0 8 0">
+                        <TextBlock DockPanel.Dock="Top" Text="姓（フリガナ）" Margin="0 0 0 3" />
+                        <TextBox DockPanel.Dock="Top" Text="{Binding LastNameKana}" Margin="0 0 0 3" />
+                    </DockPanel>
+                    <DockPanel Grid.Column="1" Grid.Row="1" Margin="8 0 0 0">
+                        <TextBlock DockPanel.Dock="Top" Text="名（フリガナ）" Margin="0 0 0 3" />
+                        <TextBox  DockPanel.Dock="Top" Text="{Binding FirstNameKana}" Margin="0 0 0 3" />
+                    </DockPanel>
+                </Grid>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="メールアドレス" Margin="0 0 0 3" />
+                    <TextBox Name="ui_emailAddressBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
+                        <TextBox.Text>
+                            <Binding Path="EmailAddress" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
+                                <Binding.ValidationRules>
+                                    <validator:EmailAdressValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+				    <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_emailAddressBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
+                </DockPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="電話番号" Margin="0 0 0 3" />
+                    <TextBox Name="ui_phoneNumberBox" DockPanel.Dock="Top" Style="{StaticResource ValidationTextBoxDecoration}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" >
+                        <TextBox.Text>
+                            <Binding Path="PhoneNumber" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
+                                <Binding.ValidationRules>
+                                    <validator:PhoneNumberValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <ContentPresenter DockPanel.Dock="Bottom" Content="{Binding ElementName=ui_phoneNumberBox,Path=(Validation.Errors).CurrentItem}" Margin="2 2" />
+                </DockPanel>
+                <StackPanel DockPanel.Dock="Top" Margin="0 3">
+                    <CheckBox Name="ui_IsDeletedCheckBox" Content="削除フラグ" IsChecked="{Binding IsDeleted}"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Notification}" Foreground="Red" FontSize="16" Margin="0 26" />
+            </StackPanel>
+        
+            <!--ロール関連・DB操作-->
+            <StackPanel Grid.Column="2">
+                    <ListView Name="ui_roleList" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged}" Height="120" Margin="0 12">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem" >
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                                <EventSetter Event="MouseLeftButtonUp" Handler="RoleListItem_MouseLeftButtonUp" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                            <GridViewColumn CellTemplate="{StaticResource FirstCell}" Width="auto" />
+                                <GridViewColumn Header="ロール名" Width="96" DisplayMemberBinding="{Binding Name}" />
+                                <GridViewColumn Header="説明" DisplayMemberBinding="{Binding Description}" Width="240" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <Button Content="ロール選択解除" Height="25" Width="96" Margin="5 5" Click="UnselectRole_Click" />
+                    <TextBlock Text="ロール名*" Margin="0 0 0 3" />
+                    <TextBox Text="{Binding RoleName}" InputMethod.IsInputMethodEnabled="False" Margin="0 0 0 3" />
+                    <TextBlock Text="ロール説明" Margin="0 0 0 3" />
+                    <TextBox Text="{Binding RoleDescription}" Margin="0 0 0 3" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="ロール追加・変更" Margin="10 5" Padding="5 3" Command="{Binding AddNewRoleCommand}" />
+                        <Button Content="選択ロール削除" Margin="10 10" FontSize="9">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <l:ConfirmationDialogInteractionMessageAction>
+                                        <l:DirectInteractionMessage CallbackCommand="{Binding DeleteRoleCommand}">
+                                            <l:ConfirmationMessage Button="OKCancel" 
+                                                    Caption="確認"
+                                                    Text="選択されたロールをDBから永久に削除してよろしいですか？"
+                                                    Image="Warning"   />
+                                        </l:DirectInteractionMessage>
+                                    </l:ConfirmationDialogInteractionMessageAction>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                    </StackPanel>
+                    <Button Content="ロールをユーザーに反映" Width="148" Margin="5 24" Padding="5 3" Command="{Binding MapRolesToUserCommand}"  >
+                        <Button.ToolTip>
+                            選択されたユーザーのロールを、ロールリストから選ばれた物を反映する
+                        </Button.ToolTip>
+                    </Button>
+                </StackPanel>
+                <DockPanel Grid.Column="2">
+                <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+                    <Button Margin="0 10" Padding="5 3" Command="{Binding WriteToDBCommand}" FontSize="21.333"  >
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Content" Value="変更" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding UserId}" Value="{x:Null}" >
+                                        <Setter Property="Content" Value="新規登録" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Width="54" Height="20" Margin="0 10" Content="完全削除" IsEnabled="True"  >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <l:ConfirmationDialogInteractionMessageAction>
-                                    <l:DirectInteractionMessage CallbackCommand="{Binding DeleteRoleCommand}">
+                                    <l:DirectInteractionMessage CallbackCommand="{Binding DeleteCommand}">
                                         <l:ConfirmationMessage Button="OKCancel" 
-                                                Caption="確認"
-                                                Text="選択されたロールをDBから永久に削除してよろしいですか？"
-                                                Image="Warning"   />
+                                                      Caption="確認"
+                                                      Text="選択されたユーザーをDBから永久に削除してよろしいですか？"
+                                                      Image="Warning"   />
                                     </l:DirectInteractionMessage>
                                 </l:ConfirmationDialogInteractionMessageAction>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Button>
                 </StackPanel>
-                <Button Content="ロールをユーザーに反映" Width="148" Margin="5 24" Padding="5 3" Command="{Binding MapRolesToUserCommand}"  >
-                    <Button.ToolTip>
-                        選択されたユーザーのロールを、ロールリストから選ばれた物を反映する
-                    </Button.ToolTip>
-                </Button>
-            </StackPanel>
-            <DockPanel Grid.Column="2">
-            <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
-                <Button Margin="0 10" Padding="5 3" Command="{Binding WriteToDBCommand}" FontSize="21.333"  >
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Content" Value="変更" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding UserId}" Value="{x:Null}" >
-                                    <Setter Property="Content" Value="新規登録" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button Width="54" Height="20" Margin="0 10" Content="完全削除" IsEnabled="True"  >
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <l:ConfirmationDialogInteractionMessageAction>
-                                <l:DirectInteractionMessage CallbackCommand="{Binding DeleteCommand}">
-                                    <l:ConfirmationMessage Button="OKCancel" 
-                                                  Caption="確認"
-                                                  Text="選択されたユーザーをDBから永久に削除してよろしいですか？"
-                                                  Image="Warning"   />
-                                </l:DirectInteractionMessage>
-                            </l:ConfirmationDialogInteractionMessageAction>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-            </StackPanel>
-        </DockPanel>
+            </DockPanel>
+        </Grid>
     </Grid>
 </Window>

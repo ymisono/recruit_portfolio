@@ -38,7 +38,7 @@ namespace UserManageUtility.Views
             vm.ClearUserInput();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void UnselectRole_Click(object sender, RoutedEventArgs e)
         {
             ui_roleList.SelectedItem = null;
 
@@ -116,5 +116,19 @@ namespace UserManageUtility.Views
                 vm.RoleDescription = selectedRole.Description;
             }
         }
+
+        #region サイドバー
+        private void ui_userManagementButton_Click(object sender, RoutedEventArgs e)
+        {
+            ui_userManagementContent.Visibility = Visibility.Visible;
+
+        }
+
+        private void ui_agencyManagementButton_Click(object sender, RoutedEventArgs e)
+        {
+            ui_userManagementContent.Visibility = Visibility.Collapsed;
+        }
+
+        #endregion サイドバー
     }
 }
