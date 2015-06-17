@@ -640,6 +640,7 @@ namespace UserManageUtility.ViewModels
                     Roles = null;
                 }
 
+                ClearRoleInput();
                 await Update();
 
                 Notification = "完了しました";

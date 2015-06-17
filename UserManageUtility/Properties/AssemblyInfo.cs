@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("UserManageUtility")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("株式会社ソフトスタジオ")]
 [assembly: AssemblyProduct("UserManageUtility")]
-[assembly: AssemblyCopyright("Copyright c  2011")]
+[assembly: AssemblyCopyright("Copyright SoftStudio c 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

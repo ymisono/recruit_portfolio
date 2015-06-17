@@ -24,13 +24,14 @@ namespace OneServer.Models
     public class ModelFactory
     {
         //Code removed for brevity
-        public RoleReturnModel Create(IdentityRole appRole)
+        public static RoleReturnModel Create(ApplicationRole appRole)
         {
             return new RoleReturnModel
             {
                 //Url = _UrlHelper.Link("GetRoleById", new { id = appRole.Id }),
                 Id = appRole.Id,
-                Name = appRole.Name
+                Name = appRole.Name,
+                Description = appRole.Description
             };
         }
     }
@@ -40,5 +41,6 @@ namespace OneServer.Models
         //public string Url { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OneServer.Models;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -23,8 +25,8 @@ namespace OneServer.Controllers
 
             if (role != null)
             {
-                var factory = new ModelFactory();
-                return Ok(factory.Create(role));
+                //var factory = new ModelFactory();
+                return Ok(ModelFactory.Create(role));
             }
 
             return BadRequest();
@@ -45,8 +47,13 @@ namespace OneServer.Controllers
                 {
                     return NotFound();
                 }
-
-                return Ok(roles);
+                //戻り値の形式に
+                var returnRoles = new List<RoleReturnModel>();
+                foreach(var r in roles)
+                {
+                    returnRoles.Add(ModelFactory.Create(r));
+                }
+                return Ok(returnRoles);
             }
             catch (Exception ex)
             {
@@ -75,8 +82,8 @@ namespace OneServer.Controllers
 
             Uri locationHeader = new Uri(Url.Link("PostRole", new { id = role.Id }));
 
-            var factory = new ModelFactory();
-            return Created(locationHeader, factory.Create(role));
+            //var factory = new ModelFactory();
+            return Created(locationHeader, ModelFactory.Create(role));
         }
 
         //PUT /api/Roles/{guid}
