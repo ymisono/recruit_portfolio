@@ -25,7 +25,7 @@ namespace UserManageUtility.Validator
 
             if(!PhoneNumberPattern.Match(targetNumber).Success)
             {
-                return new ValidationResult(false, "正しい電話番号の形式ではありません。例：123-234-5678、(080)123-4568。");
+                return new ValidationResult(false, "正しい電話番号の形式ではありません。\n例：123-234-5678、(080)123-4568。");
             }
 
             return new ValidationResult(true, null);

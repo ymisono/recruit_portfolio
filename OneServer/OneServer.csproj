@@ -381,7 +381,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>59458</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:59142/</IISUrl>
+          <IISUrl>http://localhost:59142/recruit</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:59142/recruit</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

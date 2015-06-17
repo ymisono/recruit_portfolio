@@ -80,7 +80,7 @@
         </Grid.ColumnDefinitions>
         
         <!--サイドバー-->
-        <StackPanel Grid.Column="0" Background="MidnightBlue">
+        <StackPanel Grid.Column="0" Background="MidnightBlue" Visibility="Collapsed">
             <Button Name="ui_userManagementButton" Content="ユーザー管理" Height="40" Foreground="LightGray" Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0" Click="ui_userManagementButton_Click" />
             <Button Name="ui_agencyManagementButton"  Content="企業管理" Height="40" Foreground="LightGray" Background="Transparent" Click="ui_agencyManagementButton_Click"/>
         </StackPanel>
@@ -216,7 +216,7 @@
                 <StackPanel DockPanel.Dock="Top" Margin="0 3">
                     <CheckBox Name="ui_IsDeletedCheckBox" Content="削除フラグ" IsChecked="{Binding IsDeleted}"/>
                 </StackPanel>
-                <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Notification}" Foreground="Red" FontSize="16" Margin="0 26" />
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Notification}" Foreground="Red" FontSize="17" TextWrapping="Wrap" Margin="0 26" />
             </StackPanel>
         
             <!--ロール関連・DB操作-->

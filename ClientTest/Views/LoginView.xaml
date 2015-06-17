@@ -88,7 +88,7 @@
 						<ColumnDefinition Width="0.6* " />
 					</Grid.ColumnDefinitions>
 					<TextBlock Grid.Column="0" Text="ユーザー名" VerticalAlignment="Center" />
-					<TextBox Name="ui_userNameBox" Grid.Column="1" >
+					<TextBox Name="ui_userNameBox" Grid.Column="1" InputMethod.IsInputMethodEnabled="False" >
 						<TextBox.Text>
 							<Binding Path="UserName" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
 								<Binding.ValidationRules>

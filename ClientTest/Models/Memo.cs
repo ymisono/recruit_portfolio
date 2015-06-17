@@ -11,20 +11,5 @@ namespace ClientTest.Models
 
         public String Content { get; set; }
 
-        /// <summary>
-        /// DBにまだメモがないとき
-        /// </summary>
-        public bool IsFirstTime 
-        {
-            get
-            {
-                return Id == -1;
-            }
-        }
-
-        public Memo()
-        {
-            Id = -1; //一回も保存されてない場合、-1
-        }
     }
 }

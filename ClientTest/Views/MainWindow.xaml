@@ -74,7 +74,7 @@
         <StackPanel Grid.Row="0" VerticalAlignment="Center" Background="DarkSeaGreen" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
                 <Button Width="70" Height="30" Margin="0 0 20 0" Content="新規登録" Command="{Binding RegisterCommand}" Visibility="Collapsed" />
-                <Button Style="{StaticResource GreenFlatButton}" Width="70" Height="30" Content="ログアウト" Command="{Binding LogoutCommand}" />
+                <Button Style="{StaticResource GreenFlatButton}" Width="80" Height="30" Content="ログアウト" Command="{Binding LogoutCommand}" />
             </StackPanel>
         </StackPanel>
         <Button Style="{StaticResource GreenFlatButton}" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding LoginCommand}" Content="{Binding MyName}" Margin="0 0 5 0" />

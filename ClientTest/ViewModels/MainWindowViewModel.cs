@@ -202,15 +202,7 @@ namespace ClientTest.ViewModels
                 _memo.Content = memoText;
                 _memo.OwnerId = _apiServer.CurrentSession.UserInfo.Id;
 
-                //まだ作られてない場合、作製
-                if (_memo.IsFirstTime)
-                {
-                    await _apiServer.CreateAsync<Memo>(_memo, "Memos");
-                }
-                else
-                {
-                    await _apiServer.UpdateAsync<Memo>(_memo, String.Format("Memos/{0}", _memo.Id));
-                }
+                await _apiServer.UpdateAsync<Memo>(_memo, String.Format("Memos/{0}", _memo.Id));
 
                 MessageBox.Show("保存しました。");
             }
@@ -322,10 +314,11 @@ namespace ClientTest.ViewModels
                         memoText = json.Content;
                         _memo = json;
                     }
-                    else //何も入ってない場合
+                    else
                     {
-                        memoText = "";
-                        _memo.Id = -1;
+                        //新しく作る
+                        _memo = new Memo() { OwnerId = _apiServer.CurrentSession.UserInfo.Id };
+                        _memo = await _apiServer.CreateAsync<Memo>(_memo,"Memos");
                     }
                 }
                 catch (ApplicationException e)

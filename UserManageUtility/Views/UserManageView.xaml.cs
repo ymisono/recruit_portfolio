@@ -36,6 +36,7 @@ namespace UserManageUtility.Views
 
             var vm = this.DataContext as UserManageViewModel;
             vm.ClearUserInput();
+            vm.Notification = "";
         }
 
         private void UnselectRole_Click(object sender, RoutedEventArgs e)
@@ -44,6 +45,7 @@ namespace UserManageUtility.Views
 
             var vm = this.DataContext as UserManageViewModel;
             vm.ClearRoleInput();
+            vm.Notification = "";
         }
 
         //VMでどうしても取れない

@@ -62,19 +62,15 @@
     <Compile Include="MainWindowViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ClientTest\ClientTest.csproj">
       <Project>{40f4d25d-1625-49cd-b3be-c073ff38f3c5}</Project>
       <Name>ClientTest</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OneServer\OneServer.csproj">
-      <Project>{81f1330b-947d-4060-a098-f53ccdaa3f5f}</Project>
-      <Name>OneServer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

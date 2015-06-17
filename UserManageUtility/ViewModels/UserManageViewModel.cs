@@ -483,6 +483,12 @@ namespace UserManageUtility.ViewModels
                 }
             }
 
+            if(IsConfidentalUserOrRoleSelected())
+            {
+                Notification = "adminは変更できません";
+                return;
+            }
+
             try
             {
                 Task addOrUpdateTask;
@@ -558,6 +564,12 @@ namespace UserManageUtility.ViewModels
                 return;
             }
 
+            if(IsConfidentalUserOrRoleSelected())
+            {
+                Notification = "adminは削除できません";
+                return;
+            }
+
             if (message.Response.HasValue && message.Response.Value)
             {
                 try
@@ -611,6 +623,12 @@ namespace UserManageUtility.ViewModels
             if ( (selectedRoles.Count() > 1) == true)
             {
                 Notification = "ロールの追加・削除は一つずつ行ってください";
+                return;
+            }
+
+            if(IsConfidentalUserOrRoleSelected())
+            {
+                Notification = "Adminstratorロールは変更できません";
                 return;
             }
 
@@ -675,15 +693,21 @@ namespace UserManageUtility.ViewModels
                 return;
             }
 
-            //待機するタスク
-            var tasks = new List<Task>();
-
             var selectedRoles = Roles.Where(x => x.IsSelected == true);
             if(selectedRoles==null)
             {
                 Notification = "ロールが選択されてません";
                 return;
             }
+
+            if(IsConfidentalUserOrRoleSelected())
+            {
+                Notification = "Administratorロールは削除できません";
+                return;
+            }
+
+            //待機するタスク
+            var tasks = new List<Task>();
 
             try
             {
@@ -736,6 +760,12 @@ namespace UserManageUtility.ViewModels
             if (selectedUser == null)
             {
                 Notification = "ユーザーが選択されていません";
+                return;
+            }
+
+            if(IsConfidentalUserOrRoleSelected())
+            {
+                Notification = "adminのロール割り当ての変更\n及びadmin以外へのAdministratorロールの付与はできません";
                 return;
             }
 
@@ -857,6 +887,24 @@ namespace UserManageUtility.ViewModels
 
             Users = await userReadTask;
             Roles = await roleReadTask;
+        }
+
+        private bool IsConfidentalUserOrRoleSelected()
+        {
+            //adminは触れない
+            var selectedUser = Users.SingleOrDefault(u => u.IsSelected == true);
+            if (selectedUser != null && selectedUser.UserName == "admin")
+            {
+                return true;
+            }
+            //Administratorロールは触れない
+            var selectedRoles = Roles.Where(x=>x.IsSelected==true);
+            if (selectedRoles.Any(x=>x.Name=="Administrators"))
+            {
+                return true;
+            }
+
+            return false;
         }
 
 #endregion

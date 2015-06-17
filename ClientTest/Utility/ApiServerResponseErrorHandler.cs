@@ -27,24 +27,38 @@ namespace ClientTest.Utility
             {
                 //中身をロード
                 var content = await res.Content.ReadAsStringAsync();
+                String details = null;
 
                 //エラーを解析
-                var details = HandleErrorDetails(content);
+                //Contentがないなら
+                if(!String.IsNullOrEmpty(content))
+                    details = HandleErrorDetails(content);
+
+                ApplicationException ex;
 
                 switch (res.StatusCode)
                 {
                     case HttpStatusCode.BadRequest:
-                        var ex = new ApplicationException(String.Format(templateMsg,400,"不正な入力", details));
+                        ex = new ApplicationException(String.Format(templateMsg,400,"不正な入力", details));
                         ex.Data.Add("details", details);
+                        ex.Data.Add("ResponseCode", 400);
                         throw ex;
                     case HttpStatusCode.Unauthorized:
-                        throw new ApplicationException(String.Format(templateExtraMsg,401,"認証に失敗","再ログインしてください。", details));
+                        ex = new ApplicationException(String.Format(templateExtraMsg,401,"認証に失敗","再ログインしてください。", details));
+                        ex.Data.Add("ResponseCode",401);
+                        throw ex;
                     case HttpStatusCode.NotFound:
-                        throw new ApplicationException(String.Format(templateExtraMsg, 404, "リソース獲得失敗", "要求されたリソースがありませんでした。", details));
+                        ex = new ApplicationException(String.Format(templateExtraMsg, 404, "リソース獲得失敗", "要求されたリソースがありませんでした。", details));
+                        ex.Data.Add("ResponseCode", 404);
+                        throw ex;
                     case HttpStatusCode.InternalServerError:
-                        throw new ApplicationException(String.Format(templateExtraMsg,500,"サーバー内で不正な処理が発生","サポートへご連絡お願いします。", details));
+                        ex = new ApplicationException(String.Format(templateExtraMsg,500,"サーバー内で不正な処理が発生","サポートへご連絡お願いします。", details));
+                        ex.Data.Add("ResponseCode", 500);
+                        throw ex;
                     case HttpStatusCode.ServiceUnavailable:
-                        throw new ApplicationException(String.Format(templateExtraMsg,503,"サーバーが一時的に利用できません","ネットワークの状況を確認してください。", details));
+                        ex = new ApplicationException(String.Format(templateExtraMsg,503,"サーバーが一時的に利用できません","ネットワークの状況を確認してください。", details));
+                        ex.Data.Add("ResponseCode", 503);
+                        throw ex;
 
                     default:
                         throw new ApplicationException("想定してないエラーが発生しました。\nサポートへご連絡お願いします。");

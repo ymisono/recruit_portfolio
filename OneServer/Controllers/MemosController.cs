@@ -79,7 +79,7 @@ namespace OneServer.Controllers
         }
 
         // POST: api/Memos
-        [Route("")]
+        [Route("",Name="PostMemo")]
         [HttpPost]
         [ResponseType(typeof(Memo))]
         public async Task<IHttpActionResult> PostMemo(Memo memo)
@@ -92,9 +92,7 @@ namespace OneServer.Controllers
             db.Memos.Add(memo);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("Default", new { OwnerId = memo.OwnerId }, memo);
-            //var loc = new Uri(Url.Link("DefaultApi", new { Id = memo.Id }));
-            //return Created(memo);
+            return CreatedAtRoute("PostMemo", new { OwnerId = memo.Id }, memo);
         }
 
         // DELETE: api/Memos/5

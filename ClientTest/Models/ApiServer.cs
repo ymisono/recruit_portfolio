@@ -74,7 +74,7 @@ namespace ClientTest.Models
             }
         }
 
-        public async Task CreateAsync<T>(T newObj, String restResource)
+        public async Task<T> CreateAsync<T>(T newObj, String restResource)
         {
             using (var client = new HttpClient())
             {
@@ -90,6 +90,11 @@ namespace ClientTest.Models
                     );
 
                 await ApiServerResponseErrorHandler.CheckResponseStatus(res);
+
+                var content = await res.Content.ReadAsStringAsync();
+                //作ったものをそっくり返す
+                return JsonConvert.DeserializeObject<T>(content);
+
             }
         }
 
