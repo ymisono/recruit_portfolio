@@ -194,6 +194,74 @@ namespace UserManageUtility.ViewModels
         }
         #endregion
 
+        #region LastName変更通知プロパティ
+        private string _LastName;
+
+        public string LastName
+        {
+            get
+            { return _LastName; }
+            set
+            { 
+                if (_LastName == value)
+                    return;
+                _LastName = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region FirstName変更通知プロパティ
+        private string _FirstName;
+
+        public string FirstName
+        {
+            get
+            { return _FirstName; }
+            set
+            { 
+                if (_FirstName == value)
+                    return;
+                _FirstName = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region LastNameKana変更通知プロパティ
+        private string _LastNameKana;
+
+        public string LastNameKana
+        {
+            get
+            { return _LastNameKana; }
+            set
+            { 
+                if (_LastNameKana == value)
+                    return;
+                _LastNameKana = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region FirstNameKana変更通知プロパティ
+        private string _FirstNameKana;
+
+        public string FirstNameKana
+        {
+            get
+            { return _FirstNameKana; }
+            set
+            { 
+                if (_FirstNameKana == value)
+                    return;
+                _FirstNameKana = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
         #region EmailAddress変更通知プロパティ
         private string _EmailAddress;
 
@@ -423,7 +491,12 @@ namespace UserManageUtility.ViewModels
                 {
                     //選択されているロール
                     var selectedRoles = Roles.Where(x => x.IsSelected == true);
-                    addOrUpdateTask = _apiServer.RegisterAsync(UserName, Password, EmailAddress, PhoneNumber,selectedRoles);
+                    addOrUpdateTask = _apiServer.RegisterAsync(
+                        UserName, Password,
+                        lastName:LastName,firstName:FirstName,
+                        lastNameKana:LastNameKana,firstNameKana:FirstNameKana,
+                        email: EmailAddress, phoneNumber: PhoneNumber,
+                        roles: selectedRoles);
                 }
                 else
                 {
@@ -432,7 +505,10 @@ namespace UserManageUtility.ViewModels
                     addOrUpdateTask = _apiServer.UpdateAsync( 
                         new UserInfo
                         {
-                            Id =UserId, UserName=UserName, Email =EmailAddress,
+                            Id =UserId, UserName=UserName,
+                            LastName = LastName, FirstName = FirstName,
+                            LastNameKana = LastNameKana, FirstNameKana = FirstNameKana,
+                            Email =EmailAddress,
                             PhoneNumber = PhoneNumber,
                             IsDeleted = IsDeleted,
                             Roles = selectedUser.Roles,
@@ -726,10 +802,16 @@ namespace UserManageUtility.ViewModels
             _UserName = null;
             RaisePropertyChanged("UserName");
             UserId = null;
-            Password = null;
-            PasswordConfirm = null;
+            _Password = null;
+            RaisePropertyChanged("Password");
+            _PasswordConfirm = null;
+            RaisePropertyChanged("PasswordConfirm");
             EmailAddress = null;
             PhoneNumber = null;
+            FirstName = null;
+            FirstNameKana = null;
+            LastName = null;
+            LastNameKana = null;
             IsDeleted = false;
         }
 
@@ -766,9 +848,14 @@ namespace UserManageUtility.ViewModels
 
         private async Task Update()
         {
-            Users = await _apiServer.ReadAsync<ObservableCollection<SelectableUserInfo>>("Account/UserInfo");
+            Task<ObservableCollection<SelectableUserInfo>> userReadTask;
+            Task<ObservableCollection<Role>> roleReadTask;
 
-            Roles = await _apiServer.ReadAsync<ObservableCollection<Role>>("Roles");
+            userReadTask = _apiServer.ReadAsync<ObservableCollection<SelectableUserInfo>>("Account/UserInfo");
+            roleReadTask = _apiServer.ReadAsync<ObservableCollection<Role>>("Roles");
+
+            Users = await userReadTask;
+            Roles = await roleReadTask;
         }
 
 #endregion

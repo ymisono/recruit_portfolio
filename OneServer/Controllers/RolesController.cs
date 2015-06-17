@@ -27,21 +27,31 @@ namespace OneServer.Controllers
                 return Ok(factory.Create(role));
             }
 
-            return NotFound();
+            return BadRequest();
 
         }
 
+        // GET api/Roles
         [Route("")]
+        [HttpGet]
         public IHttpActionResult GetAllRoles()
         {
-            ApplicationDbContext db = new ApplicationDbContext();
-            //var rs = db.Roles.First<ApplicationRole>();
-            var rmRoles = this.RoleManager.Roles.First<ApplicationRole>();
-            var id = rmRoles.Id;
+            //var db = new ApplicationDbContext();
+            try
+            {
+            //    var roles = db.Roles.Select(x=>x);
+                var roles = this.RoleManager.Roles;
+                if (roles == null)
+                {
+                    return NotFound();
+                }
 
-            var roles = this.RoleManager.Roles;
-
-            return Ok(roles);
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
         //POST /api/Roles

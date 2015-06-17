@@ -115,6 +115,10 @@ namespace OneServer.Controllers
 
             existingUser.Email = user.Email;
             existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.LastName = user.LastName;
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastNameKana = user.LastNameKana;
+            existingUser.FirstNameKana = user.FirstNameKana;
             existingUser.IsDeleted = user.IsDeleted;
 
             //Roles
@@ -410,7 +414,13 @@ namespace OneServer.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser() { UserName = model.UserName, Email = model.Email, PhoneNumber = model.PhoneNumber };
+            var user = new ApplicationUser() 
+            { 
+                UserName = model.UserName,
+                LastName = model.LastName, FirstName = model.FirstName,
+                LastNameKana = model.LastNameKana, FirstNameKana = model.FirstNameKana,
+                Email = model.Email, PhoneNumber = model.PhoneNumber 
+            };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 

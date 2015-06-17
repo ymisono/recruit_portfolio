@@ -159,9 +159,22 @@ namespace ClientTest.Models
         /// <param name="password"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task RegisterAsync(String userName, String password, String email = null, String phoneNumber = null, IEnumerable<Role> roles = null)
+        public async Task RegisterAsync(
+            String userName, String password,
+            String lastName = null, String firstName = null,
+            String lastNameKana = null, String firstNameKana = null,
+            String email = null, String phoneNumber = null,
+            IEnumerable<Role> roles = null)
         {
-            var sendObj = new { UserName = userName, Email = email, PhoneNumber = phoneNumber, Password = password, Roles = roles };
+            var sendObj = new
+            { 
+                UserName = userName,
+                Password = password,
+                LastName = lastName, FirstName = firstName,
+                LastNameKana = lastNameKana, FirstNameKana = firstNameKana,
+                Email = email, PhoneNumber = phoneNumber,
+                Roles = roles
+            };
 
             using (var client = new HttpClient())
             {

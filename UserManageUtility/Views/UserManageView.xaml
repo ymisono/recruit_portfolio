@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:UserManageUtility.ViewModels"
         xmlns:validator="clr-namespace:UserManageUtility.Validator"
         xmlns:converter="clr-namespace:UserManageUtility.Converter"
-        Title="ユーザー管理" Height="680" Width="980" WindowState="Maximized">
+        Title="ユーザー管理" Height="680" Width="980" MinHeight="500" MinWidth="400" WindowState="Maximized">
     <Window.DataContext>
         <vm:UserManageViewModel />
     </Window.DataContext>
@@ -35,6 +35,7 @@
             </Setter>
         </Style>
         <converter:RoleNameConverter x:Key="RoleNameConverter" />
+        <!--UserIdによって動的に表示・非表示が変わるパネル-->
         <Style x:Key="PasswordHidePanel" TargetType="DockPanel">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
@@ -43,6 +44,13 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <!--ListViewにチェックボックスをつける-->
+        <DataTemplate x:Key="FirstCell">
+            <StackPanel Orientation="Horizontal">
+                <CheckBox IsChecked="{Binding Path=IsSelected, 
+                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
+            </StackPanel>
+        </DataTemplate>
     </Window.Resources>
     
     <i:Interaction.Triggers>
@@ -86,13 +94,14 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="ユーザー名" DisplayMemberBinding="{Binding UserName}" Width="70"/>
-                        <GridViewColumn Header="本名" DisplayMemberBinding="{Binding FullNameWithHalfSpace}" Width="70" />
-                        <GridViewColumn Header="フリガナ" DisplayMemberBinding="{Binding FullNameKanaWithHalfSpace}" Width="110" />
+                        <GridViewColumn CellTemplate="{StaticResource FirstCell}" Width="auto" />
+                        <GridViewColumn Header="ユーザー名" DisplayMemberBinding="{Binding UserName}" Width="70" />
+                        <GridViewColumn Header="本名" DisplayMemberBinding="{Binding FullNameWithHalfSpace}" Width="80" />
+                        <GridViewColumn Header="フリガナ" DisplayMemberBinding="{Binding FullNameKanaWithHalfSpace}" Width="100" />
                         <GridViewColumn Header="メール" DisplayMemberBinding="{Binding Email}" Width="140" />
                         <GridViewColumn Header="電話番号" DisplayMemberBinding="{Binding PhoneNumber}" Width="70" />
                         <GridViewColumn Header="ロール" DisplayMemberBinding="{Binding Roles,Converter={StaticResource RoleNameConverter}}" Width="120" />
-                        <GridViewColumn Header="削除F" Width="40">
+                        <GridViewColumn Header="削F" Width="auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <CheckBox IsChecked="{Binding IsDeleted}" IsEnabled="False" />
@@ -149,19 +158,19 @@
                 </Grid.ColumnDefinitions>
                 <DockPanel Grid.Column="0" Grid.Row="0" Margin="0 0 8 0">
                     <TextBlock DockPanel.Dock="Top" Text="姓" Margin="0 0 0 3" />
-                    <TextBox  DockPanel.Dock="Top" Margin="0 0 0 3"/>
+                    <TextBox DockPanel.Dock="Top" Text="{Binding LastName}" Margin="0 0 0 3"/>
                 </DockPanel>
                 <DockPanel Grid.Column="1" Grid.Row="0" Margin="8 0 0 0">
                     <TextBlock DockPanel.Dock="Top" Text="名" Margin="0 0 0 3" />
-                    <TextBox  DockPanel.Dock="Top" Margin="0 0 0 3" />
+                    <TextBox DockPanel.Dock="Top" Text="{Binding FirstName}" Margin="0 0 0 3" />
                 </DockPanel>
                 <DockPanel Grid.Column="0" Grid.Row="1" Margin="0 0 8 0">
                     <TextBlock DockPanel.Dock="Top" Text="姓（フリガナ）" Margin="0 0 0 3" />
-                    <TextBox  DockPanel.Dock="Top" Margin="0 0 0 3" />
+                    <TextBox DockPanel.Dock="Top" Text="{Binding LastNameKana}" Margin="0 0 0 3" />
                 </DockPanel>
                 <DockPanel Grid.Column="1" Grid.Row="1" Margin="8 0 0 0">
                     <TextBlock DockPanel.Dock="Top" Text="名（フリガナ）" Margin="0 0 0 3" />
-                    <TextBox  DockPanel.Dock="Top" Margin="0 0 0 3" />
+                    <TextBox  DockPanel.Dock="Top" Text="{Binding FirstNameKana}" Margin="0 0 0 3" />
                 </DockPanel>
             </Grid>
             <DockPanel>
@@ -207,6 +216,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.View>
                         <GridView>
+                        <GridViewColumn CellTemplate="{StaticResource FirstCell}" Width="auto" />
                             <GridViewColumn Header="ロール名" Width="96" DisplayMemberBinding="{Binding Name}" />
                             <GridViewColumn Header="説明" DisplayMemberBinding="{Binding Description}" Width="240" />
                         </GridView>

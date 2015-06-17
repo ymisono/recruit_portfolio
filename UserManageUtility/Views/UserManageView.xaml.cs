@@ -60,20 +60,24 @@ namespace UserManageUtility.Views
                 vm.UserName = selectedUser.UserName;
                 vm.EmailAddress = selectedUser.Email;
                 vm.PhoneNumber = selectedUser.PhoneNumber;
+                vm.LastName = selectedUser.LastName;
+                vm.FirstName = selectedUser.FirstName;
+                vm.LastNameKana = selectedUser.LastNameKana;
+                vm.FirstNameKana = selectedUser.FirstNameKana;
 
                 ui_IsDeletedCheckBox.IsChecked = selectedUser.IsDeleted;
 
 
+                #region RoleList
                 //該当するロールを選択
                 var selectedRolesOfUser = selectedUser.Roles;
-                //一度も選択されてないなら、選択をはずす
+                //一度も選択されてないなら、RoleListから選択をはずす
                 if (selectedRolesOfUser.Count == 0)
                 {
                     ui_roleList.SelectedItem = null;
                     return;
                 }
-
-
+                //選択されたロールをRoleListに反映
                 ui_roleList.SelectedItems.Clear();
                 foreach(var r1 in selectedRolesOfUser)
                 {
@@ -87,6 +91,7 @@ namespace UserManageUtility.Views
                         }
                     }
                 }
+                #endregion RoleList
             }
         }
 

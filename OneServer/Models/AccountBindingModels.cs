@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using ClientTest.Models;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using ClientTest.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace OneServer.Models
 {
@@ -53,7 +53,26 @@ namespace OneServer.Models
 
         public string PhoneNumber { get; set; }
 
-        public ICollection<Role> Roles { get; set; }
+        /// <summary>
+        /// 姓
+        /// </summary>
+        public String LastName { get; set; }
+        /// <summary>
+        /// 名
+        /// </summary>
+        public String FirstName { get; set; }
+
+        /// <summary>
+        /// 姓（フリガナ）
+        /// </summary>
+        public String LastNameKana { get; set; }
+        /// <summary>
+        /// 名（フリナガ）
+        /// </summary>
+        public String FirstNameKana { get; set; }
+
+
+        public ICollection<ClientTest.Models.Role> Roles { get; set; }
     }
 
     public class RegisterExternalBindingModel
