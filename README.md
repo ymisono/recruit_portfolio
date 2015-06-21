@@ -12,8 +12,8 @@
 製作は最低限の要求だけ会社の上司からで、機能や実装方法は全て三薗が担当。
 
 ## バイナリ
-* ユーザー登録ユーティリティー - http://misono-various.azurewebsites.net/recruit/deploy/usermanager/publish.htm
-* クラウドメモ帳クライアント - http://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
+* ユーザー登録ユーティリティー - https://misono-various.azurewebsites.net/recruit/deploy/usermanager/publish.htm
+* クラウドメモ帳クライアント - https://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
 
 ### インストール
 いずれもClickOnce形式の実行形式。  
