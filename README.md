@@ -54,8 +54,8 @@ configが欲しい場合は三薗（misono@sos.info.hiroshima-cu.ac.jp）に連�
 * [Designed for Use: Create Usable Interfaces for Applications and the Web](http://www.amazon.co.jp/Designed-Use-Create-Interfaces-Applications/dp/1934356751)に書いてあった「モーダルレス」デザインを意識して設計している（素人アプリにありがちなモーダルなメッセージボックスを極力出さないようにしている）。
 * 時間がかかりそうな処理（通信）は非同期で処理を実行している。
 * セキュリティを意識して、センシティブな情報（adminのパスワードやデータベースの接続文字列）はリポジトリに入れて公開しないようにしている。
-* このプロジェクトは技術検証目的で製作したので、今後の本番環境に移行する事を前提にしている。特にこれは、通信レイヤーで意識されており、通信関連のやり取りは全てApiClientとSessionというクラスにまとめた。エラーハンドリングは起こり得る半分以上のケースを想定して書かれており、そのまま本番環境に持っていけれるようになっている（はずである）。
-
+* このプロジェクトは技術検証目的で製作したので、今後の本番環境に移行する事を前提にしている。特にこれは、通信レイヤーで意識されており、通信関連のやり取りは全て[ApiServer](https://github.com/ymisono/recruit_portfolio/blob/master/ClientTest/Models/ApiServer.cs)と[Session](https://github.com/ymisono/recruit_portfolio/blob/master/ClientTest/Models/Session.cs)というクラスにまとめた。エラーハンドリングは起こり得る半分以上のケースを想定して書かれており、そのまま本番環境に持っていけれるようになっている（はずである）。
+* 今回公開するにあたって、admin関連の情報を変更されると管理ユーティリティーそのものが使えなくなるので、adminへの変更はクライアント側で拒否するようにした。なお、サーバー側では特に何もしてないので、REST通信が分かる人ならば容易にハックできる（ソフトが動かなくなるので控えてください）。無対策なのは、管理ユーティリティーを使う人は本来管理者だけという前提に基づいている（）。
 
 連絡
 -----------------
