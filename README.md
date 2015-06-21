@@ -11,7 +11,8 @@
 
 製作は最低限の要求だけ会社の上司からで、機能や実装方法は全て三薗が担当。
 
-## バイナリ
+バイナリ
+------------------
 * ユーザー登録ユーティリティー  
 https://misono-various.azurewebsites.net/recruit/deploy/usermanager/publish.htm
 * クラウドメモ帳クライアント  
@@ -26,3 +27,10 @@ https://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
 「コントロールパネル」->「プログラム」->「プログラムのアンインストール」から。
 
 ### 使い方
+
+コンパイル
+-----------------
+プロジェクトはVisual Studio 2013で製作してあるので、それで開けばよい。 
+
+ただしセキュリティの為、データベースの接続文字列と管理者ログインパスワードを記載したconfigファイルはリポジトリに入ってないので、コンパイルはできるが起動はできない。  
+configが欲しい場合は三薗（misono@sos.info.hiroshima-cu.ac.jp）に連絡を。
