@@ -36,6 +36,7 @@ https://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
 ##### 新規登録
 1. ユーザー名とパスワードを入力。
 2. 画面右下にある「新規登録」ボタンを押す。
+
 ##### 登録情報変更
 1. 変更したいユーザーを左側のリストビューから選ぶ。
 2. 情報を変更する。
