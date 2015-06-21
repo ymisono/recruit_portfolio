@@ -49,6 +49,12 @@ https://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
 ただしセキュリティの為、データベースの接続文字列と管理者ログインパスワードを記載したconfigファイルはリポジトリに入ってないので、コンパイルはできるが起動はできない。  
 configが欲しい場合は三薗（misono@sos.info.hiroshima-cu.ac.jp）に連絡を。
 
+工夫した所
+-----------------
+* [Designed for Use: Create Usable Interfaces for Applications and the Web](http://www.amazon.co.jp/Designed-Use-Create-Interfaces-Applications/dp/1934356751)に書いてあった「モーダルレス」デザインを意識して設計している（素人アプリにありがちなモーダルなメッセージボックスを極力出さないようにしている）。
+* 時間がかかりそうな処理（サーバー間通信）は非同期で処理を実行している。
+
+
 連絡
 -----------------
 * 三薗 義隆 - misono@sos.info.hiroshima-cu.ac.jp
