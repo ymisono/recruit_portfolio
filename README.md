@@ -27,6 +27,19 @@ https://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
 「コントロールパネル」->「プログラム」->「プログラムのアンインストール」から。
 
 ### 使い方
+#### クラウドメモ帳
+1. ログインする。（ユーザー名："test"、パスワード："password"）
+2. テキストボックス部分に入力をして、画面下部にあるボタンに保存する。
+3. そのまま閉じる or ログアウト。
+
+#### ユーザー管理ユーティリティー
+##### 新規登録
+1. ユーザー名とパスワードを入力。
+2. 画面右下にある「新規登録」ボタンを押す。
+##### 登録情報変更
+1. 変更したいユーザーを左側のリストビューから選ぶ。
+2. 情報を変更する。
+3. 画面右下にある「変更」ボタンを押す。
 
 コンパイル
 -----------------
@@ -34,3 +47,7 @@ https://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
 
 ただしセキュリティの為、データベースの接続文字列と管理者ログインパスワードを記載したconfigファイルはリポジトリに入ってないので、コンパイルはできるが起動はできない。  
 configが欲しい場合は三薗（misono@sos.info.hiroshima-cu.ac.jp）に連絡を。
+
+連絡
+-----------------
+* 三薗 義隆 - misono@sos.info.hiroshima-cu.ac.jp
