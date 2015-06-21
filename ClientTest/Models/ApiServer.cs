@@ -29,6 +29,8 @@ namespace ClientTest.Models
         {
             CurrentSession = new Session();
 
+            //設定ファイルからサーバーのパスを持ってくる
+            //DEBUG時はローカルサーバーを使い、Release環境ならばAzureのリモートサーバーを使う
 #if DEBUG
             _apiPath = String.Format("{0}api/", ConfigurationManager.AppSettings["LocalAPIServerPath"]);
 #else
