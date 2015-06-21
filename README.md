@@ -12,12 +12,15 @@
 製作は最低限の要求だけ会社の上司からで、機能や実装方法は全て三薗が担当。
 
 ## バイナリ
-* ユーザー登録ユーティリティー - https://misono-various.azurewebsites.net/recruit/deploy/usermanager/publish.htm
-* クラウドメモ帳クライアント - https://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
+* ユーザー登録ユーティリティー  
+https://misono-various.azurewebsites.net/recruit/deploy/usermanager/publish.htm
+* クラウドメモ帳クライアント  
+https://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
 
 ### インストール
 いずれもClickOnce形式の実行形式。  
-インストールは必要ないので、setup.exeを実行すればよい。証明書を入れてないので、発行者不明の警告がでるが悪しからず。
+インストールは必要ないので、setup.exeを実行すればよい。証明書を入れてないので、発行者不明の警告がでるが悪しからず。  
+実行には.NET 4.5.1のランタイムが必要。
 
 ### アンインストール
 「コントロールパネル」->「プログラム」->「プログラムのアンインストール」から。
