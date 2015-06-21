@@ -12,7 +12,9 @@
 # バイナリ
 * ユーザー登録ユーティリティー - http://misono-various.azurewebsites.net/recruit/deploy/usermanager/publish.htm
 * クラウドメモ帳クライアント - http://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
+
 ## インストール
 いずれもClickOnce形式のインストローラーを使用。証明書はつけてないので、警告が出るが無視して指示通りにインストール。
+
 ## アンインストール
 「コントロールパネル」->「プログラム」->「プログラムのアンインストール」から
