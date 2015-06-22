@@ -20,7 +20,7 @@ https://misono-various.azurewebsites.net/recruit/deploy/cloudmemo/publish.htm
 
 ### インストール
 いずれもClickOnce形式の実行形式。  
-インストールは必要ないので、setup.exeを実行すればよい。証明書を入れてないので、発行者不明の警告がでるが悪しからず。  
+インストールは必要ないので、setup.exeを実行すればそのまま起動する。証明書を入れてないので、発行者不明の警告がでるが悪しからず。  
 実行には.NET 4.5.1のランタイムが必要。
 
 ### アンインストール
